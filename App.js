@@ -1,0 +1,23 @@
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import PunchNavigator from './navigation/PunchNavigator';
+
+import {enableScreens} from 'react-native-screens';
+
+enableScreens();
+
+export default function App() {
+  
+  return (
+    <PunchNavigator />
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
