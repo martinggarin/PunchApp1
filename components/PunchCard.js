@@ -8,6 +8,7 @@ const PunchCard = props => {
         </View>
     );
 };
+
 const styles = StyleSheet.create({
     card:{
         flex:1,

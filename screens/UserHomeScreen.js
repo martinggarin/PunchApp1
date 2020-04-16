@@ -27,11 +27,13 @@ const UserHomeScreen = props => {
     };
 
     return(
+        <View style={styles.screen}>
         <FlatList 
             data={DUMMY}
             renderItem={renderItems}
             keyExtractor={(item, index) => item.id}
         />
+        </View>
     );
 };
 const styles = StyleSheet.create({
@@ -50,6 +52,10 @@ const styles = StyleSheet.create({
     itemText:{
         margin:20, 
         fontSize:20
+    },
+    screen:{
+        flex:1,
+        backgroundColor:'#222831',
     }
 });
 

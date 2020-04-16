@@ -14,7 +14,12 @@ const PunchNavigator = createStackNavigator({
     },
     Login: LoginScreen,
 },  {
-    defaultNavigationOptions:{}
+    defaultNavigationOptions:{
+        headerStyle:{
+            backgroundColor:'#30475e'
+        },
+        headerTintColor:'#ececec',
+    }
 });
 
 export default createAppContainer(PunchNavigator);
