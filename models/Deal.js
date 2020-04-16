@@ -1,7 +1,8 @@
 class Deal {
-    constructor(ammount, reward){
+    constructor(ammount, reward, code){
         this.ammount = ammount;
         this.reward = reward;
+        this.code = code;
     }
     getAmmount(){
         return this.ammount;

@@ -18,6 +18,12 @@ const PunchScreen = props => {
     const redeemPunches = () => {
         r_item.redeem();
         setPunch(r_item.punches);
+        props.navigation.navigate({
+            routeName:'Reward', 
+            params:{
+                restaurant_id: r_item.id,
+            }
+        })
     };
 
     return(
