@@ -1,11 +1,17 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import {DUMMY} from '../data/Dummy-Data';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import * as Progress from 'react-native-progress';
+
 
 const UserHomeScreen = props => {
+    //const [prog, setProg] = useState();
 
     const renderItems = (itemData) => {
+        const prog = itemData.item.punches/itemData.item.getDeal().ammount;
+        console.log(itemData.item.punches/itemData.item.getDeal().ammount);
+
         return (
             <TouchableOpacity
                 style={styles.tItems}
@@ -18,9 +24,12 @@ const UserHomeScreen = props => {
                     })
                 }}>
                 <View 
-                    style={{...styles.item, ...{backgroundColor:itemData.item.color}}}>
-                    <Text
-                        style={styles.itemText}>{itemData.item.title}</Text>
+                    style={{...styles.outsideContainer, ...{backgroundColor:itemData.item.color}}}>
+                    <View style={styles.insideContainer}>
+                        <Text
+                            style={styles.itemText}>{itemData.item.title}</Text>
+                        <Progress.Bar progress={prog} width={100} />
+                    </View>
                 </View>
             </TouchableOpacity>
         );
@@ -37,14 +46,24 @@ const UserHomeScreen = props => {
     );
 };
 const styles = StyleSheet.create({
-    item:{
+    outsideContainer:{
         flex:1,
         margin:15,
         height:150,
-        justifyContent:'center',
+        justifyContent:'space-between',
+        alignItems:'center',
         borderRadius:10,
         elevation:10,
         overflow:'hidden',
+        flexDirection:'row',
+    },
+    insideContainer:{
+        marginHorizontal:5,
+        flexDirection:'row',
+        justifyContent:'space-between',
+        alignItems:'center',
+        width:'90%',
+        padding:10
     },
     tItems:{
         overflow:'hidden'

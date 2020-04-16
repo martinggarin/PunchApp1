@@ -14,16 +14,21 @@ const PunchScreen = props => {
     const updatePunches = () => {
         r_item.addPunch();
         setPunch(r_item.punches);
+        //this will prompt the adding of an image
     };
     const redeemPunches = () => {
-        r_item.redeem();
-        setPunch(r_item.punches);
-        props.navigation.navigate({
-            routeName:'Reward', 
-            params:{
-                restaurant_id: r_item.id,
-            }
-        })
+        if(r_item.redeem()){
+            setPunch(r_item.punches);
+            props.navigation.navigate({
+                routeName:'Reward', 
+                params:{
+                    restaurant_id: r_item.id,
+                }
+            });
+        }
+        else{
+            console.log('You dont have enough punches')
+        }
     };
 
     return(
@@ -38,9 +43,13 @@ const PunchScreen = props => {
                     <Button title='REDEEM' onPress={redeemPunches} />
                 </View>
             </PunchCard>
+            <View>
+            
+            </View>
         </View>
     );
 };
+
 PunchScreen.navigationOptions = navigationData => {
     const r_id = navigationData.navigation.getParam('restaurant_id');
     const r_item = DUMMY.find(r => r.id === r_id);
@@ -56,7 +65,8 @@ PunchScreen.navigationOptions = navigationData => {
         },
         headerTintColor:r_item.color
     };
-}
+};
+
 const styles = StyleSheet.create({
     screen:{
         flex:1,

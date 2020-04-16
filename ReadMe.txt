@@ -13,6 +13,8 @@ react navigation: https://reactnavigation.org/docs/getting-started
     npm install react-navigation
     npm install --save react-native-screen
 
+    npm install react-native-progress --save
+
 Once all these dependencies have been installed you are ready to run the project.
 
 In the project directory type: 
