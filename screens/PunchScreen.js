@@ -1,34 +1,28 @@
 import React, {useState} from 'react';
-import { View, Text, StyleSheet, Flatlist, Button } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Button } from 'react-native';
 import PunchCard from '../components/PunchCard';
 import {DUMMY} from '../data/Dummy-Data';
+import ListItem from '../components/ListItem';
 
 const PunchScreen = props => {
     const r_id = props.navigation.getParam('restaurant_id');
     const r_item = DUMMY.find(r => r.id === r_id);
     const [punch, setPunch] = useState(r_item.punches);
 
-    const reward = r_item.getDeal().getReward();
-    const ammount = r_item.getDeal().getAmmount();
+    const reward = r_item.deal.reward;
+    const ammount = r_item.deal.ammount;
 
-    const updatePunches = () => {
-        r_item.addPunch();
-        setPunch(r_item.punches);
-        //this will prompt the adding of an image
-    };
-    const redeemPunches = () => {
-        if(r_item.redeem()){
-            setPunch(r_item.punches);
-            props.navigation.navigate({
-                routeName:'Reward', 
-                params:{
-                    restaurant_id: r_item.id,
-                }
-            });
-        }
-        else{
-            console.log('You dont have enough punches')
-        }
+    const renderDeal = itemData =>{
+
+        return(
+            <ListItem 
+                style={styles.listItem}
+                title={itemData.item.reward}
+                onClick={()=>{console.log('to rewards')}}
+                color={r_item.color}
+
+            />
+        );
     };
 
     return(
@@ -39,12 +33,15 @@ const PunchScreen = props => {
                 </View>
                 <Text style={styles.cardText}>For {ammount} punches, you get a {reward}</Text>
                 <View style={styles.buttonContainer}>
-                    <Button title='REWARD' onPress={updatePunches}/>
-                    <Button title='REDEEM' onPress={redeemPunches} />
+                    
                 </View>
             </PunchCard>
-            <View>
-            
+            <View style={styles.listContainer}>
+                <FlatList 
+                    data={r_item.deal}
+                    renderItem={renderDeal}
+                    keyExtractor={(item, index) => item.reward}
+                />
             </View>
         </View>
     );
@@ -71,9 +68,19 @@ const styles = StyleSheet.create({
     screen:{
         flex:1,
         alignItems:'center',
-        justifyContent:'center',
-        height:'50%',
+        //justifyContent:'center',
+        //height:'50%',
         backgroundColor:'#222831'
+    },
+    listItem:{
+        //flex:1,
+        height:150
+    },
+    listContainer:{
+        flex:1,
+        height:'50%',
+        width:'100%',
+        borderRadius:10,
     },
     cardText:{
         fontSize:27,
@@ -81,7 +88,7 @@ const styles = StyleSheet.create({
         //alignItems:'center',
         justifyContent:'center',
         textAlign:'center',
-        marginVertical:5
+        marginTop:5
     }, 
     buttonContainer:{
         flexDirection:'row',
@@ -102,5 +109,4 @@ const styles = StyleSheet.create({
 
     }
 });
-
 export default PunchScreen;

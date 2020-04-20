@@ -14,6 +14,7 @@ const PunchNavigator = createStackNavigator({
         screen: PunchScreen,
     },
     Login: LoginScreen,
+    
     Reward:{
         screen: RewardScreen,
     },

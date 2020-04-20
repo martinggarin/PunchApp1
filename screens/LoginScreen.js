@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Flatlist } from 'react-native';
+import { View, Text, StyleSheet, Flatlist, TextInput } from 'react-native';
 
 const LoginScreen = props => {
     return(
@@ -7,6 +7,8 @@ const LoginScreen = props => {
             <Text>
                 This is the Login Screen
             </Text>
+            <TextInput  >
+            </TextInput>
         </View>
     );
 };

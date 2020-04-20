@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Flatlist } from 'react-native';
+import {DUMMY} from '../data/Dummy-Data';
 
 const MerchantProfileScreen = props => {
     return(

@@ -10,12 +10,14 @@ const UserHomeScreen = props => {
 
     const renderItems = (itemData) => {
         const prog = itemData.item.punches/itemData.item.getDeal().ammount;
-        console.log(itemData.item.punches/itemData.item.getDeal().ammount);
+        //console.log(itemData.item.punches/itemData.item.getDeal().ammount);
+//<Progress.Bar progress={prog} width={100} /> had to remove
 
         return (
             <TouchableOpacity
                 style={styles.tItems}
                 onPress={()=> {
+                    console.log('what the fuck');
                     props.navigation.navigate({
                         routeName:'Punch', 
                         params:{
@@ -28,7 +30,7 @@ const UserHomeScreen = props => {
                     <View style={styles.insideContainer}>
                         <Text
                             style={styles.itemText}>{itemData.item.title}</Text>
-                        <Progress.Bar progress={prog} width={100} />
+                        
                     </View>
                 </View>
             </TouchableOpacity>
