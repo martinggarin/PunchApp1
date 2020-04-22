@@ -7,7 +7,7 @@ class Restaurants {
         this.id = id;
         this.title = title;
         this.color = color; 
-        this.punches = 0;
+        this.punches = 1; //this will come from the user model
         this.deal = [
             new Deal(10.0, 'Free Coffee'),
             new Deal(15.0, 'Free Cake'),
