@@ -7,7 +7,7 @@ const ListItem = props => {
         <TouchableOpacity
             style={{...styles.tItems, ...props.style}}
             onPress={props.onClick}
-        >
+        ><View style={{flex:1, justifyContent:'center'}}>
             <View 
                 style={{...styles.outsideContainer, ...{backgroundColor:props.color}, ...props.style}}>
                 <View style={{...styles.insideContainer, ...props.insideContainerStyle}}>
@@ -17,6 +17,9 @@ const ListItem = props => {
                     {props.children}
                 </View>
             </View>
+            <View style={styles.border}></View>
+            </View>
+            
     </TouchableOpacity>
     );
 };
@@ -25,7 +28,7 @@ const styles = StyleSheet.create({
         flex:1,
         marginHorizontal:10,
         //marginVertical:10,
-        marginTop:20, 
+        marginTop:5, 
         height:150,
         justifyContent:'space-between',
         alignItems:'center',
@@ -33,8 +36,8 @@ const styles = StyleSheet.create({
         //elevation:2,
         overflow:'hidden',
         flexDirection:'row',
-        borderWidth:2,
-        borderColor:Colors.backgrounddark
+    
+        //borderColor:Colors.backgrounddark
     },
     insideContainer:{
         margin:15,
@@ -44,8 +47,14 @@ const styles = StyleSheet.create({
         width:'91%',
         //padding:10,
         borderRadius:5,
-        borderWidth:2,
-        borderColor:Colors.backgrounddark
+    },
+    border:{
+        flex:1,
+        //borderBottomStartRadius: 50,
+        marginStart:30,
+        borderColor:Colors.backgrounddark,
+        borderBottomWidth:2,
+        width:'70%',
     },
     tItems:{
         overflow:'hidden'
@@ -56,7 +65,7 @@ const styles = StyleSheet.create({
         color:Colors.backgrounddark,
     },
     textContainer:{
-        width:'75%',
+        width:'70%',
         // borderColor:'black',
         // borderWidth:1,
     }

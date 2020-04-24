@@ -7,6 +7,7 @@ import Colors from '../../constants/Colors';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import HeaderButton from '../../components/HeaderButton';
 import {toggleFav} from '../../store/actions/merchants';
+import DealList from '../../components/DealList';
 
 const PunchScreen = props => {
     const r_id = props.navigation.getParam('restaurant_id');
@@ -15,6 +16,7 @@ const PunchScreen = props => {
     const isFav = faves.some(r => r.id === r_id);
 
     const dispatch = useDispatch();
+
     const toggleFavHandler = useCallback(()=>{
         dispatch(toggleFav(r_id));
     }, [r_id, dispatch]);
@@ -27,17 +29,6 @@ const PunchScreen = props => {
         props.navigation.setParams({toggleFav:toggleFavHandler});
     }, [toggleFavHandler]);
 
-    const renderDeal = itemData =>{
-        return(
-            <ListItem 
-                style={styles.listItem}
-                title={itemData.item.reward}
-                onClick={()=>{console.log('to rewards')}}
-                color={Colors.background}
-            />
-        );
-    };
-
     return(
         <View style={styles.screen}>
             <PunchCard style={{backgroundColor:Colors.backgrounddark}}>
@@ -49,10 +40,8 @@ const PunchScreen = props => {
                 </View>
             </PunchCard>
             <View style={styles.listContainer}>
-                <FlatList 
-                    data={r_item.deal}
-                    renderItem={renderDeal}
-                    keyExtractor={(item, index) => item.reward}
+                <DealList 
+                    dealData={r_item.deal}
                 />
             </View>
         </View>
@@ -93,10 +82,6 @@ const styles = StyleSheet.create({
         //justifyContent:'center',
         //height:'50%',
         backgroundColor:Colors.background
-    },
-    listItem:{
-        flex:1,
-        height:150
     },
     listContainer:{
         flex:1,

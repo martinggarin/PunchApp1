@@ -10,6 +10,7 @@ import SearchMerchantScreen from '../screens/user/SearchMerchantScreen';
 import MerchantLoginScreen from '../screens/merchant/MerchantLoginScreen';
 import MerchantHomeScreen from '../screens/merchant/MerchantProfileScreen';
 import Colors from '../constants/Colors';
+import AddDealScreen from '../screens/merchant/AddDealScreen';
 
 const defaultOptions = {
     headerStyle:{
@@ -39,12 +40,16 @@ const PunchNavigator = createStackNavigator({
     defaultNavigationOptions: defaultOptions
 });
 
+
 const MerchantNavigator = createStackNavigator({
     Login: {
         screen: MerchantLoginScreen
     },
-    Home: {
+    MerchantHome: {
         screen: MerchantHomeScreen
+    },
+    AddDeal:{
+        screen:AddDealScreen
     }
 }, {defaultNavigationOptions: defaultOptions});
 

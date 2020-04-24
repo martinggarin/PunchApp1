@@ -1,4 +1,4 @@
-import {DUMMY} from '../../data/Dummy-Data';
+import {RESTAURANTS} from '../../data/Dummy-Data';
 import {TOGGLE_FAV, 
         REMOVE_RESTAURANT, 
         ADD_RESTAURANT, 
@@ -7,7 +7,7 @@ import Restaurants from '../../models/Restaurants';
 
 const initialState = {
 
-    availableRestaurants: DUMMY, 
+    availableRestaurants: RESTAURANTS, 
     userRestaurants: []
 
 };
