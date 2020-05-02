@@ -11,7 +11,7 @@ react navigation: https://reactnavigation.org/docs/getting-started
     expo install react-native-gesture-handler react-native-reanimated react-native-screens react-native-safe-area-context @react-native-community/masked-view
     npm install --save react-navigation-stack
     npm install react-navigation
-    npm install --save react-native-screen
+    npm install --save react-native-screens
 
     npm install react-native-progress --save
 
