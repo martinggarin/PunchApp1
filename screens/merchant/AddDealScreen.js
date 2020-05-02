@@ -1,4 +1,4 @@
-import React, {useCallback, useReducer} from 'react';
+import React, {useCallback, useReducer, useEffect, useState} from 'react';
 import { View, Text, StyleSheet, Flatlist, Alert, Button } from 'react-native';
 import {useDispatch} from 'react-redux';
 import Input from '../../components/Input';
@@ -35,6 +35,8 @@ const formReducer = (state, action) =>{
 
 
 const AddDealScreen = props => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState();
     const r_id = props.navigation.getParam('id');
     const dispatch = useDispatch();
 
@@ -60,21 +62,33 @@ const AddDealScreen = props => {
         })
       },[dispatchFormState]);
 
-      const submit = useCallback(()=> {
-        if(!formState.isValid){
-            Alert.alert('Wrong Login!' , 'Please check your inputs', [{text: 'Okay'}]);
+      useEffect(() => {
+        if (error) {
+          Alert.alert('An error occurred!', error, [{ text: 'Okay' }]);
+        }
+      }, [error]);
+
+      const submit = useCallback( async () => {
+        if(!formState.formIsValid){
+            console.log(formState);
+            Alert.alert('Wrong Inputs!' , 'Please check your inputs', [{text: 'Okay'}]);
+            return;
         };
+        setError(null);
+        setIsLoading(true);
         try{
-        dispatch(MerchantActions.editDeal(
+            await dispatch(MerchantActions.editDeal(
             r_id,
             formState.inputValues.ammount,
             formState.inputValues.reward
         ));
+        props.navigation.goBack();
         }catch(err){
-            console.log(err.message);
+            setError(err.message);
         }
-        props.navigation.navigate('MerchantHome');
-      },[formState]);
+        setIsLoading(false);
+
+      },[formState, dispatch, r_id]);
 
     return(
         <View style={styles.screen}>
@@ -83,7 +97,7 @@ const AddDealScreen = props => {
             </Text>
 
             <Input 
-                id='Reward'
+                id='reward'
                 label='Enter the Reward'
                 errorText='please enter a valid reward'
                 keyboardType='default'
@@ -96,7 +110,7 @@ const AddDealScreen = props => {
                 required
             />
             <Input 
-                id='Ammount'
+                id='ammount'
                 label='Enter Ammount Needed for the Reward'
                 errorText='please enter a valid ammount'
                 keyboardType='decimal-pad'

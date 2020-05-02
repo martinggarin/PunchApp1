@@ -3,6 +3,8 @@ export const TOGGLE_FAV = 'ADD_RESTAURANT';
 export const UPDATE_RESTAURANT = 'UPDATE_RESTAURANT';
 export const LOAD_SINGLE_MERCHANT = 'LOAD_SINGLE_MERCHANT';
 export const LOAD_ALL_MERCHANTS = 'LOAD_ALL_MERCHANTS';
+export const GET_MERCHANT = 'GET_MERCHANT';
+export const ADD_DEAL = 'ADD_DEAL';
 
 import Restaurants from '../../models/Restaurants';
 import Deal from '../../models/Deal';
@@ -11,6 +13,45 @@ export const toggleFav = (id) => {
     return {type: TOGGLE_FAV, restaurant_id: id};
 };
 
+export const getMerchant = (email, password) => {
+    return async dispatch => {
+      // any async code you want!
+      try {
+        const response = await fetch(
+          'https://punchapp-86a47.firebaseio.com/merchants.json'
+        );
+
+        if (!response.ok) {
+          throw new Error('Something went wrong!');
+        }
+  
+        const resData = await response.json();
+        let merchant = 0;
+  
+        for (const key in resData) {
+          if (resData[key].email === email && resData[key].password === password){
+            merchant = new Restaurants(key, email, password, resData[key].title);
+            merchant.deal = [];
+            for(const k in resData[key].deal){
+              merchant.deal.push(resData[key].deal[k]);
+            }
+            //merchant.deal.concat(resData[key].deal);
+            console.log('fetching deal')
+            console.log(resData[key].deal);
+            console.log(merchant.deal);
+          }
+        };
+        if(merchant === 0){
+          throw new Error('email and password arent valid'); 
+        }
+        
+        dispatch({ type: GET_MERCHANT, merchant: merchant });
+      } catch (err) {
+        // send to custom analytics server
+        throw err;
+      }
+    };
+};
 
 export const loadAllMerchants = () => {
     //this is gonna load the specific merchant with the inputed id
@@ -39,7 +80,11 @@ export const loadAllMerchants = () => {
                 resData[key].title
               );
         
-            r.deal = resData[key].deal;
+            r.deal = [];
+            for(const k in resData[key].deal){
+              r.deal.push(resData[key].deal[k]);
+            }
+            //r.deal.concat(resData[key].deal);
             loadedMerchants.push(r);
           }
           console.log('loadingMerchants')
@@ -101,10 +146,11 @@ export const createMerchant = (email, password, title) => {
       };
 };
 
-export const editDeal = (id, reward, ammount) =>{
+//make it so you can add deals and not update them
+export const editDeal = (id, ammount, reward) =>{
   return async dispatch =>{
 
-    const deal = new Deal(ammount, reward, '|.||..|.||..|');
+    const deal = [new Deal(ammount, reward, '|.||..|.||..|')];
 
     const response = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json`,
       {

@@ -1,11 +1,11 @@
-import React, {useCallback, useEffect, useReducer} from 'react';
+import React, {useCallback, useEffect, useReducer, useState} from 'react';
 import { View, Text, StyleSheet, Button , Alert} from 'react-native';
 import Input from '../../components/Input';
 import Colors from '../../constants/Colors';
 import { useDispatch } from 'react-redux';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import HeaderButton from '../../components/HeaderButton';
-import {useSelector} from 'react-redux';
+import * as merchantActions from '../../store/actions/merchants';
 
 const FORM_INPUT_UPDATE = 'UPDATE';
 
@@ -37,7 +37,10 @@ const formReducer = (state, action) =>{
   };
 
 const UserLoginScreen = props => {
-    const merchants = useSelector(state => state.merchants.availableMerchants);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState();
+    //const merchants = useSelector(state => state.merchants.availableMerchants);
+    const dispatch = useDispatch();
 
     const [formState, dispatchFormState] = useReducer(formReducer, {
         inputValues:{
@@ -51,40 +54,58 @@ const UserLoginScreen = props => {
         formIsValid:false
     });
 
-    const isValid = useCallback(() => {
-        for(const key in merchants){
-            if(merchants[key].email === formState.inputValues.email 
-                && merchants[key].password === formState.inputValues.password)
-                {
-                    console.log('return true');
-                    return true;
-            }
-        }//for
-        console.log('return false');
-        return false;
-    }, [submitHandler, formState])
+    // const isValid = useCallback(() => {
+    //     for(const key in merchants){
+    //         if(merchants[key].email === formState.inputValues.email 
+    //             && merchants[key].password === formState.inputValues.password)
+    //             {
+    //                 console.log('return true');
+    //                 return true;
+    //         }
+    //     }//for
+    //     console.log('return false');
+    //     return false;
+    // }, [submitHandler, formState])
 
-    const submitHandler = useCallback(()  => {
+    useEffect(() => {
+        if (error) {
+          Alert.alert('An error occurred!!!', error, [{ text: 'Okay' }]);
+        }
+      }, [error]);
+
+    const submitHandler = useCallback(async ()  => {
         if(!formState.formIsValid){
             Alert.alert('Wrong Login!' , 'Please check your inputs', [{text: 'Okay'}]);
             return;
         }//if
-        const valid = isValid();
+        //const valid = isValid();
 
-        console.log(valid);
+        //console.log(valid);
 
-        if(!valid){
-            Alert.alert('User Not Found!' , 'Please check your inputs', [{text: 'Okay'}]);
-            return;
-        }
-        else{
+        // if(!valid){
+        //     Alert.alert('User Not Found!' , 'Please check your inputs', [{text: 'Okay'}]);
+        //     return;
+        // }
+
+        setError(null);
+        setIsLoading(true);
+        try{
+            await dispatch(merchantActions.getMerchant(
+                formState.inputValues.email,
+                formState.inputValues.password
+            ));
+            
             props.navigation.replace({
                 routeName:'MerchantHome',
                 params:{
                     email:formState.inputValues.email
                 }
             });
+        } catch(err){
+            setError(err.message);
         }
+        setIsLoading(false);
+
     }, [formState]);
 
     const inputChangeHandler = useCallback((inputIdentifier, inputValue, inputValidity) => {

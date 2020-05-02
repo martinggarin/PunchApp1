@@ -29,7 +29,7 @@ const MerchantList  = props => {
                 //prog={prog}    
             >
                 <RewardBalance 
-                    balance={userPunches}
+                    balance={10}
                     size={12}
                     
                 />

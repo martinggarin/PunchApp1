@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { View, Text, StyleSheet, Button , TouchableOpacity} from 'react-native';
 import {useSelector} from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
@@ -11,7 +11,11 @@ import HeaderButton from '../../components/HeaderButton';
 const MerchantProfileScreen = props => {
     //get the param of email
     const email = props.navigation.getParam('email');
-    const r_item = useSelector( state=> state.merchants.availableMerchants).find(r=>r.email === email);
+    const r_item = useSelector(state => state.merchants.myMerchant);
+    const deals = r_item.deal;
+
+    console.log('merchant profile');
+    console.log(r_item);
 
     const footer = (
         <TouchableOpacity
@@ -36,7 +40,7 @@ const MerchantProfileScreen = props => {
             </Text>
 
             <DealList 
-                dealData={r_item.deal}
+                dealData={deals}
                 footer={footer}
             />
         </View>
