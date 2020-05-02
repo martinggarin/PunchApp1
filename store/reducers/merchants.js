@@ -1,9 +1,8 @@
 import {RESTAURANTS} from '../../data/Dummy-Data';
-import {TOGGLE_FAV, 
+import {
         ADD_DEAL,
-        REMOVE_RESTAURANT,
         CREATE_MERCHANT, 
-        ADD_RESTAURANT, 
+        GET_MERCHANT, 
         UPDATE_RESTAURANT,
         LOAD_ALL_MERCHANTS} from '../actions/merchants';
 import Restaurants from '../../models/Restaurants';
@@ -11,6 +10,8 @@ import Restaurants from '../../models/Restaurants';
 const initialState = {
 
     availableMerchants: [], 
+    myMerchant: {}, 
+    myDeals: []
 
 };
 //most problems have been due to my inability to spell retaurant
@@ -26,6 +27,25 @@ export default (state = initialState, action) => {
         //     }else{
         //         return{...state, userRestaurants: state.userRestaurants.concat(state.availableRestaurants.find(r=>r.id===action.restaurant_id))};
         //     }
+        case GET_MERCHANT:
+            const fetchMerchant = new Restaurants(
+                action.merchant.id, 
+                action.merchant.email,
+                action.merchant.password,
+                action.merchant.title
+            );
+            const d = [];
+            for(const key in action.merchant.deal){
+                d.push(action.merchant.deal[key]);
+            }
+            fetchMerchant.deal = d;
+            console.log('fetch Merchant');
+            console.log(fetchMerchant);
+            return{
+                ...state, 
+                myMerchant: fetchMerchant,
+                myDeals: d
+            };
         case CREATE_MERCHANT:
             const newMerchant = new Restaurants(
                 action.merchantData.id,
@@ -33,21 +53,34 @@ export default (state = initialState, action) => {
                 action.merchantData.password, 
                 action.merchantData.title
                 );
-            return {...state, 
-                availableMerchants: state.availableMerchants.concat(newMerchant)};
+            return {
+                myMerchant: newMerchant, 
+                availableMerchants: state.availableMerchants.concat(newMerchant)
+            };
 
         case LOAD_ALL_MERCHANTS:
             console.log('loaded merchants');
             return {
+                ...state,
                 availableMerchants: action.merchants
             }
         case ADD_DEAL:
             console.log('deal added');
-            const updatedMerchantIndex = state.availableMerchants.findIndex(m => m.id === action.merchant);
-            const updatedMerchantList = [...state.availableMerchants];
-            updatedMerchantList[updatedMerchantIndex].deal = action.deal;
+            //state.myMerchant.deal.concat( action.deal);
+            const updateMerchant = state.myMerchant;
+            updateMerchant.deal = [];
+            for(const key in action.deal){
+                updateMerchant.deal.push(action.deal[key]);
+            }
+            //state.myMerchant.deal = d;
+            console.log(updateMerchant);
+            // const updatedMerchantIndex = state.availableMerchants.findIndex(m => m.id === action.merchant);
+            // const updatedMerchantList = [...state.availableMerchants];
+            // updatedMerchantList[updatedMerchantIndex].deal = action.deal;
             return{
-                availableMerchants: updatedMerchantList
+                ...state, 
+                myMerchant: updateMerchant,
+                myDeals: action.deal
             }
     };//switch
 

@@ -94,7 +94,7 @@ const MerchantSignUpScreen = props => {
         }
         setIsLoading(false);
     
-    }, [formState, formState]);
+    }, [formState]);
 
     const inputChangeHandler = useCallback((inputIdentifier, inputValue, inputValidity) => {
         dispatchFormState({
