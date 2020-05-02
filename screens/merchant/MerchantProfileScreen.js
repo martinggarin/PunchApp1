@@ -11,11 +11,16 @@ import HeaderButton from '../../components/HeaderButton';
 const MerchantProfileScreen = props => {
     //get the param of email
     const email = props.navigation.getParam('email');
-    const r_item = useSelector( state=> state.merchants.availableRestaurants).find(r=>r.email === email);
+    const r_item = useSelector( state=> state.merchants.availableMerchants).find(r=>r.email === email);
 
     const footer = (
         <TouchableOpacity
-            onPress={()=> props.navigation.navigate('AddDeal')}
+            onPress={()=> props.navigation.navigate({
+                    routeName:'AddDeal',
+                    params:{
+                        id: r_item.id
+                    }
+                })}
             style={styles.addContainer}
         >
         <View style={styles.addContainer}>
@@ -57,7 +62,7 @@ const styles = StyleSheet.create({
         alignItems:'center',
         //marginTop:20,
         paddingTop:20,
-        backgroundColor:Colors.background,
+        backgroundColor:Colors.fontLight,
     }, 
     addContainer:{
         alignItems:'center',

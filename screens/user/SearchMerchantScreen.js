@@ -1,44 +1,60 @@
-import React, {useCallback, useEffect}from 'react';
-import { View, FlatList, StyleSheet } from 'react-native';
-import MerchantItem from '../../components/MerchantItem';
-import {useSelector} from 'react-redux';
+import React, {useCallback, useEffect, useState}from 'react';
+import { SafeAreaView, StyleSheet } from 'react-native';
+import {useSelector, useDispatch} from 'react-redux';
 import Colors from '../../constants/Colors';
+import MerchantList from '../../components/MerchantList';
+import * as MerchantActions from '../../store/actions/merchants';
 
 const SearchMerchantScreen = props => {
-    const display = useSelector(state => state.merchants.availableRestaurants);
-    const faves = useSelector(state => state.merchants.userRestaurants);
+    const display = useSelector(state => state.merchants.availableMerchants);
+    const faves = useSelector(state => state.user.userMerchants);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isRefreshing, setIsRefreshing] = useState(false);
+    const [error, setError] = useState();
+    console.log('----display------');
+    console.log(display);
+    const dispatch = useDispatch();
 
-    const renderItems = itemData => {
-        const isFav = faves.some(r => r.id === itemData.item.id);
-        return(
-            <MerchantItem 
-                style={props.style}
-                onClick={()=> 
-                    props.navigation.navigate({
-                        routeName:'Punch', 
-                        params:{
-                            restaurant_id: itemData.item.id,
-                            isFav: isFav
-                        }
-                    })
-                }
-                id={itemData.item.id}
-                navigation={props.navigation}
-                title={itemData.item.title}
-                color={Colors.containers}
-                //prog={prog}    
-            />
+    const loadMerchants = useCallback(async () => {
+        setError(null);
+        setIsRefreshing(true);
+        try {
+          await dispatch(MerchantActions.loadAllMerchants());
+        } catch (err) {
+          setError(err.message);
+        }
+        setIsRefreshing(false);
+      }, [dispatch, setIsLoading, setError]);
+    
+    useEffect(() => {
+        const willFocusSub = props.navigation.addListener(
+          'willFocus',
+          loadMerchants
         );
-    };
+    
+        return () => {
+          willFocusSub.remove();
+        };
+      }, [loadMerchants]);
+    
+      useEffect(() => {
+        setIsLoading(true);
+        loadMerchants().then(() => {
+          setIsLoading(false);
+        });
+      }, [dispatch, loadMerchants]);
 
     return(
-        <View style={styles.screen}>
-            <FlatList 
-                data={display}
-                renderItem={renderItems}
-                keyExtractor={(item, index) => item.id}
+        <SafeAreaView
+        style={styles.screen}>
+            <MerchantList 
+                listData={display}
+                navigation={props.navigation}
+                routeName={'Punch'}
+                style={styles.merchantList}
+                color={Colors.background}
             />
-        </View>
+        </SafeAreaView>
     );
 };
 const styles = StyleSheet.create({

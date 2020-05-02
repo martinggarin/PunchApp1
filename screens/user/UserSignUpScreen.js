@@ -36,18 +36,20 @@ const formReducer = (state, action) =>{
     }
   };
 
-const UserLoginScreen = props => {
+const UserSignUpScreen = props => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
 
     const [formState, dispatchFormState] = useReducer(formReducer, {
         inputValues:{
             email:'',
-            password:''
+            password:'',
+            rePassword:'',
         },
         inputValidities:{
             email:false,
-            password:false
+            password:false,
+            rePassword:false,
         },
         formIsValid:false
     });
@@ -66,16 +68,20 @@ const UserLoginScreen = props => {
             Alert.alert('Wrong Login!' , 'Please check your inputs', [{text: 'Okay'}]);
             return;
         }//if
+        if(!(formState.inputValues.password === formState.inputValues.rePassword)){
+            Alert.alert('Passwords must match!' , 'Please check your passwords', [{text: 'Okay'}]);
+            return;
+        }
         setError(null);
         setIsLoading(true);
         try{
-            await dispatch(userActions.getUser(
+            await dispatch(userActions.createUser(
                 formState.inputValues.email,
                 formState.inputValues.password,
             ));
             
             props.navigation.replace({
-                routeName:'Home',
+                routeName:'Explore',
                 params:{
                     email:formState.inputValues.email
                 }
@@ -99,7 +105,7 @@ const UserLoginScreen = props => {
     return(
         <View style={styles.screen}>
             <Text>
-                This is the User Login Screen
+                This is the User Sign Up Screen
             </Text>
             <Input 
                 id='email'
@@ -127,18 +133,30 @@ const UserLoginScreen = props => {
                 onInputChange={inputChangeHandler}
                 required
             />
+            <Input 
+                id='rePassword'
+                label='re-password'
+                errorText='please enter a valid password'
+                keyboardType='default'
+                returnKeyType='next'
+                autoCapitalize='none'
+                autoCorrect
+                initialValue=''
+                initiallyValid={false}
+                onInputChange={inputChangeHandler}
+                required
+            />
 
             <View style={styles.buttonContainer}>
-                <Button title='Login' color={Colors.backgrounddark} onPress={submitHandler}/>
-                <Button title='Sign Up' color={Colors.backgrounddark} onPress={()=>props.navigation.navigate('UserSignUp')} />
+                <Button title='signup' color={Colors.backgrounddark} onPress={submitHandler}/>
             </View>
         </View>
     );
 };
-UserLoginScreen.navigationOptions = navData => {
+UserSignUpScreen.navigationOptions = navData => {
     
     return {
-        headerTitle:'User Login',
+        headerTitle:'Merchant Login',
         headerLeft: () => (
             <HeaderButtons HeaderButtonComponent={HeaderButton}>
                 <Item title="Menu" iconName='md-menu' onPress={()=>{
@@ -162,4 +180,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default UserLoginScreen;
+export default UserSignUpScreen;

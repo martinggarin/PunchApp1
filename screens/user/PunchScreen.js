@@ -1,25 +1,28 @@
 import React, {useState, useCallback, useEffect} from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import PunchCard from '../../components/PunchCard';
 import {useSelector, useDispatch} from 'react-redux';
-import ListItem from '../../components/ListItem';
 import Colors from '../../constants/Colors';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import HeaderButton from '../../components/HeaderButton';
-import {toggleFav} from '../../store/actions/merchants';
+import {toggleFav} from '../../store/actions/user';
 import DealList from '../../components/DealList';
+import RewardBalance from '../../components/RewardBalance';
+import { Ionicons } from '@expo/vector-icons';
 
 const PunchScreen = props => {
-    const r_id = props.navigation.getParam('restaurant_id');
-    const r_item = useSelector(state => state.merchants.availableRestaurants).find(r=> r.id === r_id);
-    const faves = useSelector(state => state.merchants.userRestaurants);
-    const isFav = faves.some(r => r.id === r_id);
+    const r_id = props.navigation.getParam('merchant_id');
+    console.log(r_id);
+    const r_item = useSelector(state => state.merchants.availableMerchants).find(r=> r.id === r_id);
+    const faves = useSelector(state => state.user.userMerchants);
+    const isFav = faves.some(r => r === r_id);
+    const u_id = useSelector(state=> state.user.user.id);
 
     const dispatch = useDispatch();
 
     const toggleFavHandler = useCallback(()=>{
-        dispatch(toggleFav(r_id));
-    }, [r_id, dispatch]);
+        dispatch(toggleFav(r_id, u_id));
+    }, [r_id, dispatch, u_id]);
 
     useEffect(()=>{
         props.navigation.setParams({isFav:isFav});
@@ -33,7 +36,11 @@ const PunchScreen = props => {
         <View style={styles.screen}>
             <PunchCard style={{backgroundColor:Colors.backgrounddark}}>
                 <View style={styles.textContainer}>
-                    <Text style={{...styles.punch, ...{color:Colors.lightLines}}}>Rewards:</Text>
+                   <RewardBalance 
+                        balance={10}
+                        size={20}
+                   />
+                   <Ionicons name={'md-add-circle'} size={75}/>
                 </View>
                 <View style={styles.buttonContainer}>
                     
@@ -111,8 +118,9 @@ const styles = StyleSheet.create({
     textContainer:{
         flexDirection:'row',
         alignItems:'center',
-        justifyContent:'center',
-        width:'80%',
+        justifyContent:'space-between',
+        width:'70%',
+        marginStart:10
 
     }
 });

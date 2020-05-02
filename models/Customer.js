@@ -6,8 +6,8 @@ class Customer {
         this.email = email;
         this.password = password;
 
-        this.RS; //array
-        this.favorites; //array of restaurant ids
+        this.RS = []; //array
+        this.favorites = []; //array of restaurant ids
     }
 }
 export default Customer;

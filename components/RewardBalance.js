@@ -3,10 +3,17 @@ import { View, StyleSheet, Text } from 'react-native';
 import Colors from '../constants/Colors';
 
 const RewardBalance = props => {
+    const size = props.size;
+    //console.log(size);
     return(
         <View style={{...styles.card, ...props.style}}>
-            <Text style={styles.text}>Rewards:</Text>
-            <Text style={styles.text}>{props.balance}</Text>
+            <View >
+                <Text style={{...styles.text, ...{fontSize:size}}}>Loyalty</Text>
+                <Text style={{...styles.text, ...{fontSize:size}}}>Points</Text>
+            </View>
+            <View>
+                <Text style={{...styles.points, ...{fontSize:size*3}}}>{props.balance}</Text>
+            </View>
         </View>
     );
 };
@@ -20,13 +27,19 @@ const styles = StyleSheet.create({
         marginHorizontal:0,
         alignItems:'center',
         justifyContent:'center',
+        flexDirection:'row'
         // borderWidth:1,
         // borderColor:'black'
     },
     text:{
-        color:Colors.darkLines,
+        color:Colors.fontDark,
         textAlign:'center',
-        fontSize:20,
+        fontSize:12,
+    },
+    points:{
+        
+        marginStart:5,
+        fontSize:36
     }
 });
 

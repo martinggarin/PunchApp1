@@ -12,10 +12,10 @@ const INPUT_BLUR = 'INPUT_BLUR';
 // onInputChange={inputChangeHandler}
 // required
 const inputReducer = (state, action) => {
-    console.log(action.type);
+    //console.log(action.type);
     switch(action.type){
         case INPUT_CHANGE:
-            console.log(action.value);
+            //console.log(action.value);
             return {...state,
                 value: action.value,
                 isValid: action.isValid
@@ -24,7 +24,7 @@ const inputReducer = (state, action) => {
             return {...state,
                 touched:true}
         default: 
-            console.log('default '+action.value);
+            //console.log('default '+action.value);
             return state;
     }
 };
@@ -48,7 +48,7 @@ const Input = props => {
     //this will allow for the parent to remain updated on the state of the child
     useEffect(()=>{
         if(inputState.touched){
-            console.log('useEffect');
+            
             props.onInputChange(id, inputState.value, inputState.isValid);
         }
     }, [inputState, onInputChange, id]);

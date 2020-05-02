@@ -5,7 +5,7 @@ import Colors from '../../constants/Colors';
 import { useDispatch } from 'react-redux';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import HeaderButton from '../../components/HeaderButton';
-import * as userActions from '../../store/actions/user';
+import * as merchantActions from '../../store/actions/merchants';
 
 const FORM_INPUT_UPDATE = 'UPDATE';
 
@@ -36,18 +36,22 @@ const formReducer = (state, action) =>{
     }
   };
 
-const UserLoginScreen = props => {
+const MerchantSignUpScreen = props => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
 
     const [formState, dispatchFormState] = useReducer(formReducer, {
         inputValues:{
             email:'',
-            password:''
+            password:'',
+            rePassword:'',
+            title:''
         },
         inputValidities:{
             email:false,
-            password:false
+            password:false,
+            rePassword:false,
+            title:false,
         },
         formIsValid:false
     });
@@ -61,21 +65,26 @@ const UserLoginScreen = props => {
       }, [error]);
 
     const submitHandler = useCallback( async () => {
-        if(!formState.formIsValid){
+        if(!formState.formIsValid ){
             console.log(formState);
             Alert.alert('Wrong Login!' , 'Please check your inputs', [{text: 'Okay'}]);
             return;
         }//if
+        if(!(formState.inputValues.password === formState.inputValues.rePassword)){
+            Alert.alert('Passwords must match!' , 'Please check your passwords', [{text: 'Okay'}]);
+            return;
+        }
         setError(null);
         setIsLoading(true);
         try{
-            await dispatch(userActions.getUser(
+            await dispatch(merchantActions.createMerchant(
                 formState.inputValues.email,
                 formState.inputValues.password,
+                formState.inputValues.title
             ));
             
             props.navigation.replace({
-                routeName:'Home',
+                routeName:'MerchantHome',
                 params:{
                     email:formState.inputValues.email
                 }
@@ -99,7 +108,7 @@ const UserLoginScreen = props => {
     return(
         <View style={styles.screen}>
             <Text>
-                This is the User Login Screen
+                This is the Merchant Login Screen
             </Text>
             <Input 
                 id='email'
@@ -127,18 +136,43 @@ const UserLoginScreen = props => {
                 onInputChange={inputChangeHandler}
                 required
             />
+            <Input 
+                id='rePassword'
+                label='re-password'
+                errorText='please enter a valid password'
+                keyboardType='default'
+                returnKeyType='next'
+                autoCapitalize='none'
+                autoCorrect
+                initialValue=''
+                initiallyValid={false}
+                onInputChange={inputChangeHandler}
+                required
+            />
+            <Input 
+                id='title'
+                label='Merchant Name'
+                errorText='please enter a valid name'
+                keyboardType='default'
+                returnKeyType='next'
+                autoCapitalize='none'
+                autoCorrect
+                initialValue=''
+                initiallyValid={false}
+                onInputChange={inputChangeHandler}
+                required
+            />
 
             <View style={styles.buttonContainer}>
-                <Button title='Login' color={Colors.backgrounddark} onPress={submitHandler}/>
-                <Button title='Sign Up' color={Colors.backgrounddark} onPress={()=>props.navigation.navigate('UserSignUp')} />
+                <Button title='signup' color={Colors.backgrounddark} onPress={submitHandler}/>
             </View>
         </View>
     );
 };
-UserLoginScreen.navigationOptions = navData => {
+MerchantSignUpScreen.navigationOptions = navData => {
     
     return {
-        headerTitle:'User Login',
+        headerTitle:'Merchant Login',
         headerLeft: () => (
             <HeaderButtons HeaderButtonComponent={HeaderButton}>
                 <Item title="Menu" iconName='md-menu' onPress={()=>{
@@ -162,4 +196,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default UserLoginScreen;
+export default MerchantSignUpScreen;

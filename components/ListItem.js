@@ -12,9 +12,18 @@ const ListItem = props => {
                 style={{...styles.outsideContainer, ...{backgroundColor:props.color}, ...props.style}}>
                 <View style={{...styles.insideContainer, ...props.insideContainerStyle}}>
                     <View style={styles.textContainer}>
-                        <Text style={styles.itemText}>{props.title}</Text>
+                        <Text style={styles.titleText}>{props.title}</Text>
+                        <View style={styles.priceTextContainer}>
+                            <Text style={styles.priceText}>$$$ • American, Bar</Text>
+                        </View>
+                        <View style={styles.addressTextContainer}>
+                            <Text style={styles.addressText}>123 Imaginary street, Athens</Text>
+                        </View>
                     </View>
-                    {props.children}
+                    <View style={styles.containerRight}>
+                        
+                        {props.children}
+                    </View>
                 </View>
             </View>
             <View style={styles.border}></View>
@@ -29,46 +38,70 @@ const styles = StyleSheet.create({
         marginHorizontal:10,
         //marginVertical:10,
         marginTop:5, 
-        height:150,
-        justifyContent:'space-between',
+        height:100,
+        //justifyContent:'space-between',
         alignItems:'center',
         borderRadius:5,
         //elevation:2,
         overflow:'hidden',
         flexDirection:'row',
+        //borderColor:Colors.darkLines,
+        //borderWidth:1,
     
         //borderColor:Colors.backgrounddark
     },
+    containerRight:{
+        //borderWidth:1,
+        //flex:1,
+        width:'50%',
+        alignItems:'center',
+    },
+    distanceContainer:{
+        borderWidth:1,
+        marginTop:0
+    },
     insideContainer:{
-        margin:15,
+        //margin:15,
         flexDirection:'row',
         justifyContent:'space-between',
-        alignItems:'center',
+        //alignItems:'center',
         width:'91%',
         //padding:10,
-        borderRadius:5,
+        //borderRadius:5,
     },
     border:{
-        flex:1,
+        //flex:1,
+        //borderWidth:1,
+        height:1,
         //borderBottomStartRadius: 50,
-        marginStart:30,
-        borderColor:Colors.backgrounddark,
-        borderBottomWidth:2,
-        width:'70%',
+        marginStart:'3%',
+        borderColor:Colors.lightLines,
+        borderBottomWidth:1,
+        width:'94%',
     },
     tItems:{
         overflow:'hidden'
     },
-    itemText:{
-        margin:15, 
-        fontSize:20,
-        color:Colors.backgrounddark,
+    titleText:{
+        margin:5, 
+        fontSize:18,
+        fontWeight:'bold',
+        color:Colors.fontDark,
     },
     textContainer:{
         width:'70%',
-        // borderColor:'black',
-        // borderWidth:1,
-    }
+        borderColor:'black',
+        //borderWidth:1,
+        flexDirection:'column',
+    },
+    addressTextContainer:{
+    },
+    addressText:{
+        color:Colors.darkLines,
+    },
+    priceText:{},
+    priceTextContainer:{}
+
 });
 
 export default ListItem;

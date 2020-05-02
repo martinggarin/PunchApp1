@@ -2,18 +2,21 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import PunchNavigator from './navigation/PunchNavigator';
 import MerchantReducer from './store/reducers/merchants';
+import UserReducer from './store/reducers/user';
 
-import { createStore, combineReducers } from 'redux';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 
 import {enableScreens} from 'react-native-screens';
 import { createStackNavigator } from 'react-navigation-stack';
+import ReduxThunk from 'redux-thunk';
 
 const rootReducer = combineReducers({
-  merchants: MerchantReducer
+  merchants: MerchantReducer,
+  user: UserReducer
 });
 
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
 enableScreens();
 

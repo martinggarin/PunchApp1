@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, FlatList, Text, View } from 'react-native';
 import Colors from '../constants/Colors';
 import ListItem from './ListItem';
+import RewardBalance from './RewardBalance';
 
 
 const DealList = props => {
@@ -17,8 +18,11 @@ const DealList = props => {
                     color={Colors.background}
                 >
                     <View style={styles.textContainer}>
-                        <Text style={styles.text}>Loyalty Points: </Text>
-                        <Text style={styles.text}>{itemData.item.ammount}</Text>
+                        <RewardBalance 
+                            balance={itemData.item.ammount}
+                            size={12}
+                        
+                    />
                     </View>
                 </ListItem>
             </View>
@@ -35,14 +39,15 @@ const DealList = props => {
 };
 const styles = StyleSheet.create({
     listItem:{
-        flex:1,
+        //flex:1,
         height:150
     },
-    textContainer:{
-        
-    },
+    // textContainer:{
+    //     // borderWidth:1
+    // },
     itemContainer:{
         flex:1,
+        height:150
     },
     text:{
         color:Colors.lines,

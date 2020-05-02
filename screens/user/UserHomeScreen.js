@@ -1,38 +1,103 @@
-import React from 'react';
-import { StyleSheet, TouchableOpacity, View, SafeAreaView } from 'react-native';
-import {useSelector} from 'react-redux';
+import React, { useEffect, useCallback , useState} from 'react';
+import { StyleSheet, TouchableOpacity, View, SafeAreaView, Text } from 'react-native';
+import {useSelector, useDispatch} from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '../../constants/Colors';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import HeaderButton from '../../components/HeaderButton';
 import MerchantList from '../../components/MerchantList';
+import * as MerchantActions from '../../store/actions/merchants';
 
 
 const UserHomeScreen = props => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [isRefreshing, setIsRefreshing] = useState(false);
+    const [error, setError] = useState();
+    const allMerchants = useSelector(state => state.merchants.availableMerchants);
+    const display = useSelector(state => state.user.userMerchants);
+    let updatedUserMerchants = [];
+    const dispatch = useDispatch();
+
+    console.log('------allMerchants--------');
+    console.log(allMerchants);
+
+    if(display.length > 0 && allMerchants.length >0){
+        for(const key in display){
+            const merch = allMerchants.find(m=>m.id === display[key]);
+            console.log('....merch....');
+            console.log(merch);
+            updatedUserMerchants.push(merch);
+        }
+    }
+    console.log('----updatedUserMerchants-----');
+    console.log(updatedUserMerchants);
+
+    const loadMerchants = useCallback(async () => {
+        setError(null);
+        setIsRefreshing(true);
+        try {
+            await dispatch(MerchantActions.loadAllMerchants());
+
+        } catch (err) {
+          setError(err.message);
+        }
+        setIsRefreshing(false);
+    }, [dispatch, setIsLoading, setError]);
+
+    useEffect(() => {
+        const willFocusSub = props.navigation.addListener(
+          'willFocus',
+          loadMerchants
+        );
+        console.log('will focus');
+        //console.log(allMerchants);
+        return () => {
+          willFocusSub.remove();
+        };
+    }, [loadMerchants]);
+    
+    useEffect(() => {
+        setIsLoading(true);
+        loadMerchants().then(() => {
+          setIsLoading(false);
+          console.log('is loading');
+          //console.log(allMerchants);
+        });
+    }, [dispatch, loadMerchants]);
+
+
+    
+
     const footer = (<TouchableOpacity
-        onPress={()=> props.navigation.navigate('NewMerchant')}
+        onPress={()=> props.navigation.navigate('Explore')}
         style={styles.addContainer}
     >
         <View style={styles.addContainer}>
             <Ionicons name={'md-add-circle'} size={50}/>
         </View>
     </TouchableOpacity>);
-
-    const display = useSelector(state => state.merchants.userRestaurants);
-    return(
-        <SafeAreaView
-        style={styles.screen}>
-            <MerchantList 
-                listData={display}
-                navigation={props.navigation}
-                routeName={'Punch'}
-                style={styles.merchantList}
-                color={Colors.background}
-                footer={footer}
-            />
-        </SafeAreaView>
-    );
+        if(updatedUserMerchants.length > 0){
+            return(
+                <SafeAreaView
+                style={styles.screen}>
+                    <MerchantList 
+                        listData={updatedUserMerchants}
+                        navigation={props.navigation}
+                        routeName={'Punch'}
+                        style={styles.merchantList}
+                        color={Colors.background}
+                        footer={footer}
+                    />
+                </SafeAreaView>
+            );
+        }else{
+            return(
+                <View>
+                    <Text>There are no items, add some</Text>
+                </View>);
+        }
 };
+
 UserHomeScreen.navigationOptions = navData => {
 
     return {
@@ -46,7 +111,7 @@ UserHomeScreen.navigationOptions = navData => {
         headerRight:() => (
             <HeaderButtons HeaderButtonComponent={HeaderButton}>
                 <Item title="Menu" iconName='md-add' onPress={()=>{
-                    navData.navigation.navigate('NewMerchant');
+                    navData.navigation.navigate('Explore');
                 }} />
             </HeaderButtons>
         ),

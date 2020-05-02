@@ -5,6 +5,7 @@ import Colors from '../../constants/Colors';
 import { useDispatch } from 'react-redux';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import HeaderButton from '../../components/HeaderButton';
+import {useSelector} from 'react-redux';
 
 const FORM_INPUT_UPDATE = 'UPDATE';
 
@@ -35,7 +36,8 @@ const formReducer = (state, action) =>{
     }
   };
 
-const MerchantLoginScreen = props => {
+const UserLoginScreen = props => {
+    const merchants = useSelector(state => state.merchants.availableMerchants);
 
     const [formState, dispatchFormState] = useReducer(formReducer, {
         inputValues:{
@@ -49,17 +51,40 @@ const MerchantLoginScreen = props => {
         formIsValid:false
     });
 
-    const submitHandler = useCallback(() => {
+    const isValid = useCallback(() => {
+        for(const key in merchants){
+            if(merchants[key].email === formState.inputValues.email 
+                && merchants[key].password === formState.inputValues.password)
+                {
+                    console.log('return true');
+                    return true;
+            }
+        }//for
+        console.log('return false');
+        return false;
+    }, [submitHandler, formState])
+
+    const submitHandler = useCallback(()  => {
         if(!formState.formIsValid){
             Alert.alert('Wrong Login!' , 'Please check your inputs', [{text: 'Okay'}]);
             return;
         }//if
-        props.navigation.replace({
-            routeName:'MerchantHome',
-            params:{
-                email:formState.inputValues.email
-            }
-        });
+        const valid = isValid();
+
+        console.log(valid);
+
+        if(!valid){
+            Alert.alert('User Not Found!' , 'Please check your inputs', [{text: 'Okay'}]);
+            return;
+        }
+        else{
+            props.navigation.replace({
+                routeName:'MerchantHome',
+                params:{
+                    email:formState.inputValues.email
+                }
+            });
+        }
     }, [formState]);
 
     const inputChangeHandler = useCallback((inputIdentifier, inputValue, inputValidity) => {
@@ -106,11 +131,12 @@ const MerchantLoginScreen = props => {
 
             <View style={styles.buttonContainer}>
                 <Button title='login' color={Colors.backgrounddark} onPress={submitHandler}/>
+                <Button title='Sign Up' color={Colors.backgrounddark} onPress={()=>props.navigation.navigate('SignUp')} />
             </View>
         </View>
     );
 };
-MerchantLoginScreen.navigationOptions = navData => {
+UserLoginScreen.navigationOptions = navData => {
     
     return {
         headerTitle:'Merchant Login',
@@ -137,4 +163,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default MerchantLoginScreen;
+export default UserLoginScreen;

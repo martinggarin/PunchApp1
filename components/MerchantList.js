@@ -6,10 +6,11 @@ import {useSelector} from 'react-redux';
 import RewardBalance from '../components/RewardBalance';
 
 const MerchantList  = props => {
-    const faves = useSelector(state => state.merchants.userRestaurants);
+    const userPunches = 10;
+    const faves = useSelector(state => state.user.userMerchants);
     const renderItems = (itemData) => {
         //const prog = itemData.item.punches/itemData.item.getDeal().ammount;
-        const isFav = faves.some(r => r.id === itemData.item.id);
+        const isFav = faves.some(r => r === itemData.item.id);
         return (
             <ListItem 
                 style={props.style}
@@ -17,7 +18,7 @@ const MerchantList  = props => {
                     props.navigation.navigate({
                         routeName:props.routeName, 
                         params:{
-                            restaurant_id: itemData.item.id,
+                            merchant_id: itemData.item.id,
                             isFav:isFav,
                             title: itemData.item.title
                         }
@@ -28,7 +29,8 @@ const MerchantList  = props => {
                 //prog={prog}    
             >
                 <RewardBalance 
-                    balance={itemData.item.punches}
+                    balance={userPunches}
+                    size={12}
                     
                 />
             </ListItem>
