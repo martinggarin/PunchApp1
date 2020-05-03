@@ -39,6 +39,14 @@ const defaultOptions = {
 //     defaultNavigationOptions: defaultOptions
 // });
 
+const RewardNavigator = createStackNavigator({
+    Reward:{
+        screen: RewardScreen
+    },
+    Punch: PunchScreen,
+}, {
+    defaultNavigationOptions: defaultOptions
+})
 
 const ExploreNavigator = createStackNavigator({
     Explore: {
@@ -81,7 +89,7 @@ const tabScreen = {
         }
     },
     Rewards: {
-        screen: RewardNavigator, 
+        screen: RewardScreen, 
         navigationOptions:{
             tabBarIcon: (tabInfo) => {
                 return (<AntDesign name='qrcode' size={25} color={tabInfo.tintColor} />);
@@ -147,15 +155,6 @@ const HomeNavigator = createStackNavigator({
 }, {
     defaultNavigationOptions: defaultOptions
 });
-
-const RewardNavigator = createStackNavigator({
-    Reward:{
-        screen: RewardScreen
-    },
-    Punch: PunchScreen,
-}, {
-    defaultNavigationOptions: defaultOptions
-})
 
 const MainNavigator = createDrawerNavigator({
     UserHome: {
