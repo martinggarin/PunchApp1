@@ -98,9 +98,7 @@ const UserLoginScreen = props => {
 
     return(
         <View style={styles.screen}>
-            <Text>
-                This is the User Login Screen
-            </Text>
+            
             <Input 
                 id='email'
                 label='email'
@@ -154,11 +152,15 @@ const styles = StyleSheet.create({
         flex:1,
         alignItems:'center',
         padding:10,
+        //justifyContent:'center'
     },
     buttonContainer:{
         padding:10,
         marginTop:20,
-        height:100
+        height:60,
+        flexDirection:'row',
+        alignContent:'center',
+        justifyContent:'center',
     }
 });
 

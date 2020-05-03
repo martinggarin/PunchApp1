@@ -150,7 +150,31 @@ export const createMerchant = (email, password, title) => {
 export const editDeal = (id, ammount, reward) =>{
   return async dispatch =>{
 
-    const deal = [new Deal(ammount, reward, '|.||..|.||..|')];
+    const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json`);
+    if(!response1.ok){
+      throw new Error('response 1 was not fetched');
+    };
+
+    const resData1 = await response1.json();
+    const deals = resData1.deal; 
+
+    console.log('-----deals-----');
+    console.log(deals);
+
+    
+    const deal = [];
+    if(!(deals === undefined)){
+      for(const key in deals){
+        deal.push(
+          new Deal(
+            deals[key].ammount, deals[key].reward, deals[key].code
+          )
+        );
+      }//for
+    }
+    deal.push(new Deal(ammount, reward, '|.||..|.||..|'))
+    console.log(deal);
+    //const d = new Deal(ammount, reward, '|.||..|.||..|');
 
     const response = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json`,
       {

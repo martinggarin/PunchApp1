@@ -91,7 +91,8 @@ const Input = props => {
 
 const styles = StyleSheet.create({
     formControl: {
-        width: '100%'
+        width: '100%',
+        alignContent:'center'
       },
       label: {
         // fontFamily: 'open-sans-bold',
@@ -101,7 +102,9 @@ const styles = StyleSheet.create({
         paddingHorizontal: 2,
         paddingVertical: 5,
         borderBottomColor: '#ccc',
-        borderBottomWidth: 1
+        borderBottomWidth: 1,
+        
+        
       }
 });
 

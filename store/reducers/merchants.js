@@ -54,6 +54,7 @@ export default (state = initialState, action) => {
                 action.merchantData.title
                 );
             return {
+                ...state,
                 myMerchant: newMerchant, 
                 availableMerchants: state.availableMerchants.concat(newMerchant)
             };
@@ -80,7 +81,7 @@ export default (state = initialState, action) => {
             return{
                 ...state, 
                 myMerchant: updateMerchant,
-                myDeals: action.deal
+                myDeals: updateMerchant.deal
             }
     };//switch
 
