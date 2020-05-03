@@ -1,24 +1,25 @@
 import React from 'react';
 import {View, Text, Image, StyleSheet} from 'react-native';
-import {DUMMY} from '../../data/Dummy-Data';
+import {useSelector} from 'react-redux';
+import QRCode from "react-qr-code";
 import Colors from '../../constants/Colors';
 
 const RewardScreen = props => {
-    const r_id = props.navigation.getParam('restaurant_id');
-    const r_item = DUMMY.find(r => r.id === r_id);
-    const coupon = r_item.getDeal().getReward();
-    const code = r_item.getDeal().code;
-
-    return(
+    const u_id = useSelector(state => state.user.user.id);
+    console.log('------ID--------');
+    console.log(u_id);
+    return (
         <View style={styles.screen}>
-            <Text style={styles.text}>This cupon entitles you to a {coupon}</Text>
-            <Image 
-                source={{uri: code}}
-                style={styles.image}/>
-            
+            <Text>
+                Scan this QR Code to claim rewards!
+            </Text>
+            <QRCode value={u_id}/>
         </View>
+        
     );
 };
+        
+            
 const styles = StyleSheet.create({
     screen:{
         flex:1,
