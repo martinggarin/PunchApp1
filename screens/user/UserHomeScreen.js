@@ -20,8 +20,10 @@ const UserHomeScreen = props => {
 
     console.log('------allMerchants--------');
     console.log(allMerchants);
+    console.log('------display-------------');
+    console.log(display)
 
-    if(display.length > 0 && allMerchants.length >0){
+    if(display && allMerchants.length >0){
         for(const key in display){
             const merch = allMerchants.find(m=>m.id === display[key]);
             console.log('....merch....');
@@ -63,10 +65,7 @@ const UserHomeScreen = props => {
           console.log('is loading');
           //console.log(allMerchants);
         });
-    }, [dispatch, loadMerchants]);
-
-
-    
+    }, [dispatch, loadMerchants]);    
 
     const footer = (<TouchableOpacity
         onPress={()=> props.navigation.navigate('Explore')}
@@ -76,26 +75,27 @@ const UserHomeScreen = props => {
             <Ionicons name={'md-add-circle'} size={50}/>
         </View>
     </TouchableOpacity>);
-        if(updatedUserMerchants.length > 0){
-            return(
-                <SafeAreaView
-                style={styles.screen}>
-                    <MerchantList 
-                        listData={updatedUserMerchants}
-                        navigation={props.navigation}
-                        routeName={'Punch'}
-                        style={styles.merchantList}
-                        color={Colors.background}
-                        footer={footer}
-                    />
-                </SafeAreaView>
-            );
-        }else{
-            return(
-                <View>
-                    <Text>There are no items, add some</Text>
-                </View>);
-        }
+
+    if(updatedUserMerchants.length > 0){
+        return(
+            <SafeAreaView
+            style={styles.screen}>
+                <MerchantList 
+                    listData={updatedUserMerchants}
+                    navigation={props.navigation}
+                    routeName={'Punch'}
+                    style={styles.merchantList}
+                    color={Colors.background}
+                    footer={footer}
+                />
+            </SafeAreaView>
+        );
+    }else{
+        return(
+            <View>
+                <Text>There are no items, add some</Text>
+            </View>);
+    }
 };
 
 UserHomeScreen.navigationOptions = navData => {
