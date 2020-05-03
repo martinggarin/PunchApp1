@@ -158,7 +158,11 @@ export const getUser = (email, password) => {
           if (resData[key].email === email && resData[key].password === password){
             user = new Customer(key, email, password);
             user.RS = resData[key].RS;
-            user.favorites = resData[key].favorites;
+            user.favorites = [];
+            if(!(resData[key].favorites === undefined))
+            {  for(const k in resData[key].favorites){
+                user.favorites.push(resData[key].favorites[k]);
+              };}
             //console.log(user);
           }
         };
