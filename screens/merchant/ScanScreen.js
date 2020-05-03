@@ -6,7 +6,7 @@ const ScanScreen = props => {
     onSuccess = e => {
         console.log(e.data);
       };
-
+   
     return (
         <View>
             <Text>
