@@ -18,6 +18,7 @@ import Colors from '../constants/Colors';
 import AddDealScreen from '../screens/merchant/AddDealScreen';
 import MerchantSignUp from '../screens/merchant/MerchantSignUpScreen';
 import UserSignUpScreen from '../screens/user/UserSignUpScreen';
+import ScanScreen from '../screens/merchant/ScanScreen';
 
 const defaultOptions = {
     headerStyle:{
@@ -48,46 +49,30 @@ const ExploreNavigator = createStackNavigator({
     defaultNavigationOptions: defaultOptions
 });
 
-const RewardNavigator = createStackNavigator({
-    Reward:{
-        screen: RewardScreen
-    },
-    Punch: PunchScreen,
-}, {
-    defaultNavigationOptions: defaultOptions
-})
-
-const HomeNavigator = createStackNavigator({
-    UserLogin: UserLoginScreen,
-    UserSignUp: UserSignUpScreen,
+const MerchantTabScreen = {
     Home: {
-        screen: UserHomeScreen
+        screen: MerchantHomeScreen, 
+        navigationOptions:{
+            tabBarIcon: (tabInfo) => {
+                return (<Ionicons name='ios-restaurant' size={25} color={tabInfo.tintColor} />);
+            },
+            tabBarColor: Colors.header,
+        }
     },
-    Explore:SearchMerchantScreen,
-    Punch: PunchScreen,
-}, {
-    defaultNavigationOptions: defaultOptions
-});
-
-const MerchantNavigator = createStackNavigator({
-    Login: {
-        screen: MerchantLoginScreen
+    Scan: {
+        screen:ScanScreen,
+        navigationOptions:{
+            tabBarIcon: (tabInfo) => {
+                return (<Ionicons name='ios-qr-scanner' size={25} color={tabInfo.tintColor} />);
+            },
+            tabBarColor: Colors.header,
+            activeColor:Colors.fontLight,
+        }
     },
-    SignUp: {
-        screen: MerchantSignUp
-    },
-    MerchantHome: {
-        screen: MerchantHomeScreen
-    },
-    AddDeal:{
-        screen:AddDealScreen
-    }
-}, {defaultNavigationOptions: defaultOptions});
-
-
+}
 const tabScreen = {
     Home: {
-        screen: HomeNavigator, 
+        screen: UserHomeScreen, 
         navigationOptions:{
             tabBarIcon: (tabInfo) => {
                 return (<Ionicons name='ios-restaurant' size={25} color={tabInfo.tintColor} />);
@@ -105,7 +90,7 @@ const tabScreen = {
         }
     },
     Explore: {
-        screen:ExploreNavigator,
+        screen:SearchMerchantScreen,
         navigationOptions:{
             tabBarIcon: (tabInfo) => {
                 return (<Ionicons name='ios-star' size={25} color={tabInfo.tintColor} />);
@@ -115,8 +100,18 @@ const tabScreen = {
         }
     },
 }
-
 const MerchantTabNavigator = Platform.OS ==='android' 
+? createMaterialBottomTabNavigator(MerchantTabScreen, {
+    activeColor:Colors.lightLines,
+    shifting:true
+}) 
+: createBottomTabNavigator(MerchantTabScreen, {
+    tabBarOptions:{
+        activeTintColor:Colors.lightLines,
+    }
+});
+
+const UserTabNavigator = Platform.OS ==='android' 
 ? createMaterialBottomTabNavigator(tabScreen, {
     activeColor:Colors.lightLines,
     shifting:true
@@ -126,11 +121,45 @@ const MerchantTabNavigator = Platform.OS ==='android'
         activeTintColor:Colors.lightLines,
     }
 });
+const MerchantNavigator = createStackNavigator({
+    Login: {
+        screen: MerchantLoginScreen
+    },
+    SignUp: {
+        screen: MerchantSignUp
+    },
+    MerchantHome: {
+        screen: MerchantTabNavigator
+    },
+    AddDeal:{
+        screen:AddDealScreen
+    }
+}, {defaultNavigationOptions: defaultOptions});
 
+const HomeNavigator = createStackNavigator({
+    UserLogin: UserLoginScreen,
+    UserSignUp: UserSignUpScreen,
+    Home: {
+        screen: UserTabNavigator
+    },
+    Explore:SearchMerchantScreen,
+    Punch: PunchScreen,
+}, {
+    defaultNavigationOptions: defaultOptions
+});
+
+const RewardNavigator = createStackNavigator({
+    Reward:{
+        screen: RewardScreen
+    },
+    Punch: PunchScreen,
+}, {
+    defaultNavigationOptions: defaultOptions
+})
 
 const MainNavigator = createDrawerNavigator({
     UserHome: {
-        screen: MerchantTabNavigator,
+        screen: HomeNavigator,
         navigationOptions:{
             drawerLabel:'Home'
         }

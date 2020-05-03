@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, FlatList, Text, View } from 'react-native';
 import Colors from '../constants/Colors';
-import ListItem from './ListItem';
+import DealItem from './DealItem';
 import RewardBalance from './RewardBalance';
 
 
@@ -11,7 +11,7 @@ const DealList = props => {
         console.log('render');
         return(
             <View style={styles.itemContainer}>
-                <ListItem 
+                <DealItem 
                     style={styles.listItem}
                     title={itemData.item.reward}
                     onClick={()=>{console.log('to rewards')}}
@@ -24,7 +24,7 @@ const DealList = props => {
                         
                     />
                     </View>
-                </ListItem>
+                </DealItem>
             </View>
         );
     };
@@ -35,6 +35,7 @@ const DealList = props => {
             keyExtractor={(item, index) => item.reward}
             ListFooterComponent={props.footer}
         />
+        
     );
 };
 const styles = StyleSheet.create({

@@ -12,10 +12,10 @@ const MerchantProfileScreen = props => {
     //get the param of email
     const email = props.navigation.getParam('email');
     const r_item = useSelector(state => state.merchants.myMerchant);
-    const deals = r_item.deal;
+    const deals = useSelector(state => state.merchants.myDeals);
 
     console.log('merchant profile');
-    console.log(r_item);
+    console.log(deals);
 
     const footer = (
         <TouchableOpacity
@@ -29,20 +29,25 @@ const MerchantProfileScreen = props => {
         >
         <View style={styles.addContainer}>
             <Ionicons name={'md-add-circle'} size={50} color={'black'} />
+            <Text>Add Deal</Text>
         </View>
         </TouchableOpacity>
         );
 
     return(
         <View style={styles.screen}>
-            <Text style={styles.text}>
-                 {r_item.title}
-            </Text>
-
-            <DealList 
-                dealData={deals}
-                footer={footer}
-            />
+            <View style={styles.upperContainer}>
+                <Text style={styles.text}>
+                    {r_item.title}
+                </Text>
+            </View>
+            
+            <View style={styles.lowerContainer}>
+                <DealList 
+                    dealData={deals}
+                    footer={footer}
+                />
+            </View>
         </View>
     );
 };
@@ -68,15 +73,33 @@ const styles = StyleSheet.create({
         paddingTop:20,
         backgroundColor:Colors.fontLight,
     }, 
-    addContainer:{
-        alignItems:'center',
-        height:150,
-        margin:10,
-    }, 
+    upperContainer:{
+        width:'90%',
+        height:100,
+        backgroundColor:Colors.backgrounddark,
+        justifyContent:'center',
+        alignItems:'center'
+    },
     text:{
         fontSize:20,
         color:Colors.lines
-    }
+    },
+    lowerContainer:{
+        backgroundColor:Colors.lines,
+        padding:10,
+        justifyContent:'center',
+        width:'90%',
+        height:'100%',
+        borderColor:'black',
+        //borderWidth:1,
+        margin:10
+    },
+    addContainer:{
+        alignItems:'center',
+        height:150,
+        margin:0,
+        
+    },
 });
 
 export default MerchantProfileScreen;
