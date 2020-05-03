@@ -1,5 +1,5 @@
 import React from 'react';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, AntDesign } from '@expo/vector-icons';
 import {Platform} from 'react-native';
 import {createStackNavigator} from 'react-navigation-stack'; 
 import {createAppContainer} from 'react-navigation';
@@ -48,6 +48,15 @@ const ExploreNavigator = createStackNavigator({
     defaultNavigationOptions: defaultOptions
 });
 
+const RewardNavigator = createStackNavigator({
+    Reward:{
+        screen: RewardScreen
+    },
+    Punch: PunchScreen,
+}, {
+    defaultNavigationOptions: defaultOptions
+})
+
 const HomeNavigator = createStackNavigator({
     UserLogin: UserLoginScreen,
     UserSignUp: UserSignUpScreen,
@@ -82,6 +91,15 @@ const tabScreen = {
         navigationOptions:{
             tabBarIcon: (tabInfo) => {
                 return (<Ionicons name='ios-restaurant' size={25} color={tabInfo.tintColor} />);
+            },
+            tabBarColor: Colors.header,
+        }
+    },
+    Rewards: {
+        screen: RewardNavigator, 
+        navigationOptions:{
+            tabBarIcon: (tabInfo) => {
+                return (<AntDesign name='qrcode' size={25} color={tabInfo.tintColor} />);
             },
             tabBarColor: Colors.header,
         }
