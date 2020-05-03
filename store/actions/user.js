@@ -7,6 +7,9 @@ export const FETCH_MERCHANTS = 'FETCH_MERCHANTS';
 import Customer from '../../models/Customer';
 import Restaurants from '../../models/Restaurants';
 
+export const updateRewards = (r_id, u_id, ammount) => {
+  //update the value of user rewards status... TODO
+}
 
 export const fetchMerchants = () => {
   return async dispatch => {

@@ -8,7 +8,8 @@ import RewardsStatus from '../../models/RewardsStatus';
 
 const initialState = {
     user: {}, 
-    userMerchants: []
+    userMerchants: [], 
+    userRewards: []
 };
 
 export default (state = initialState, action) => {
@@ -19,6 +20,8 @@ export default (state = initialState, action) => {
                 action.userData.id, 
                 action.userData.email, 
                 action.userData.password);
+            newUser.RD = [];
+            newUser.favorites = [];
             return {...state, user: newUser};
 
         case GET_USER:
@@ -26,15 +29,23 @@ export default (state = initialState, action) => {
                 action.user.id,
                 action.user.email,
                 action.user.password);
-            const rs = [];
-            for (const key in action.user.RS){
-                const nrs = new RewardsStatus(action.user.RS[key].r_id, action.user.RS[key].c_id);
-                nrs.ammount = action.user.RS[key].ammount;
-                rs.push(nrs);
-            };
-            fetchUser.RS = rs;
-            fetchUser.favorites = action.user.favorites;
-            console.log(fetchUser.favorites);
+            fetchUser.favorites = [];
+            fetchUser.RS = [];
+            if(!(action.user.RS === undefined)){
+                for (const key in action.user.RS){
+                    fetchUser.RS.push(
+                        new RewardsStatus(action.user.RS[key].r_id, action.user.RS[key].ammount)
+                        );
+                };
+            }//if rs
+            if(!(action.user.favorites === undefined)){
+                for(const key in action.user.favorites){
+                    fetchUser.favorites.push(
+                        action.user.favorites[key]
+                    );
+                }
+            }//if favorites
+            
             return {...state, 
                 user: fetchUser, 
                 userMerchants: fetchUser.favorites};
@@ -42,14 +53,13 @@ export default (state = initialState, action) => {
         case FETCH_MERCHANTS:
             return {
                 ...state, 
-                merchants: action.merchants,
                 userMerchants: action.merchants.filter(m => m.id === state.user.favorites)
             };
 
         case TOGGLE_FAV:
-            // const updatedUserMerchants = [];
+            // const updatedUserMerchants = [...];
             // for(const key in action.favorites){
-            //     updatedUserMerchants.push(state.merchants.find(m => m.id === key));
+            //      updatedUserMerchants.push(state.merchants.find(m => m.id === key));
             // }
             // console.log(updatedUserMerchants);
             return{
