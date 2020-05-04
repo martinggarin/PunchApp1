@@ -55,6 +55,7 @@ const PunchScreen = props => {
             </PunchCard>
             <View style={styles.listContainer}>
                 <DealList 
+                    merchantSide={false}
                     dealData={r_item.deal}
                 />
             </View>

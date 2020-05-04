@@ -7,6 +7,19 @@ import RewardBalance from './RewardBalance';
 
 const DealList = props => {
     
+
+    const tap = (ammount) => {
+        if(props.merchantSide){
+            props.navigation.navigate('ScanScreen', {
+                params:{
+                    ammount:ammount
+                }
+            });
+        }
+        else {
+            console.log('User Side!');
+        }
+    }
     const renderDeal = itemData =>{
         console.log('render');
         return(
@@ -14,7 +27,7 @@ const DealList = props => {
                 <DealItem 
                     style={styles.listItem}
                     title={itemData.item.reward}
-                    onClick={()=>{console.log('to rewards')}}
+                    onClick={tap.bind(this, itemData.item.ammount)}
                     color={Colors.background}
                 >
                     <View style={styles.textContainer}>

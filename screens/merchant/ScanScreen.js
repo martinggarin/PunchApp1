@@ -10,6 +10,10 @@ const ScanScreen = props => {
     const [scanned, setScanned] = useState(false);
     const dispatch = useDispatch();
     const r_id = useSelector(state => state.merchants.myMerchant.id);
+    const ammount = props.navigation.getParam('ammount');
+    
+    console.log('__________ammount________');
+    console.log(ammount);
     
     useEffect(() => {
         (async () => {
