@@ -158,7 +158,7 @@ const MerchantNavigator = createStackNavigator({
     SignUp: MerchantSignUpScreen,
     MerchantHome: {
         screen: MerchantTabNavigator,
-        navigationOptions: {header:null}
+        navigationOptions: {headerShown:false}
     },
     AddDeal:AddDealScreen
 }, {
@@ -170,7 +170,7 @@ const UserNavigator = createStackNavigator({
     UserSignUp: UserSignUpScreen,
     Home: {
         screen: UserTabNavigator,
-        navigationOptions: {header:null}
+        navigationOptions: {headerShown:false}
     },
     Punch: PunchScreen,
 }, {
