@@ -42,7 +42,7 @@ const ScanScreen = props => {
     return (
         <View style={styles.screen}>
             <Text>
-                This is the Scan Screen!
+                Scan a customer QR Code to credit rewards!
             </Text>
             <BarCodeScanner style={styles.scanner}
             onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     },
     scanner:{
         ...StyleSheet.absoluteFill,
-        height:480,
+        height:"95%",
         top:20
     }
 });
