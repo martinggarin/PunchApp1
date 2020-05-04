@@ -6,11 +6,19 @@ import {useSelector} from 'react-redux';
 import RewardBalance from '../components/RewardBalance';
 
 const MerchantList  = props => {
-    const userPunches = 10;
     const faves = useSelector(state => state.user.userMerchants);
+    const rs = useSelector(state => state.user.userRewards);
+    // console.log(rs);
     const renderItems = (itemData) => {
         //const prog = itemData.item.punches/itemData.item.getDeal().ammount;
         const isFav = faves.some(r => r === itemData.item.id);
+        const hasRS = rs.some(r => r.r_id === itemData.item.id);
+        let loyaltyPoints = 0;
+        if(hasRS){
+            // console.log('________hasRS________');
+            loyaltyPoints = rs.find(r=>r.r_id === itemData.item.id).ammount;
+            // console.log(loyaltyPoints);
+        }
         return (
             <ListItem 
                 style={props.style}
@@ -29,7 +37,7 @@ const MerchantList  = props => {
                 //prog={prog}    
             >
                 <RewardBalance 
-                    balance={10}
+                    balance={loyaltyPoints}
                     size={12}
                     
                 />
@@ -40,6 +48,7 @@ const MerchantList  = props => {
     return (
         <View style={styles.screen}>
             <FlatList 
+                {...props}
                 data={props.listData}
                 keyExtractor={(item, index) => item.id}
                 renderItem={renderItems}

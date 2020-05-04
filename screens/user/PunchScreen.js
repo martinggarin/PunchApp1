@@ -17,6 +17,13 @@ const PunchScreen = props => {
     const faves = useSelector(state => state.user.userMerchants);
     const isFav = faves.some(r => r === r_id);
     const u_id = useSelector(state=> state.user.user.id);
+    
+    const rs = useSelector(state => state.user.userRewards);
+    const hasRS = rs.some(r => r.r_id === r_id);
+    let loyaltyPoints = 0;
+    if(hasRS){
+        loyaltyPoints = rs.find(r=>r.r_id === r_id).ammount;
+        }
 
     const dispatch = useDispatch();
 
@@ -37,7 +44,7 @@ const PunchScreen = props => {
             <PunchCard style={{backgroundColor:Colors.backgrounddark}}>
                 <View style={styles.textContainer}>
                    <RewardBalance 
-                        balance={10}
+                        balance={loyaltyPoints}
                         size={20}
                    />
                    <Ionicons name={'md-add-circle'} size={75}/>

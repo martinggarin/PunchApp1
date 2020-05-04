@@ -81,7 +81,7 @@ const UserSignUpScreen = props => {
             ));
             
             props.navigation.replace({
-                routeName:'Explore',
+                routeName:'Home',
                 params:{
                     email:formState.inputValues.email
                 }
