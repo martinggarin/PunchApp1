@@ -133,8 +133,8 @@ const UserLoginScreen = props => {
         </View>
     );
 };
+
 UserLoginScreen.navigationOptions = navData => {
-    
     return {
         headerTitle:'User Login',
         headerLeft: () => (

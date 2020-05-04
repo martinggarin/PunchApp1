@@ -1,10 +1,12 @@
 import {
+    UPDATE_RS,
     GET_USER,
     CREATE_USER,
     TOGGLE_FAV,
     FETCH_MERCHANTS} from '../actions/user';
 import Customer from '../../models/Customer';
 import RewardsStatus from '../../models/RewardsStatus';
+import { ActionSheetIOS } from 'react-native';
 
 const initialState = {
     user: {}, 
@@ -66,7 +68,15 @@ export default (state = initialState, action) => {
                 ...state,
                 userMerchants: action.favorites
             };
-
+        case UPDATE_RS:
+            console.log('______updated RS_______');
+            console.log(action.RS)
+            
+            return{
+                ...state,
+                userRewards: action.RS
+            }
+            
         default:
             return state;
     };

@@ -3,12 +3,81 @@ export const GET_USER = 'GET_USER';
 export const UPDATE_USER = 'UPDATE_USER';
 export const TOGGLE_FAV = 'TOGGLE_FAV';
 export const FETCH_MERCHANTS = 'FETCH_MERCHANTS';
+export const UPDATE_RS = 'UPDATE_RS';
 
 import Customer from '../../models/Customer';
 import Restaurants from '../../models/Restaurants';
+import RewardStatus from '../../models/RewardsStatus';
 
 export const updateRewards = (r_id, u_id, ammount) => {
   //update the value of user rewards status... TODO
+  return async dispatch =>{
+
+    const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/users/${u_id}.json`);
+    if(!response1.ok){
+      throw new Error('response 1 was not fetched');
+    };
+
+    const resData1 = await response1.json();
+    const rs = resData1.RS; 
+
+    console.log('-----Updating RS-----');
+    console.log(rs);
+
+    let isPressent = false;
+    const RS = [];
+    if(!(RS === undefined)){
+      for(const key in rs){
+        if(rs[key].r_id === r_id){
+          RS.push(
+            new RewardStatus(
+              rs[key].r_id, (rs[key].ammount+ammount)
+            )
+          );
+          isPressent = true;
+        }else{
+          RS.push(
+            new RewardStatus(
+              rs[key].r_id, rs[key].ammount
+            )
+          );
+        }
+      
+      }//for
+      if(!isPressent){
+        RS.push(new RewardStatus(r_id, ammount));
+      }
+    }//if
+    else{
+      RS.push(new RewardStatus(r_id, ammount));
+    }
+    console.log(RS);
+    //const d = new Deal(ammount, reward, '|.||..|.||..|');
+
+    const response = await fetch(`https://punchapp-86a47.firebaseio.com/users/${u_id}.json`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          RS
+        })
+      }
+    );
+    if(!response.ok){
+        throw new Error('error updating RS');
+    };
+
+
+    dispatch({
+      type: UPDATE_RS,
+      merchant:r_id,
+      user:u_id, 
+      RS: RS
+    })
+  }
+
 }
 
 export const fetchMerchants = () => {
@@ -49,7 +118,6 @@ export const fetchMerchants = () => {
     }
   };
 };
-
 
 export const toggleFav = (r_id, u_id) => {
 
@@ -162,10 +230,13 @@ export const getUser = (email, password) => {
             user = new Customer(key, email, password);
             user.RS = resData[key].RS;
             user.favorites = [];
+            
             if(!(resData[key].favorites === undefined))
             {  for(const k in resData[key].favorites){
                 user.favorites.push(resData[key].favorites[k]);
-              };}
+              };
+            }
+            //add rs... todo
             //console.log(user);
           }
         };

@@ -4,7 +4,7 @@ class RewardStatus {
     constructor(r_id, ammount=0){
         
         this.r_id = r_id;
-        this.c_id = c_id;
+        //this.c_id = c_id;
         this.ammount = ammount; //ammount of rewards
         
         //TODO: pic of receipt, array
