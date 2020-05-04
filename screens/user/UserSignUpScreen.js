@@ -153,10 +153,9 @@ const UserSignUpScreen = props => {
         </View>
     );
 };
-UserSignUpScreen.navigationOptions = navData => {
-    
+UserSignUpScreen.navigationOptions = navData => { 
     return {
-        headerTitle:'Merchant Login',
+        headerTitle:'User Sign Up',
         headerLeft: () => (
             <HeaderButtons HeaderButtonComponent={HeaderButton}>
                 <Item title="Menu" iconName='md-menu' onPress={()=>{
