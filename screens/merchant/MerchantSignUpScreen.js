@@ -108,7 +108,7 @@ const MerchantSignUpScreen = props => {
     return(
         <View style={styles.screen}>
             <Text>
-                This is the Merchant Login Screen
+                This is the Merchant Sign Up Screen
             </Text>
             <Input 
                 id='email'
@@ -172,7 +172,7 @@ const MerchantSignUpScreen = props => {
 MerchantSignUpScreen.navigationOptions = navData => {
     
     return {
-        headerTitle:'Merchant Login',
+        headerTitle:'Merchant Sign Up',
         headerLeft: () => (
             <HeaderButtons HeaderButtonComponent={HeaderButton}>
                 <Item title="Menu" iconName='md-menu' onPress={()=>{

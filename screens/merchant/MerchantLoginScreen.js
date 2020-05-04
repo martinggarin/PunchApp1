@@ -36,7 +36,7 @@ const formReducer = (state, action) =>{
     }
   };
 
-const UserLoginScreen = props => {
+const MerchantLoginScreen = props => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
     //const merchants = useSelector(state => state.merchants.availableMerchants);
@@ -157,8 +157,7 @@ const UserLoginScreen = props => {
         </View>
     );
 };
-UserLoginScreen.navigationOptions = navData => {
-    
+MerchantLoginScreen.navigationOptions = navData => {
     return {
         headerTitle:'Merchant Login',
         headerLeft: () => (
@@ -184,4 +183,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default UserLoginScreen;
+export default MerchantLoginScreen;

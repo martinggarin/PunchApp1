@@ -51,19 +51,6 @@ const MerchantProfileScreen = props => {
         </View>
     );
 };
-MerchantProfileScreen.navigationOptions = navData => {
-    
-    return {
-        headerTitle:'Merchant Home',
-        headerLeft: () => (
-            <HeaderButtons HeaderButtonComponent={HeaderButton}>
-                <Item title="Menu" iconName='md-menu' onPress={()=>{
-                    navData.navigation.toggleDrawer();
-                }} />
-            </HeaderButtons>
-        )
-    };
-};
 
 const styles = StyleSheet.create({
     screen:{

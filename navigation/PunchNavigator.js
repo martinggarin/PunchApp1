@@ -16,9 +16,10 @@ import MerchantLoginScreen from '../screens/merchant/MerchantLoginScreen';
 import MerchantHomeScreen from '../screens/merchant/MerchantProfileScreen';
 import Colors from '../constants/Colors';
 import AddDealScreen from '../screens/merchant/AddDealScreen';
-import MerchantSignUp from '../screens/merchant/MerchantSignUpScreen';
+import MerchantSignUpScreen from '../screens/merchant/MerchantSignUpScreen';
 import UserSignUpScreen from '../screens/user/UserSignUpScreen';
 import ScanScreen from '../screens/merchant/ScanScreen';
+
 
 const defaultOptions = {
     headerStyle:{
@@ -27,21 +28,38 @@ const defaultOptions = {
     headerTintColor: Colors.lightLines,
 };
 
-// const PunchNavigator = createStackNavigator({
-//     Punch: {
-//         screen: PunchScreen,
-//     },
-//     Reward:{
-//         screen: RewardScreen,
-//     },
-// },  
-// {
-//     defaultNavigationOptions: defaultOptions
-// });
+const MerchantHomeNavigator = createStackNavigator({
+    MerchantHome:{
+        screen: MerchantHomeScreen,
+        navigationOptions: { title: 'Merchant Home' }
+    }
+}, {
+    defaultNavigationOptions: defaultOptions
+})
+
+const ScanNavigator = createStackNavigator({
+    Scan:{
+        screen: ScanScreen,
+        navigationOptions: { title: 'Scan' }
+    }
+}, {
+    defaultNavigationOptions: defaultOptions
+})
+
+const UserHomeNavigator = createStackNavigator({
+    Home:{
+        screen: UserHomeScreen,
+        navigationOptions: { title: 'Home' }
+    },
+    Punch: PunchScreen,
+}, {
+    defaultNavigationOptions: defaultOptions
+})
 
 const RewardNavigator = createStackNavigator({
     Reward:{
-        screen: RewardScreen
+        screen: RewardScreen,
+        navigationOptions: { title: 'Rewards' }
     },
     Punch: PunchScreen,
 }, {
@@ -50,16 +68,18 @@ const RewardNavigator = createStackNavigator({
 
 const ExploreNavigator = createStackNavigator({
     Explore: {
-        screen: SearchMerchantScreen
+        screen: SearchMerchantScreen,
+        navigationOptions: { title: 'Explore' }
     },
     Punch: PunchScreen,
 }, {
     defaultNavigationOptions: defaultOptions
 });
 
+
 const MerchantTabScreen = {
     Home: {
-        screen: MerchantHomeScreen, 
+        screen: MerchantHomeNavigator, 
         navigationOptions:{
             tabBarIcon: (tabInfo) => {
                 return (<Ionicons name='ios-restaurant' size={25} color={tabInfo.tintColor} />);
@@ -68,7 +88,7 @@ const MerchantTabScreen = {
         }
     },
     Scan: {
-        screen:ScanScreen,
+        screen:ScanNavigator,
         navigationOptions:{
             tabBarIcon: (tabInfo) => {
                 return (<Ionicons name='ios-qr-scanner' size={25} color={tabInfo.tintColor} />);
@@ -78,9 +98,10 @@ const MerchantTabScreen = {
         }
     },
 }
+
 const tabScreen = {
     Home: {
-        screen: UserHomeScreen, 
+        screen: UserHomeNavigator, 
         navigationOptions:{
             tabBarIcon: (tabInfo) => {
                 return (<Ionicons name='ios-restaurant' size={25} color={tabInfo.tintColor} />);
@@ -89,7 +110,7 @@ const tabScreen = {
         }
     },
     Rewards: {
-        screen: RewardScreen, 
+        screen: RewardNavigator, 
         navigationOptions:{
             tabBarIcon: (tabInfo) => {
                 return (<AntDesign name='qrcode' size={25} color={tabInfo.tintColor} />);
@@ -98,7 +119,7 @@ const tabScreen = {
         }
     },
     Explore: {
-        screen:SearchMerchantScreen,
+        screen:ExploreNavigator,
         navigationOptions:{
             tabBarIcon: (tabInfo) => {
                 return (<Ionicons name='ios-star' size={25} color={tabInfo.tintColor} />);
@@ -108,6 +129,7 @@ const tabScreen = {
         }
     },
 }
+
 const MerchantTabNavigator = Platform.OS ==='android' 
 ? createMaterialBottomTabNavigator(MerchantTabScreen, {
     activeColor:Colors.lightLines,
@@ -129,36 +151,36 @@ const UserTabNavigator = Platform.OS ==='android'
         activeTintColor:Colors.lightLines,
     }
 });
-const MerchantNavigator = createStackNavigator({
-    Login: {
-        screen: MerchantLoginScreen
-    },
-    SignUp: {
-        screen: MerchantSignUp
-    },
-    MerchantHome: {
-        screen: MerchantTabNavigator
-    },
-    AddDeal:{
-        screen:AddDealScreen
-    }
-}, {defaultNavigationOptions: defaultOptions});
 
-const HomeNavigator = createStackNavigator({
+
+const MerchantNavigator = createStackNavigator({
+    Login: MerchantLoginScreen,
+    SignUp: MerchantSignUpScreen,
+    MerchantHome: {
+        screen: MerchantTabNavigator,
+        navigationOptions: {header:null}
+    },
+    AddDeal:AddDealScreen
+}, {
+    defaultNavigationOptions: defaultOptions
+});
+
+const UserNavigator = createStackNavigator({
     UserLogin: UserLoginScreen,
     UserSignUp: UserSignUpScreen,
     Home: {
-        screen: UserTabNavigator
+        screen: UserTabNavigator,
+        navigationOptions: {header:null}
     },
-    Explore:SearchMerchantScreen,
     Punch: PunchScreen,
 }, {
     defaultNavigationOptions: defaultOptions
 });
 
+
 const MainNavigator = createDrawerNavigator({
     UserHome: {
-        screen: HomeNavigator,
+        screen: UserNavigator,
         navigationOptions:{
             drawerLabel:'Home'
         }
@@ -169,11 +191,11 @@ const MainNavigator = createDrawerNavigator({
             drawerLabel:'Merchant'
         }
     }
-
 }, {
     contentOptions:{
         activeTintColor:Colors.header,
     }
 });
+
 
 export default createAppContainer(MainNavigator);
