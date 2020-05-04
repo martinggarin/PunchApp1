@@ -7,6 +7,7 @@ import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import HeaderButton from '../../components/HeaderButton';
 import MerchantList from '../../components/MerchantList';
 import * as MerchantActions from '../../store/actions/merchants';
+import * as UserActions from '../../store/actions/user';
 
 
 const UserHomeScreen = props => {
@@ -15,30 +16,35 @@ const UserHomeScreen = props => {
     const [error, setError] = useState();
     const allMerchants = useSelector(state => state.merchants.availableMerchants);
     const display = useSelector(state => state.user.userMerchants);
+    const u_id = useSelector(state => state.user.user).id;
     let updatedUserMerchants = [];
     const dispatch = useDispatch();
 
-    console.log('------allMerchants--------');
-    console.log(allMerchants);
-    console.log('------display-------------');
-    console.log(display)
+    // console.log('------allMerchants--------');
+    // console.log(allMerchants);
+    // console.log('------display-------------');
+    // console.log(display)
 
     if(display && allMerchants.length >0){
         for(const key in display){
             const merch = allMerchants.find(m=>m.id === display[key]);
-            console.log('....merch....');
-            console.log(merch);
+            // console.log('....merch....');
+            // console.log(merch);
             updatedUserMerchants.push(merch);
         }
     }
-    console.log('----updatedUserMerchants-----');
-    console.log(updatedUserMerchants);
+    // console.log('----updatedUserMerchants-----');
+    // console.log(updatedUserMerchants);
 
     const loadMerchants = useCallback(async () => {
         setError(null);
         setIsRefreshing(true);
         try {
+            console.log('________________');
+            console.log(u_id);
+            console.log('________________');
             await dispatch(MerchantActions.loadAllMerchants());
+            await dispatch(UserActions.refreshUser(u_id));
 
         } catch (err) {
           setError(err.message);
@@ -51,7 +57,7 @@ const UserHomeScreen = props => {
           'willFocus',
           loadMerchants
         );
-        console.log('will focus');
+        //console.log('will focus');
         //console.log(allMerchants);
         return () => {
           willFocusSub.remove();
@@ -81,6 +87,8 @@ const UserHomeScreen = props => {
             <SafeAreaView
             style={styles.screen}>
                 <MerchantList 
+                    onRefresh={loadMerchants}
+                    refreshing={isRefreshing}
                     listData={updatedUserMerchants}
                     navigation={props.navigation}
                     routeName={'Punch'}

@@ -4,6 +4,7 @@ export const UPDATE_USER = 'UPDATE_USER';
 export const TOGGLE_FAV = 'TOGGLE_FAV';
 export const FETCH_MERCHANTS = 'FETCH_MERCHANTS';
 export const UPDATE_RS = 'UPDATE_RS';
+export const REFRESH_USER = 'REFRESH_USER';
 
 import Customer from '../../models/Customer';
 import Restaurants from '../../models/Restaurants';
@@ -251,3 +252,39 @@ export const getUser = (email, password) => {
       }
     };
   };
+
+export const refreshUser = (id) => {
+  return async dispatch => {
+    // any async code you want!
+    try {
+      const response = await fetch(
+        `https://punchapp-86a47.firebaseio.com/users/${id}.json`
+      );
+
+      if (!response.ok) {
+        throw new Error('Something went wrong!');
+      }
+
+      const resData = await response.json();
+      console.log("_________Refreshing USer________");
+      const user = new Customer(id, resData.email, resData.password);
+
+      user.RS = resData.RS;
+      user.favorites = [];
+      
+      if(!(resData.favorites === undefined)){
+        for(const key in resData.favorites){
+          user.favorites.push(resData.favorites[key]);
+        }
+      }
+      if(user === 0){
+        throw new Error('email and password arent valid'); 
+      }
+      
+      dispatch({ type: REFRESH_USER, user: user });
+    } catch (err) {
+      // send to custom analytics server
+      throw err;
+    }
+  };
+}
