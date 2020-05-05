@@ -36,13 +36,28 @@ const MerchantProfileScreen = props => {
 
     return(
         <View style={styles.screen}>
-            <View style={styles.upperContainer}>
-                <Text style={styles.text}>
-                    {r_item.title}
-                </Text>
+            <View style={{width:'95%', height:'20%', backgroundColor:Colors.backgrounddark, borderRadius:3, marginTop:'2.5%'}}>
+                <View style={{flex: 1, flexDirection: 'row', alignItems:'center', justifyContent:'space-between'}}>
+                    <View style={{left:10}}>
+                        <Text style={{margin:2, fontSize:24, fontWeight:'bold',}}>
+                            {r_item.title}
+                        </Text>
+                        <Text>{r_item.price} • {r_item.foodType[0]}, {r_item.foodType[1]}</Text>
+                        <Text style={styles.addressText}>{r_item.address}</Text>
+                    </View>
+                    <View style={{right:15}}>
+                        <View>
+                            <Text style={{fontWeight:'bold', textAlign:'center'}}>Total Deals</Text>
+                            <Text style={{textAlign:'center'}}>{r_item.deal.length}</Text>
+                        </View>
+                        <View>
+                            <Text style={{fontWeight:'bold', textAlign:'center'}}>Customers</Text>
+                            <Text style={{textAlign:'center'}}>{r_item.deal.length}</Text>
+                        </View>
+                    </View>
+                </View>
             </View>
-            
-            <View style={styles.lowerContainer}>
+            <View style={{height:'77.5%',justifyContent:'center', marginTop:'2.5%'}}>
                 <DealList 
                     dealData={deals}
                     footer={footer}
@@ -57,36 +72,13 @@ const styles = StyleSheet.create({
         flex:1,
         alignItems:'center',
         //marginTop:20,
-        paddingTop:20,
         backgroundColor:Colors.fontLight,
     }, 
-    upperContainer:{
-        width:'90%',
-        height:100,
-        backgroundColor:Colors.backgrounddark,
-        justifyContent:'center',
-        alignItems:'center'
-    },
-    text:{
-        fontSize:20,
-        color:Colors.lines
-    },
-    lowerContainer:{
-        backgroundColor:Colors.lines,
-        padding:10,
-        justifyContent:'center',
-        width:'90%',
-        height:'100%',
-        borderColor:'black',
-        //borderWidth:1,
-        margin:10
-    },
     addContainer:{
         alignItems:'center',
         height:150,
-        margin:0,
-        
-    },
+        margin:10,
+    }
 });
 
 export default MerchantProfileScreen;
