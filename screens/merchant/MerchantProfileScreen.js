@@ -44,6 +44,8 @@ const MerchantProfileScreen = props => {
             
             <View style={styles.lowerContainer}>
                 <DealList 
+                    merchantSide={true}
+                    navigation={props.navigation}
                     dealData={deals}
                     footer={footer}
                 />

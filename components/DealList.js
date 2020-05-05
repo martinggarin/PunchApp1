@@ -10,9 +10,15 @@ const DealList = props => {
 
     const tap = (ammount) => {
         if(props.merchantSide){
-            props.navigation.navigate('ScanScreen', {
+            console.log("ammount: "+ammount);
+            
+            props.navigation.setParams({
+                Ammount: ammount
+            });
+            props.navigation.navigate({
+                routeName:'Scan', 
                 params:{
-                    ammount:ammount
+                    RedeemAmmount: ammount
                 }
             });
         }
@@ -27,7 +33,25 @@ const DealList = props => {
                 <DealItem 
                     style={styles.listItem}
                     title={itemData.item.reward}
-                    onClick={tap.bind(this, itemData.item.ammount)}
+                    onClick={() => {
+                        if(props.merchantSide){
+                            console.log("ammount: "+itemData.item.ammount);
+                            
+                            // props.navigation.setParams({
+                            //     Ammount: itemData.item.ammount
+                            // });
+                            props.navigation.navigate("ScanNavigator",
+                                {
+                                // // type: "Navigate",
+                                //screen: "Scan",
+                                params: {Ammount:itemData.item.ammount}
+                                });
+                        }
+                        else {
+                            console.log('User Side!');
+                        }
+
+                    }}
                     color={Colors.background}
                 >
                     <View style={styles.textContainer}>

@@ -29,7 +29,12 @@ export const updateRewards = (r_id, u_id, ammount) => {
     const RS = [];
     if(!(RS === undefined)){
       for(const key in rs){
+        //if the item already exists
         if(rs[key].r_id === r_id){
+          //this handles if the user doesn't have enough rewards, when redeeming
+          if((rs[key].ammount+ammount) < 0){
+            throw new Error('User has not enough Rewards!');
+          }
           RS.push(
             new RewardStatus(
               rs[key].r_id, (rs[key].ammount+ammount)
@@ -46,10 +51,16 @@ export const updateRewards = (r_id, u_id, ammount) => {
       
       }//for
       if(!isPressent){
+        if(ammount < 0){
+          throw new Error('User has not enough funds!');
+        }
         RS.push(new RewardStatus(r_id, ammount));
       }
     }//if
     else{
+      if(ammount < 0){
+        throw new Error('User has not enough funds!');
+      }
       RS.push(new RewardStatus(r_id, ammount));
     }
     console.log(RS);

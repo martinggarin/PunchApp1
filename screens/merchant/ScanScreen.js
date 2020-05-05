@@ -6,16 +6,21 @@ import * as userActions from '../../store/actions/user';
 import Colors from '../../constants/Colors';
 
 const ScanScreen = props => {
+    const ammount = props.navigation.state.params;
     const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
     const dispatch = useDispatch();
     const r_id = useSelector(state => state.merchants.myMerchant.id);
-    const ammount = props.navigation.getParam('ammount');
+
+    //const ammount = props.navigation.getParam('ammount');
     
     console.log('__________ammount________');
+    if(!(ammount.props === undefined))
+        {console.log(ammount.props.Ammount);}
     console.log(ammount);
     
     useEffect(() => {
+        
         (async () => {
         const { status } = await BarCodeScanner.requestPermissionsAsync();
         setHasPermission(status === 'granted');
@@ -23,19 +28,32 @@ const ScanScreen = props => {
   }, []);
 
   const handleBarCodeScanned = ({ type, data }) => {
-    setScanned(true);
-    try{
-        console.log('_________Updating Rewards__________');
-        console.log('R_id: ' + r_id);
-        console.log('U_ID: ' + data); 
+        setScanned(true);
+        if(!(ammount.props === undefined)){
+            try{
+                console.log('_________Updating Rewards__________');
+                console.log('R_id: ' + r_id);
+                console.log('U_ID: ' + data); 
 
-        dispatch(userActions.updateRewards(r_id, data, 1));
-    }catch(err){
-        console.log('there was an error')
-    }
-    alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+                dispatch(userActions.updateRewards(r_id, data, -ammount.props.Ammount));
+            }catch(err){
+                console.log('there was an error')
+            }
+            alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+
+        }else{
+            try{
+                console.log('_________Updating Rewards__________');
+                console.log('R_id: ' + r_id);
+                console.log('U_ID: ' + data); 
+
+                dispatch(userActions.updateRewards(r_id, data, 1));
+            }catch(err){
+                console.log('there was an error')
+            }
+            alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+        };
   };
-
   if (hasPermission === null) {
     return <Text>Requesting for camera permission</Text>;
   }
