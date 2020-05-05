@@ -41,7 +41,7 @@ const PunchScreen = props => {
 
     return(
         <View style={styles.screen}>
-            <PunchCard style={{backgroundColor:Colors.backgrounddark}}>
+            <PunchCard style={{height:'20%', width: '95%', marginTop:'2.5%', backgroundColor:Colors.backgrounddark}}>
                 <View style={styles.textContainer}>
                    <RewardBalance 
                         balance={loyaltyPoints}
@@ -49,11 +49,8 @@ const PunchScreen = props => {
                    />
                    <Ionicons name={'md-add-circle'} size={75}/>
                 </View>
-                <View style={styles.buttonContainer}>
-                    
-                </View>
             </PunchCard>
-            <View style={styles.listContainer}>
+            <View style={{height:'77.5%', justifyContent:'center', marginTop:'2.5%'}}>
                 <DealList 
                     merchantSide={false}
                     dealData={r_item.deal}
@@ -97,31 +94,6 @@ const styles = StyleSheet.create({
         //justifyContent:'center',
         //height:'50%',
         backgroundColor:Colors.background
-    },
-    listContainer:{
-        flex:1,
-        height:'50%',
-        width:'100%',
-        borderRadius:10,
-    },
-    cardText:{
-        fontSize:27,
-        //marginHorizontal:20,
-        //alignItems:'center',
-        justifyContent:'center',
-        textAlign:'center',
-        marginTop:5
-    }, 
-    buttonContainer:{
-        flexDirection:'row',
-        justifyContent:'space-between',
-        width:'60%',
-        marginVertical:10,
-    },
-    punch:{
-        fontSize:35,
-        color:'white',
-        textAlign:'center'
     },
     textContainer:{
         flexDirection:'row',

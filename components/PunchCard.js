@@ -12,8 +12,6 @@ const PunchCard = props => {
 const styles = StyleSheet.create({
     card:{
         //flex:1,
-        height: '35%', 
-        width:'95%',
         shadowColor:'black',
 		shadowOffset:{width:0, height:2},
 		shadowRadius:6,
@@ -21,9 +19,7 @@ const styles = StyleSheet.create({
 		//backgroundColor:'white',
 		elevation: 7,
 		//padding:20,
-        borderRadius:5,
-        marginTop:30,
-        marginBottom:30,
+        borderRadius:3,
         alignItems:'center',
         justifyContent:'center',
     }
