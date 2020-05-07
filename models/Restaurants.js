@@ -2,13 +2,14 @@ import Deal from './Deal';
 
 class Restaurants {
     constructor( id, email, password, title){
-        this.address = '123 imaginary st, City';
-        this.price = '$$$';
-        this.foodType = ['American', 'Bar'];
         this.email = email;
         this.password = password;
         this.id = id;
         this.title = title;
+        this.price = '$$$';
+        this.type = 'American, Bar';
+        this.address = '123 imaginary st';
+        this.city = 'Fake City, State'
 
         this.deal = [
             new Deal(10.0, 'Free Coffee', 'code1'),

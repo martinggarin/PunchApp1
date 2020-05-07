@@ -46,16 +46,14 @@ const MerchantList  = props => {
     };
 
     return (
-        <View style={styles.screen}>
-            <FlatList 
-                {...props}
-                data={props.listData}
-                keyExtractor={(item, index) => item.id}
-                renderItem={renderItems}
-                ListFooterComponent={props.footer}
-                //ListFooterComponentStyle={props.footerStyle}
-            />
-        </View>
+        <FlatList 
+            {...props}
+            data={props.listData}
+            keyExtractor={(item, index) => item.id}
+            renderItem={renderItems}
+            ListFooterComponent={props.footer}
+            //ListFooterComponentStyle={props.footerStyle}
+        />
     );
 };
 

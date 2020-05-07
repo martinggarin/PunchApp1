@@ -1,6 +1,6 @@
 export const CREATE_MERCHANT = 'ADD_MERCHANT';
 export const TOGGLE_FAV = 'ADD_RESTAURANT';
-export const UPDATE_RESTAURANT = 'UPDATE_RESTAURANT';
+export const UPDATE_MERCHANT = 'UPDATE_MERCHANT';
 export const LOAD_SINGLE_MERCHANT = 'LOAD_SINGLE_MERCHANT';
 export const LOAD_ALL_MERCHANTS = 'LOAD_ALL_MERCHANTS';
 export const GET_MERCHANT = 'GET_MERCHANT';
@@ -8,10 +8,6 @@ export const ADD_DEAL = 'ADD_DEAL';
 
 import Restaurants from '../../models/Restaurants';
 import Deal from '../../models/Deal';
-
-export const toggleFav = (id) => {
-    return {type: TOGGLE_FAV, restaurant_id: id};
-};
 
 export const getMerchant = (email, password) => {
     return async dispatch => {
@@ -35,6 +31,11 @@ export const getMerchant = (email, password) => {
             for(const k in resData[key].deal){
               merchant.deal.push(resData[key].deal[k]);
             }
+            merchant.price = resData[key].price
+            merchant.type = resData[key].type
+            merchant.address = resData[key].address
+            merchant.city = resData[key].city
+
             //merchant.deal.concat(resData[key].deal);
             console.log('fetching deal')
             console.log(resData[key].deal);
@@ -146,7 +147,47 @@ export const createMerchant = (email, password, title) => {
       };
 };
 
-//make it so you can add deals and not update them
+//make it so you can edit merchant profile information
+export const editProfile = (id, title, price, type, address, city) =>{
+  return async dispatch =>{
+    const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json`);
+    if(!response1.ok){
+      throw new Error('response 1 was not fetched');
+    };
+    const merchantData = await response1.json();
+    merchantData.id = id
+    merchantData.title = title
+    merchantData.price = price
+    merchantData.type = type
+    merchantData.address = address
+    merchantData.city = city
+
+    const response = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          title,
+          price,
+          type,
+          address,
+          city
+        })
+      }
+    );
+    if(!response.ok){
+        throw new Error('error updating deal');
+    };
+
+    dispatch({
+      type: UPDATE_MERCHANT,
+      merchantData: merchantData 
+    })
+  }
+}
+
 export const editDeal = (id, ammount, reward) =>{
   return async dispatch =>{
 
@@ -190,7 +231,6 @@ export const editDeal = (id, ammount, reward) =>{
     if(!response.ok){
         throw new Error('error updating deal');
     };
-
 
     dispatch({
       type: ADD_DEAL,

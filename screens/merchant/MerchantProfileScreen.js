@@ -1,12 +1,11 @@
 import React, {useEffect} from 'react';
 import { View, Text, StyleSheet, Button , TouchableOpacity} from 'react-native';
 import {useSelector} from 'react-redux';
-import { Ionicons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import DealList from '../../components/DealList';
 import Colors from '../../constants/Colors';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import HeaderButton from '../../components/HeaderButton';
-
 
 const MerchantProfileScreen = props => {
     //get the param of email
@@ -17,23 +16,6 @@ const MerchantProfileScreen = props => {
     console.log('merchant profile');
     console.log(deals);
 
-    const footer = (
-        <TouchableOpacity
-            onPress={()=> props.navigation.navigate({
-                    routeName:'AddDeal',
-                    params:{
-                        id: r_item.id
-                    }
-                })}
-            style={styles.addContainer}
-        >
-        <View style={styles.addContainer}>
-            <Ionicons name={'md-add-circle'} size={50} color={'black'} />
-            <Text>Add Deal</Text>
-        </View>
-        </TouchableOpacity>
-        );
-
     return(
         <View style={styles.screen}>
             <View style={{width:'95%', height:'20%', backgroundColor:Colors.backgrounddark, borderRadius:3, marginTop:'2.5%'}}>
@@ -42,17 +24,17 @@ const MerchantProfileScreen = props => {
                         <Text style={{margin:2, fontSize:24, fontWeight:'bold',}}>
                             {r_item.title}
                         </Text>
-                        <Text>{r_item.price} • {r_item.foodType[0]}, {r_item.foodType[1]}</Text>
-                        <Text style={styles.addressText}>{r_item.address}</Text>
+                        <Text>{r_item.price} • {r_item.type}</Text>
+                        <Text style={styles.addressText}>{r_item.address} • {r_item.city}</Text>
                     </View>
                     <View style={{right:15}}>
                         <View>
                             <Text style={{fontWeight:'bold', textAlign:'center'}}>Total Deals</Text>
-                            <Text style={{textAlign:'center'}}>{r_item.deal.length}</Text>
+                            <Text style={{textAlign:'center'}}>{deals.length}</Text>
                         </View>
                         <View>
                             <Text style={{fontWeight:'bold', textAlign:'center'}}>Customers</Text>
-                            <Text style={{textAlign:'center'}}>{r_item.deal.length}</Text>
+                            <Text style={{textAlign:'center'}}>{deals.length}</Text>
                         </View>
                     </View>
                 </View>
@@ -62,13 +44,28 @@ const MerchantProfileScreen = props => {
                     merchantSide={true}
                     navigation={props.navigation}
                     dealData={deals}
-                    footer={footer}
                 />
             </View>
         </View>
     );
 };
 
+MerchantProfileScreen.navigationOptions = navigationData => {
+    return{
+        headerRight: () => {
+            return (
+                <Feather 
+                    name='edit'
+                    size={25}
+                    color={Colors.lightLines}
+                    style={{marginRight:10}}
+                    onPress={()=>{navigationData.navigation.navigate('Edit')}}
+                />
+            )
+        }
+    }
+}
+            
 const styles = StyleSheet.create({
     screen:{
         flex:1,

@@ -4,34 +4,32 @@ import Colors from '../constants/Colors';
 
 const ListItem = props => {
     return(
-        <TouchableOpacity
-            style={{...styles.tItems, ...props.style}}
-            onPress={props.onClick}
-        ><View style={{flex:1, justifyContent:'center'}}>
-            <View 
-                style={{...styles.outsideContainer, ...{backgroundColor:props.color}, ...props.style}}>
-                <View style={{...styles.insideContainer, ...props.insideContainerStyle}}>
-                    <View style={styles.textContainer}>
-                        <Text style={styles.titleText}>{props.title}</Text>
-                        <View style={styles.priceTextContainer}>
-                            <Text style={styles.priceText}>$$$ • American, Bar</Text>
+        <TouchableOpacity onPress={props.onClick}>
+            <View style={{justifyContent:'center'}}>
+                <View 
+                    style={{...styles.outsideContainer, ...{backgroundColor:props.color}, ...props.style}}>
+                    <View style={{...styles.insideContainer, ...props.insideContainerStyle}}>
+                        <View style={styles.textContainer}>
+                            <Text style={styles.titleText}>{props.title}</Text>
+                            <View style={styles.priceTextContainer}>
+                                <Text style={styles.priceText}>$$$ • American, Bar</Text>
+                            </View>
+                            <View style={styles.addressTextContainer}>
+                                <Text style={styles.addressText}>123 Imaginary street, Athens</Text>
+                            </View>
                         </View>
-                        <View style={styles.addressTextContainer}>
-                            <Text style={styles.addressText}>123 Imaginary street, Athens</Text>
+                        <View style={styles.containerRight}>
+                            
+                            {props.children}
                         </View>
-                    </View>
-                    <View style={styles.containerRight}>
-                        
-                        {props.children}
                     </View>
                 </View>
-            </View>
-            <View style={styles.border}></View>
-            </View>
-            
-    </TouchableOpacity>
+                <View style={styles.border}></View>
+            </View>  
+        </TouchableOpacity>
     );
 };
+
 const styles = StyleSheet.create({
     outsideContainer:{
         flex:1,

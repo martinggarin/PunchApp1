@@ -37,13 +37,7 @@ const DealList = props => {
                             // props.navigation.setParams({
                             //     Ammount: itemData.item.ammount
                             // });
-                            props.navigation.navigate("ScanNavigator",
-                                {
-                                // // type: "Navigate",
-                                //screen: "Scan",
-                                params: {Ammount:itemData.item.ammount}
-                                });
-                        }
+                            props.navigation.navigate("ScanNavigator", {Ammount:itemData.item.ammount});}
                         else {
                             console.log('User Side!');
                         }

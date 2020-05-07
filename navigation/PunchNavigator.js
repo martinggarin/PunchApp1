@@ -6,6 +6,8 @@ import {createAppContainer} from 'react-navigation';
 import {createDrawerNavigator} from 'react-navigation-drawer';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import HeaderButton from '../components/HeaderButton';
 
 import UserHomeScreen from '../screens/user/UserHomeScreen';
 import PunchScreen from '../screens/user/PunchScreen';
@@ -15,7 +17,7 @@ import SearchMerchantScreen from '../screens/user/SearchMerchantScreen';
 import MerchantLoginScreen from '../screens/merchant/MerchantLoginScreen';
 import MerchantHomeScreen from '../screens/merchant/MerchantProfileScreen';
 import Colors from '../constants/Colors';
-import AddDealScreen from '../screens/merchant/AddDealScreen';
+import EditScreen from '../screens/merchant/EditScreen';
 import MerchantSignUpScreen from '../screens/merchant/MerchantSignUpScreen';
 import UserSignUpScreen from '../screens/user/UserSignUpScreen';
 import ScanScreen from '../screens/merchant/ScanScreen';
@@ -32,7 +34,8 @@ const MerchantHomeNavigator = createStackNavigator({
     MerchantHome:{
         screen: MerchantHomeScreen,
         navigationOptions: { title: 'Merchant Home' }
-    }
+    },
+    Edit: EditScreen
 }, {
     defaultNavigationOptions: defaultOptions
 })
@@ -160,7 +163,7 @@ const MerchantNavigator = createStackNavigator({
         screen: MerchantTabNavigator,
         navigationOptions: {headerShown:false}
     },
-    AddDeal:AddDealScreen
+    Edit:EditScreen
 }, {
     defaultNavigationOptions: defaultOptions
 });
