@@ -10,7 +10,7 @@ const ADDRESS_INPUT_CHANGE = 'ADDRESS_INPUT_CHANGE';
 const CITY_INPUT_CHANGE = 'CITY_INPUT_CHANGE';
 
 const profileInputReducer = (state, action) => {
-    //console.log(action.type);
+    console.log(action.type);
     switch(action.type){
         case TITLE_INPUT_CHANGE:
             action.values.title = action.newValue
@@ -51,35 +51,35 @@ ProfileInput = props => {
         touched: false
     });
     const handleTitle = (text) => {
-        isValid = true
+        var isValid = true
         if (text.length === 0){
             isValid = false
         }
         dispatch({type:TITLE_INPUT_CHANGE, values:inputState.values, newValue:text, isValid:isValid})
     }
     const handlePrice = (text) => {
-        isValid = true
+        var isValid = true
         if (text.length === 0){
             isValid = false
         }
         dispatch({type:PRICE_INPUT_CHANGE, values:inputState.values, newValue:text, isValid:isValid})
     }
     const handleType = (text) => {
-        isValid = true
+        var isValid = true
         if (text.length === 0){
             isValid = false
         }
         dispatch({type:TYPE_INPUT_CHANGE, values:inputState.values, newValue:text, isValid:isValid})
     }
     const handleAddress = (text) => {
-        isValid = true
+        var isValid = true
         if (text.length === 0){
             isValid = false
         }
         dispatch({type:ADDRESS_INPUT_CHANGE, values:inputState.values, newValue:text, isValid:isValid})
     }
     const handleCity = (text) => {
-        isValid = true
+        var isValid = true
         if (text.length === 0){
             isValid = false
         }
@@ -91,7 +91,7 @@ ProfileInput = props => {
     //this will allow for the parent to remain updated on the state of the child
     useEffect(()=>{
         if(inputState.touched){
-            props.onInputChange(props.merchant.id, inputState.values, inputState.isValid);
+            props.onInputChange(inputState.values, inputState.isValid);
         }
     }, [inputState, props.onInputChange]);
 

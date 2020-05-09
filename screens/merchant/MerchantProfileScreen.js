@@ -14,7 +14,7 @@ const MerchantProfileScreen = props => {
     const deals = useSelector(state => state.merchants.myDeals);
 
     console.log('merchant profile');
-    console.log(deals);
+    console.log(r_item);
 
     return(
         <View style={styles.screen}>

@@ -4,7 +4,7 @@ export const UPDATE_MERCHANT = 'UPDATE_MERCHANT';
 export const LOAD_SINGLE_MERCHANT = 'LOAD_SINGLE_MERCHANT';
 export const LOAD_ALL_MERCHANTS = 'LOAD_ALL_MERCHANTS';
 export const GET_MERCHANT = 'GET_MERCHANT';
-export const ADD_DEAL = 'ADD_DEAL';
+export const UPDATE_DEALS = 'UPDATE_DEALS';
 
 import Restaurants from '../../models/Restaurants';
 import Deal from '../../models/Deal';
@@ -148,47 +148,32 @@ export const createMerchant = (email, password, title) => {
 };
 
 //make it so you can edit merchant profile information
-export const editProfile = (id, title, price, type, address, city) =>{
+export const updateMerchant = (id, title, price, type, address, city, deal) =>{
+  console.log('UPDATEMERCHANT')
   return async dispatch =>{
     const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json`);
     if(!response1.ok){
       throw new Error('response 1 was not fetched');
     };
     const merchantData = await response1.json();
-    merchantData.id = id
-    merchantData.title = title
-    merchantData.price = price
-    merchantData.type = type
-    merchantData.address = address
-    merchantData.city = city
 
-    const response = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json`,
-      {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          title,
-          price,
-          type,
-          address,
-          city
-        })
-      }
-    );
-    if(!response.ok){
-        throw new Error('error updating deal');
-    };
+    const updatedMerchantData = {email:merchantData.email, password:merchantData.password}
+    updatedMerchantData.id = id
+    updatedMerchantData.title = title
+    updatedMerchantData.price = price
+    updatedMerchantData.type = type
+    updatedMerchantData.address = address
+    updatedMerchantData.city = city
+    updatedMerchantData.deal = deal
 
     dispatch({
       type: UPDATE_MERCHANT,
-      merchantData: merchantData 
+      merchantData: updatedMerchantData 
     })
   }
 }
 
-export const editDeal = (id, ammount, reward) =>{
+export const removeDeal = (id, code) =>{
   return async dispatch =>{
 
     const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json`);
@@ -205,6 +190,39 @@ export const editDeal = (id, ammount, reward) =>{
     
     const deal = [];
     if(!(deals === undefined)){
+      var count = 0
+      for(const key in deals){
+        if (!(deals[key].code === code)){
+          deal.push(
+            new Deal(
+              deals[key].ammount, deals[key].reward, count
+            )
+          );
+          count += 1
+        }
+      }//for
+    }
+
+    dispatch({
+      type: UPDATE_DEALS,
+      deal: deal,
+    })
+  }
+}
+
+export const addDeal = (id) =>{
+  return async dispatch =>{
+
+    const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json`);
+    if(!response1.ok){
+      throw new Error('response 1 was not fetched');
+    };
+
+    const resData1 = await response1.json();
+    const deals = resData1.deal; 
+ 
+    const deal = [];
+    if(!(deals === undefined)){
       for(const key in deals){
         deal.push(
           new Deal(
@@ -213,7 +231,8 @@ export const editDeal = (id, ammount, reward) =>{
         );
       }//for
     }
-    deal.push(new Deal(ammount, reward, '|.||..|.||..|'))
+    deal.push(new Deal(0, 'deal.length', deal.length))
+    
     console.log(deal);
     //const d = new Deal(ammount, reward, '|.||..|.||..|');
 
@@ -233,8 +252,7 @@ export const editDeal = (id, ammount, reward) =>{
     };
 
     dispatch({
-      type: ADD_DEAL,
-      merchant:id, 
+      type: UPDATE_DEALS,
       deal: deal
     })
   }

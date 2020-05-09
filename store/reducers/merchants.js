@@ -1,6 +1,6 @@
 import {RESTAURANTS} from '../../data/Dummy-Data';
 import {
-        ADD_DEAL,
+        UPDATE_DEALS,
         CREATE_MERCHANT, 
         GET_MERCHANT, 
         UPDATE_MERCHANT,
@@ -51,31 +51,24 @@ export default (state = initialState, action) => {
             console.log(updatedMerchant)
             return {
                 ...state,
-                myMerchant: updatedMerchant
+                myMerchant: updatedMerchant,
+                myDeals: updatedMerchant.deal
+            }
+        case UPDATE_DEALS:
+            console.log('Deals Updated')
+            const updateMerchant = state.myMerchant;
+            updateMerchant.deal = action.deal;
+            const updateDeals = action.deal;
+            return{
+                ...state,
+                myMerchant:updateMerchant,
+                myDeals:updateDeals
             }
         case LOAD_ALL_MERCHANTS:
             console.log('loaded merchants');
             return {
                 ...state,
                 availableMerchants: action.merchants
-            }
-        case ADD_DEAL:
-            console.log('deal added');
-            //state.myMerchant.deal.concat( action.deal);
-            const updateMerchant = state.myMerchant;
-            updateMerchant.deal = [];
-            for(const key in action.deal){
-                updateMerchant.deal.push(action.deal[key]);
-            }
-            //state.myMerchant.deal = d;
-            console.log(updateMerchant);
-            // const updatedMerchantIndex = state.availableMerchants.findIndex(m => m.id === action.merchant);
-            // const updatedMerchantList = [...state.availableMerchants];
-            // updatedMerchantList[updatedMerchantIndex].deal = action.deal;
-            return{
-                ...state, 
-                myMerchant: updateMerchant,
-                myDeals: updateMerchant.deal
             }
     };//switch
 
