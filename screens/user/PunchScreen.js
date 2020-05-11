@@ -41,7 +41,7 @@ const PunchScreen = props => {
 
     return(
         <View style={styles.screen}>
-            <PunchCard style={{height:'20%', width: '95%', marginTop:'2.5%', backgroundColor:Colors.backgrounddark}}>
+            <PunchCard style={{height:'30%', width: '95%', margin:'2.5%', backgroundColor:Colors.backgrounddark}}>
                 <View style={styles.textContainer}>
                    <RewardBalance 
                         balance={loyaltyPoints}
@@ -50,7 +50,7 @@ const PunchScreen = props => {
                    <Ionicons name={'md-add-circle'} size={75}/>
                 </View>
             </PunchCard>
-            <View style={{height:'77.5%', justifyContent:'center', marginTop:'2.5%'}}>
+            <View style={{height:'67.5%', width:'95%', justifyContent:'center'}}>
                 <DealList 
                     merchantSide={false}
                     dealData={r_item.deal}
