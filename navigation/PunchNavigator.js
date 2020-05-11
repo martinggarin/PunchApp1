@@ -96,8 +96,8 @@ const MerchantTabScreen = {
             tabBarColor: Colors.header,
         }
     },
-    ScanNavigator: {
-        screen:ScanScreen,
+    Scan: {
+        screen:ScanNavigator,
         navigationOptions:{
             tabBarIcon: (tabInfo) => {
                 return (<Ionicons name='ios-qr-scanner' size={25} color={tabInfo.tintColor} />);

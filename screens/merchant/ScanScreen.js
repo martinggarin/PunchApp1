@@ -94,16 +94,16 @@ const styles = StyleSheet.create({
     screen:{
         flex:1,
         alignItems:'center',
-        justifyContent:'center'
+        //justifyContent:'center'
     },
     scanner:{
         ...StyleSheet.absoluteFill,
         height:"100%",
-        top:20
     },
     button:{
         height:50,
-        width:100
+        width:'50%',
+        marginTop:20
     }
 
 });
