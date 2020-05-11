@@ -6,6 +6,7 @@ import * as userActions from '../../store/actions/user';
 import Colors from '../../constants/Colors';
 
 const ScanScreen = props => {
+    console.log('Scan')
     //const [ammount, setAmmount] = useState(props.navigation.state.params);
     const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
@@ -16,7 +17,7 @@ const ScanScreen = props => {
     //useEffect(()=>{
     //    setAmmount(props.navigation.state.params);
     //},[props])
-    console.log('__________ammount________');
+    //console.log('__________ammount________');
     //if(!(ammount.params === undefined)){
     //    console.log(ammount.params.Ammount);
     //}

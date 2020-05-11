@@ -4,7 +4,6 @@ import Colors from '../constants/Colors';
 
 const RewardBalance = props => {
     const size = props.size;
-    //console.log(size);
     return(
         <View style={{flex:1, flexDirection:'row', alignItems:'center'}}>
             <View>

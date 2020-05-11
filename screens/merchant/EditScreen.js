@@ -34,11 +34,11 @@ const formReducer = (state, action) =>{
 
 
 const EditScreen = props => {
+    console.log('Edit Screen');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
     const r_item = useSelector(state => state.merchants.myMerchant);
     const deals = useSelector(state => state.merchants.myDeals);
-    console.log('Edit Screen');
     const dispatch = useDispatch();
     if (deals === undefined){
         totalDeals = 0
@@ -68,7 +68,7 @@ const EditScreen = props => {
     const [formState, dispatchFormState] = useReducer(formReducer, initialValues);
 
     const submitHandler = useCallback( async () => {
-        console.log('Submit Handler')
+        console.log('-Submit Profile Handler')
         if (!formState.formIsValid){
             Alert.alert(
                 'Invalid Input!',
@@ -92,11 +92,10 @@ const EditScreen = props => {
             setError(err.message);
         }
         setIsLoading(false);
-        props.navigation.goBack()
     },[formState, dispatch]);
 
     const inputChangeHandler = useCallback((inputValues, inputValidities) => {
-        console.log('Input Change Handler');
+        console.log('-Input Change Handler');
         dispatchFormState({
             type: INPUT_UPDATE,
             values: inputValues,
@@ -109,9 +108,20 @@ const EditScreen = props => {
             deals[dealCode].reward+" Deal Selected",
             "What would you like to do with it?",
             [
-                { text: "Edit", onPress: () => {props.navigation.navigate('UpdateDeal', {id:r_item.id, deals:deals, dealCode:dealCode})}},
-                { text: "Remove", onPress:  () => {dispatch(MerchantActions.removeDeal(r_item.id, dealCode))}}
-                
+                {   
+                    text: "Edit", 
+                    onPress: () => {
+                        console.log('-Deal Edit Handler')
+                        props.navigation.navigate('UpdateDeal', {id:r_item.id, deals:deals, dealCode:dealCode})
+                    }
+                },
+                { 
+                    text: "Remove",
+                    onPress:  () => {
+                        console.log('-Deal Remove Handler')
+                        dispatch(MerchantActions.removeDeal(r_item.id, dealCode))
+                    }
+                }
             ],
             { cancelable: true }
         ); 
@@ -129,7 +139,10 @@ const EditScreen = props => {
 
     const footer = (
         <TouchableOpacity
-            onPress={()=> {props.navigation.navigate('UpdateDeal', {id:r_item.id, deals:deals, dealCode:deals.length})}}
+            onPress={()=> {
+                console.log('-Deal Add Handler')
+                props.navigation.navigate('UpdateDeal', {id:r_item.id, deals:deals, dealCode:deals.length})
+            }}
             style={styles.addContainer}
         >
             <View style={styles.addContainer}>
@@ -141,13 +154,13 @@ const EditScreen = props => {
 
     return (
         <View style={styles.screen}>
-            <View style={{width:'95%', height:190, alignItems:'center', justifyContent:'center', backgroundColor:Colors.backgrounddark, borderRadius:3, margin:'2.5%'}}>
+            <View style={styles.upperContainer}>
                 <ProfileInput
                     merchant={r_item}
                     onInputChange={inputChangeHandler}
                 />
             </View>
-            <View style={{height:'55%', justifyContent:'center'}}>
+            <View style={styles.lowerContainer}>
                 <DealList
                     dealData={deals}
                     onTap={dealTapHandler}
@@ -182,9 +195,22 @@ const styles = StyleSheet.create({
         flex:1,
         alignItems:'center'
     },
+    upperContainer:{
+        width:'95%',
+        height:190,
+        alignItems:'center',
+        justifyContent:'center',
+        backgroundColor:Colors.backgrounddark,
+        borderRadius:3,
+        margin:'2.5%'
+    },
+    lowerContainer:{
+        height:'55%',
+        justifyContent:'center'
+    },
     addContainer:{
         alignItems:'center',
-        height:150,
+        height:150, 
         margin:10,
     }
 });

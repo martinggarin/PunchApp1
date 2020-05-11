@@ -27,7 +27,6 @@ export default (state = initialState, action) => {
         //         return{...state, userRestaurants: state.userRestaurants.concat(state.availableRestaurants.find(r=>r.id===action.restaurant_id))};
         //     }
         case GET_MERCHANT:
-            console.log('fetch Merchant');
             return{
                 ...state, 
                 myMerchant: action.merchant,
@@ -46,16 +45,14 @@ export default (state = initialState, action) => {
                 availableMerchants: state.availableMerchants.concat(newMerchant)
             };
         case UPDATE_MERCHANT:
-            console.log('Updating Profile')
             var updatedMerchant = action.merchantData
-            console.log(updatedMerchant)
+
             return {
                 ...state,
                 myMerchant: updatedMerchant,
                 myDeals: updatedMerchant.deal
             }
         case UPDATE_DEALS:
-            console.log('Deals Updated');
             var updatedMerchant = state.myMerchant;
             updatedMerchant.deal = action.deal
             return{
@@ -64,7 +61,6 @@ export default (state = initialState, action) => {
                 myDeals: updatedMerchant.deal
             }
         case LOAD_ALL_MERCHANTS:
-            console.log('loaded merchants');
             return {
                 ...state,
                 availableMerchants: action.merchants

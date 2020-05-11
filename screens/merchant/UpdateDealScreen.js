@@ -38,6 +38,7 @@ const formReducer = (state, action) =>{
 
 
 const UpdateDealScreen = props => {
+    console.log('Update Deal');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
     const r_id = props.navigation.getParam('id');
@@ -50,7 +51,7 @@ const UpdateDealScreen = props => {
     else{
         totalDeals = deals.length
     }
-    console.log(r_id)
+
     if (totalDeals === dealCode){
         var initialValues = {
             inputValues:{
@@ -84,6 +85,7 @@ const UpdateDealScreen = props => {
     const [formState, dispatchFormState] = useReducer(formReducer, initialValues);
     
     const handleReward = useCallback((text) => {
+        console.log('-Input Change Handler')
         var isValid = true
         if (text.length === 0){
             isValid = false
@@ -96,6 +98,7 @@ const UpdateDealScreen = props => {
     },[dispatchFormState]);
 
     const handleAmmount = useCallback((text) => {
+        console.log('-Input Change Handler')
         var isValid = true
         if (text.length === 0){
             isValid = false
@@ -107,15 +110,9 @@ const UpdateDealScreen = props => {
         })
     },[dispatchFormState]);
 
-    useEffect(() => {
-            if (error) {
-            Alert.alert('An error occurred!', error, [{ text: 'Okay' }]);
-            }
-        }, [error]);
-
-    const submit = useCallback( async () => {
+    const handleSubmit = useCallback( async () => {
+        console.log('-Submit Deal Handler')
         if(!formState.formIsValid){
-            console.log(formState);
             Alert.alert('Invalid Inputs!' , 'Please check your inputs...', [{text: 'Okay'}]);
             return;
         };
@@ -134,7 +131,14 @@ const UpdateDealScreen = props => {
         }
         setIsLoading(false);
 
-      },[formState, dispatch, r_id]);
+    },[formState, dispatch, r_id]);
+    
+    useEffect(() => {
+            if (error) {
+            Alert.alert('An error occurred!', error, [{ text: 'Okay' }]);
+            }
+        }, [error]);
+
 
     return(
         <View style={styles.screen}>
@@ -170,7 +174,7 @@ const UpdateDealScreen = props => {
                 </View>
             </View>
             <View style={styles.button}>
-                <Button title='Submit' color={Colors.backgrounddark} onPress={submit} />
+                <Button title='Submit' color={Colors.backgrounddark} onPress={handleSubmit} />
             </View>
         </View>
     );

@@ -7,18 +7,17 @@ import RewardBalance from './RewardBalance';
 
 const DealList = props => {
     const renderDeal = itemData => {
-        console.log('render');
         return(
-            <View style={{height:70, marginLeft:10, marginRight:10, alignContent:'center'}}>
+            <View style={styles.container}>
                 <DealItem
                     title={itemData.item.reward}
                     onClick={ () => {
                         if (props.merchantSide) {
-                            console.log('Merchant Side!');
+                            console.log('-Merchant Side!');
                             props.onTap(itemData.item.code)
                         }
                         else {
-                            console.log('User Side!');
+                            console.log('-User Side!');
                         }
                     }}
                     color={Colors.background}
@@ -43,5 +42,14 @@ const DealList = props => {
         />
     );
 };
+
+const styles = StyleSheet.create({
+    container:{
+        height:70,
+        marginLeft:10,
+        marginRight:10,
+        alignContent:'center'
+    }
+})
 
 export default DealList;

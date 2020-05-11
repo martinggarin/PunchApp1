@@ -10,6 +10,7 @@ import Restaurants from '../../models/Restaurants';
 import Deal from '../../models/Deal';
 
 export const getMerchant = (email, password) => {
+    console.log('~Merchant Action: getMerchant')
     return async dispatch => {
       // any async code you want!
       try {
@@ -37,9 +38,9 @@ export const getMerchant = (email, password) => {
             merchant.city = resData[key].city
 
             //merchant.deal.concat(resData[key].deal);
-            console.log('fetching deal')
-            console.log(resData[key].deal);
-            console.log(merchant.deal);
+            //console.log('Fetching Deal')
+            //console.log(resData[key].deal);
+            //console.log(merchant.deal);
           }
         };
         if(merchant === 0){
@@ -55,6 +56,7 @@ export const getMerchant = (email, password) => {
 };
 
 export const loadAllMerchants = () => {
+    console.log('~Merchant Action: loadAllMerchants')
     //this is gonna load the specific merchant with the inputed id
     //since our app is allready gonna have downloaded all the merchants
     //we will be able to pass the id as a parameter, this will not be the same for the user
@@ -88,7 +90,6 @@ export const loadAllMerchants = () => {
             //r.deal.concat(resData[key].deal);
             loadedMerchants.push(r);
           }
-          console.log('loadingMerchants')
           // console.log(loadedMerchants);
 
           dispatch({ type: LOAD_ALL_MERCHANTS, merchants: loadedMerchants });
@@ -115,6 +116,7 @@ export const loadAllMerchants = () => {
 // };
 
 export const createMerchant = (email, password, title) => {
+    console.log('~Merchant Action: createMerchant')
     return async dispatch => {
         // any async code you want!
         const response = await fetch(
@@ -133,7 +135,7 @@ export const createMerchant = (email, password, title) => {
         );
     
         const resData = await response.json();
-        console.log(resData);
+        //console.log(resData);
     
         dispatch({
           type: CREATE_MERCHANT,
@@ -149,7 +151,7 @@ export const createMerchant = (email, password, title) => {
 
 //make it so you can edit merchant profile information
 export const updateMerchant = (id, title, price, type, address, city) =>{
-  console.log('UPDATEMERCHANT')
+  console.log('~Merchant Action: updateMerchant')
   return async dispatch =>{
     const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json`);
     if(!response1.ok){
@@ -189,13 +191,14 @@ export const updateMerchant = (id, title, price, type, address, city) =>{
 }
 
 export const updateDeal = (id, ammount, reward, code) =>{
+  console.log('~Merchant Action: updateDeal')
   return async dispatch =>{
     const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json`);
     if(!response1.ok){
       throw new Error('response 1 was not fetched');
     };
     const resData1 = await response1.json();
-    console.log(id)
+    //console.log(id)
     if (resData1.deal === undefined){
       var deal = []
     }
@@ -203,8 +206,8 @@ export const updateDeal = (id, ammount, reward, code) =>{
       var deal = resData1.deal
     }
 
-    console.log('-----deals-----');
-    console.log(deal);
+    //console.log('-----deals-----');
+    //console.log(deal);
     
     var newDeal = new Deal(ammount, reward, code)
     if (deal.length === code){
@@ -237,6 +240,7 @@ export const updateDeal = (id, ammount, reward, code) =>{
 }
 
 export const removeDeal = (id, code) =>{
+  console.log('~Merchant Action: removeDeal')
   return async dispatch =>{
 
     const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json`);
@@ -246,8 +250,8 @@ export const removeDeal = (id, code) =>{
     const resData1 = await response1.json();
     const deals = resData1.deal; 
 
-    console.log('-----deals-----');
-    console.log(deals);
+    //console.log('-----deals-----');
+    //console.log(deals);
     
     if(!(deals === undefined)){
       deal = []
@@ -261,7 +265,7 @@ export const removeDeal = (id, code) =>{
         }
       }
     }
-    console.log(deal);
+    //console.log(deal);
 
     const response = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json`,
       {
