@@ -1,28 +1,35 @@
 import React, {useCallback, useReducer, useEffect, useState} from 'react';
-import { View, Text, StyleSheet, Flatlist, Alert, Button } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Button } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import { Feather } from '@expo/vector-icons';
+import { Feather, Ionicons } from '@expo/vector-icons';
 import ProfileInput from '../../components/ProfileInput';
-import DealInputList from '../../components/DealInputList';
+import DealList from '../../components/DealList';
 import Colors from '../../constants/Colors';
 import * as MerchantActions from '../../store/actions/merchants';
+import { setLightEstimationEnabled } from 'expo/build/AR';
 const INPUT_UPDATE = 'UPDATE';
-const DEAL_INPUT_UPDATE = 'DEAL_UPDATE';
+
 
 const formReducer = (state, action) =>{
-    const updatedState = state
     switch (action.type) {
         case INPUT_UPDATE:
-            updatedState.inputValues = action.values
-            break
-        case DEAL_INPUT_UPDATE:
-            updatedState.dealInputValues = action.deal
+            var updatedValues = action.values
+            var updatedValidities = action.validities
             break
         default:
             return state;
     }
-    updatedState.inputValidity = action.isValid
-    return updatedState
+    var formIsValid = true
+    for (const key in updatedValidities){
+        if (updatedValidities[key] === false){
+            formIsValid = false
+        }
+    }
+    return {...state,
+        inputValues:updatedValues,
+        inputValidities:updatedValidities,
+        formIsValid:formIsValid
+    }
 };
 
 
@@ -30,91 +37,55 @@ const EditScreen = props => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
     const r_item = useSelector(state => state.merchants.myMerchant);
-    console.log('Edit Screen')
-    console.log(r_item)
-    const deal = useSelector(state => state.merchants.myDeals);
+    const deals = useSelector(state => state.merchants.myDeals);
+    console.log('Edit Screen');
     const dispatch = useDispatch();
+    if (deals === undefined){
+        totalDeals = 0
+    }
+    else{
+        totalDeals = deals.length
+    }
 
-    const [formState, dispatchFormState] = useReducer(formReducer, {
-        merchantID: r_item.id,
+    initialValues = {
         inputValues:{
             title: r_item.title,
             price: r_item.price,
             type: r_item.type,
             address: r_item.address,
-            city:r_item.city
+            city: r_item.city
         },
-        dealInputValues:deal,
-        inputValidity:true
-    });
-
-    const inputChangeHandler = useCallback((inputValues, inputValidity) => {
-        console.log('Input Change Handler');
-        dispatchFormState({
-            type: INPUT_UPDATE,
-            values: inputValues,
-            isValid: inputValidity,
-        })
-    },[dispatchFormState]);
-
-    const dealInputChangeHandler = useCallback((dealInputValues, inputValidity) => {
-        console.log('Deal Input Change Handler');
-        dispatchFormState({
-            type: DEAL_INPUT_UPDATE,
-            deal: dealInputValues,
-            isValid: inputValidity,
-        })
-    },[dispatchFormState]);
-
-    const dealRemoveHandler = useCallback( async (code) => {
-        console.log('Deal Remove Handler');
-        console.log(code);
-        await Alert.alert(
-            "Confirmation Required",
-            "Are you sure you want to remove this deal?",
-            [
-              {
-                text: "Cancel",
-                onPress: () => console.log("Cancel Pressed"),
-                style: "cancel"
-              },
-              { text: "Confirm", onPress: () => dispatch(MerchantActions.removeDeal(formState.merchantID, code)) }
-            ],
-            { cancelable: false }
-        );
-        props.navigation.goBack();
-        props.navigation.navigate('Edit'); 
-    },[dispatchFormState]);
-
-    const dealAddHandler = useCallback( async () => {
-        console.log('Deal Add Handler');
-        try{
-            dispatch(MerchantActions.addDeal(formState.merchantID))
-        }catch(err) {
-            setError(err.message)
-        }
-        props.navigation.goBack();
-        props.navigation.navigate('Edit');
-    },[dispatchFormState]);
+        inputValidities:{
+            title: true,
+            price: true,
+            type: true,
+            address: true,
+            city: true
+        },
+        formIsValid:true
+    }
+    //different initial values depending on entry
+    const [formState, dispatchFormState] = useReducer(formReducer, initialValues);
 
     const submitHandler = useCallback( async () => {
         console.log('Submit Handler')
-        console.log(formState)
-        if (!formState.inputValidity){
-            Alert.alert('Wrong Inputs!' , 'Please check your inputs', [{text: 'Okay'}]);
+        if (!formState.formIsValid){
+            Alert.alert(
+                'Invalid Input!',
+                'Please check that your inputs...', 
+                [{text: 'Okay'}]);
             return;
         };
         setError(null);
         setIsLoading(true);
         try {
             await dispatch(MerchantActions.updateMerchant(
-                formState.merchantID,
+                r_item.id,
                 formState.inputValues.title,
                 formState.inputValues.price,
                 formState.inputValues.type,
                 formState.inputValues.address,
                 formState.inputValues.city,
-                formState.dealInputValues
             ));
             props.navigation.goBack();
         }catch (err) {
@@ -123,7 +94,29 @@ const EditScreen = props => {
         setIsLoading(false);
         props.navigation.goBack()
     },[formState, dispatch]);
+
+    const inputChangeHandler = useCallback((inputValues, inputValidities) => {
+        console.log('Input Change Handler');
+        dispatchFormState({
+            type: INPUT_UPDATE,
+            values: inputValues,
+            validities: inputValidities,
+        })
+    },[dispatchFormState]);
     
+    const dealTapHandler = useCallback((dealCode) => {
+        Alert.alert(
+            deals[dealCode].reward+" Deal Selected",
+            "What would you like to do with it?",
+            [
+                { text: "Edit", onPress: () => {props.navigation.navigate('UpdateDeal', {id:r_item.id, deals:deals, dealCode:dealCode})}},
+                { text: "Remove", onPress:  () => {dispatch(MerchantActions.removeDeal(r_item.id, dealCode))}}
+                
+            ],
+            { cancelable: true }
+        ); 
+    })
+
     useEffect(() => {
         if (error) {
             Alert.alert('An error occurred!', error, [{ text: 'Okay' }]);
@@ -134,21 +127,32 @@ const EditScreen = props => {
         props.navigation.setParams({submit:submitHandler});
     }, [submitHandler]);
 
+    const footer = (
+        <TouchableOpacity
+            onPress={()=> {props.navigation.navigate('UpdateDeal', {id:r_item.id, deals:deals, dealCode:deals.length})}}
+            style={styles.addContainer}
+        >
+            <View style={styles.addContainer}>
+                <Ionicons name={'md-add-circle'} size={30} color={'black'} />
+                <Text>Add Deal</Text>
+            </View>
+        </TouchableOpacity>
+    )
+
     return (
         <View style={styles.screen}>
-            <View style={{width:'95%', height:190, alignItems:'center', justifyContent:'center', backgroundColor:Colors.backgrounddark, borderRadius:3, marginTop:'2.5%'}}>
+            <View style={{width:'95%', height:190, alignItems:'center', justifyContent:'center', backgroundColor:Colors.backgrounddark, borderRadius:3, margin:'2.5%'}}>
                 <ProfileInput
                     merchant={r_item}
                     onInputChange={inputChangeHandler}
                 />
             </View>
-            <View style={{alignItems:'center', justifyContent:'center'}}>
-                <DealInputList
-                    merchantID={r_item.id}
-                    dealData={deal}
-                    onInputChange={dealInputChangeHandler}
-                    onRemove={dealRemoveHandler}
-                    onAdd={dealAddHandler}
+            <View style={{height:'55%', justifyContent:'center'}}>
+                <DealList
+                    dealData={deals}
+                    onTap={dealTapHandler}
+                    footer={footer}
+                    merchantSide={true}
                 />
             </View>
         </View>
@@ -177,6 +181,11 @@ const styles = StyleSheet.create({
     screen:{
         flex:1,
         alignItems:'center'
+    },
+    addContainer:{
+        alignItems:'center',
+        height:150,
+        margin:10,
     }
 });
 

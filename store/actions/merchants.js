@@ -148,7 +148,7 @@ export const createMerchant = (email, password, title) => {
 };
 
 //make it so you can edit merchant profile information
-export const updateMerchant = (id, title, price, type, address, city, deal) =>{
+export const updateMerchant = (id, title, price, type, address, city) =>{
   console.log('UPDATEMERCHANT')
   return async dispatch =>{
     const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json`);
@@ -157,18 +157,81 @@ export const updateMerchant = (id, title, price, type, address, city, deal) =>{
     };
     const merchantData = await response1.json();
 
-    const updatedMerchantData = {email:merchantData.email, password:merchantData.password}
+    const updatedMerchantData = {email:merchantData.email, password:merchantData.password, deal:merchantData.deal}
     updatedMerchantData.id = id
     updatedMerchantData.title = title
     updatedMerchantData.price = price
     updatedMerchantData.type = type
     updatedMerchantData.address = address
     updatedMerchantData.city = city
-    updatedMerchantData.deal = deal
+
+    const response = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          title,
+          price,
+          type,
+          address,
+          city
+        })
+      }
+    );
 
     dispatch({
       type: UPDATE_MERCHANT,
       merchantData: updatedMerchantData 
+    })
+  }
+}
+
+export const updateDeal = (id, ammount, reward, code) =>{
+  return async dispatch =>{
+    const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json`);
+    if(!response1.ok){
+      throw new Error('response 1 was not fetched');
+    };
+    const resData1 = await response1.json();
+    console.log(id)
+    if (resData1.deal === undefined){
+      var deal = []
+    }
+    else{
+      var deal = resData1.deal
+    }
+
+    console.log('-----deals-----');
+    console.log(deal);
+    
+    var newDeal = new Deal(ammount, reward, code)
+    if (deal.length === code){
+      deal.push(newDeal)
+    }
+    else{
+      deal[code] = newDeal
+    }
+
+    const response = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          deal
+        })
+      }
+    );
+    if(!response.ok){
+        throw new Error('error updating deal');
+    };
+
+    dispatch({
+      type: UPDATE_DEALS,
+      deal: deal
     })
   }
 }
@@ -180,61 +243,25 @@ export const removeDeal = (id, code) =>{
     if(!response1.ok){
       throw new Error('response 1 was not fetched');
     };
-
     const resData1 = await response1.json();
     const deals = resData1.deal; 
 
     console.log('-----deals-----');
     console.log(deals);
-
     
-    const deal = [];
     if(!(deals === undefined)){
+      deal = []
       var count = 0
-      for(const key in deals){
+      for (const key in deals){
         if (!(deals[key].code === code)){
           deal.push(
-            new Deal(
-              deals[key].ammount, deals[key].reward, count
-            )
-          );
+            new Deal(deals[key].ammount, deals[key].reward, count)
+          )
           count += 1
         }
-      }//for
+      }
     }
-
-    dispatch({
-      type: UPDATE_DEALS,
-      deal: deal,
-    })
-  }
-}
-
-export const addDeal = (id) =>{
-  return async dispatch =>{
-
-    const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json`);
-    if(!response1.ok){
-      throw new Error('response 1 was not fetched');
-    };
-
-    const resData1 = await response1.json();
-    const deals = resData1.deal; 
- 
-    const deal = [];
-    if(!(deals === undefined)){
-      for(const key in deals){
-        deal.push(
-          new Deal(
-            deals[key].ammount, deals[key].reward, deals[key].code
-          )
-        );
-      }//for
-    }
-    deal.push(new Deal(0, 'deal.length', deal.length))
-    
     console.log(deal);
-    //const d = new Deal(ammount, reward, '|.||..|.||..|');
 
     const response = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json`,
       {

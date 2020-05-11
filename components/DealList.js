@@ -6,42 +6,20 @@ import RewardBalance from './RewardBalance';
 
 
 const DealList = props => {
-    const tap = (ammount) => {
-        if(props.merchantSide){
-            console.log("ammount: "+ammount);
-            
-            props.navigation.setParams({
-                Ammount: ammount
-            });
-            props.navigation.navigate({
-                routeName:'Scan', 
-                params:{
-                    RedeemAmmount: ammount
-                }
-            });
-        }
-        else {
-            console.log('User Side!');
-        }
-    }
-    const renderDeal = itemData =>{
+    const renderDeal = itemData => {
         console.log('render');
         return(
             <View style={{height:70, marginLeft:10, marginRight:10, alignContent:'center'}}>
                 <DealItem
                     title={itemData.item.reward}
-                    onClick={() => {
-                        if(props.merchantSide){
-                            console.log("ammount: "+itemData.item.ammount);
-                            
-                            // props.navigation.setParams({
-                            //     Ammount: itemData.item.ammount
-                            // });
-                            props.navigation.navigate("ScanNavigator", {Ammount:itemData.item.ammount});}
+                    onClick={ () => {
+                        if (props.merchantSide) {
+                            console.log('Merchant Side!');
+                            props.onTap(itemData.item.code)
+                        }
                         else {
                             console.log('User Side!');
                         }
-
                     }}
                     color={Colors.background}
                 >

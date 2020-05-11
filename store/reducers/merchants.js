@@ -47,7 +47,7 @@ export default (state = initialState, action) => {
             };
         case UPDATE_MERCHANT:
             console.log('Updating Profile')
-            const updatedMerchant = action.merchantData
+            var updatedMerchant = action.merchantData
             console.log(updatedMerchant)
             return {
                 ...state,
@@ -55,14 +55,13 @@ export default (state = initialState, action) => {
                 myDeals: updatedMerchant.deal
             }
         case UPDATE_DEALS:
-            console.log('Deals Updated')
-            const updateMerchant = state.myMerchant;
-            updateMerchant.deal = action.deal;
-            const updateDeals = action.deal;
+            console.log('Deals Updated');
+            var updatedMerchant = state.myMerchant;
+            updatedMerchant.deal = action.deal
             return{
-                ...state,
-                myMerchant:updateMerchant,
-                myDeals:updateDeals
+                ...state, 
+                myMerchant: updatedMerchant,
+                myDeals: updatedMerchant.deal
             }
         case LOAD_ALL_MERCHANTS:
             console.log('loaded merchants');

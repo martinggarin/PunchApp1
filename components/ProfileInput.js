@@ -1,5 +1,5 @@
 import React, {useReducer, useEffect} from 'react';
-import { View, Text, Button, TextInput, StyleSheet } from 'react-native'
+import { View, Text, TextInput, StyleSheet } from 'react-native'
 
 import Colors from '../constants/Colors';
 
@@ -10,80 +10,94 @@ const ADDRESS_INPUT_CHANGE = 'ADDRESS_INPUT_CHANGE';
 const CITY_INPUT_CHANGE = 'CITY_INPUT_CHANGE';
 
 const profileInputReducer = (state, action) => {
-    console.log(action.type);
+    const updatedValues = state.inputValues
+    const updatedValidities = state.inputValidities
     switch(action.type){
         case TITLE_INPUT_CHANGE:
-            action.values.title = action.newValue
+            updatedValues.title = action.newValue
+            updatedValidities.title = action.isValid
             break
         case PRICE_INPUT_CHANGE:
-            action.values.price = action.newValue
+            updatedValues.price = action.newValue
+            updatedValidities.price = action.isValid
             break
         case TYPE_INPUT_CHANGE:
-            action.values.type = action.newValue
+            updatedValues.type = action.newValue
+            updatedValidities.type = action.isValid
             break
         case ADDRESS_INPUT_CHANGE:
-            action.values.address = action.newValue
+            updatedValues.address = action.newValue
+            updatedValidities.address = action.isValid
             break
         case CITY_INPUT_CHANGE:
-            action.values.city = action.newValue
+            updatedValues.city = action.newValue
+            updatedValidities.city = action.isValid
             break
         default:
             return {state}
     }
     return {...state,
-        values: action.values,
-        isValid: action.isValid,
+        inputValues:updatedValues,
+        inputValidities:updatedValidities,
         touched:true
     }
 };
 
 ProfileInput = props => {
+
     const initialValues = {
-        title: props.merchant.title,
-        type: props.merchant.type,
-        price: props.merchant.price,
-        address: props.merchant.address,
-        city:props.merchant.city
+        inputValues:{
+            title: props.merchant.title,
+            type: props.merchant.type,
+            price: props.merchant.price,
+            address: props.merchant.address,
+            city: props.merchant.city
+        },
+        inputValidities:{
+            title: true,
+            type: true,
+            price: true,
+            address: true,
+            city: true
+        },
+        touched:false
     }
-    const [inputState, dispatch] = useReducer(profileInputReducer, {
-        values: initialValues,
-        isValid: true,
-        touched: false
-    });
+    const [inputState, dispatch] = useReducer(profileInputReducer, initialValues);
+
     const handleTitle = (text) => {
         var isValid = true
         if (text.length === 0){
             isValid = false
         }
-        dispatch({type:TITLE_INPUT_CHANGE, values:inputState.values, newValue:text, isValid:isValid})
+        dispatch({type:TITLE_INPUT_CHANGE, values:inputState.inputValues, newValue:text, isValid:isValid})
     }
     const handlePrice = (text) => {
         var isValid = true
         if (text.length === 0){
             isValid = false
         }
-        dispatch({type:PRICE_INPUT_CHANGE, values:inputState.values, newValue:text, isValid:isValid})
+        dispatch({type:PRICE_INPUT_CHANGE, values:inputState.inputValues, newValue:text, isValid:isValid})
     }
     const handleType = (text) => {
         var isValid = true
         if (text.length === 0){
             isValid = false
         }
-        dispatch({type:TYPE_INPUT_CHANGE, values:inputState.values, newValue:text, isValid:isValid})
+        dispatch({type:TYPE_INPUT_CHANGE, values:inputState.inputValues, newValue:text, isValid:isValid})
     }
     const handleAddress = (text) => {
         var isValid = true
         if (text.length === 0){
             isValid = false
         }
-        dispatch({type:ADDRESS_INPUT_CHANGE, values:inputState.values, newValue:text, isValid:isValid})
+        dispatch({type:ADDRESS_INPUT_CHANGE, values:inputState.inputValues, newValue:text, isValid:isValid})
     }
     const handleCity = (text) => {
         var isValid = true
         if (text.length === 0){
             isValid = false
         }
-        dispatch({type:CITY_INPUT_CHANGE, values:inputState.values, newValue:text, isValid:isValid})
+        dispatch({type:CITY_INPUT_CHANGE, values:inputState.inputValues, newValue:text, isValid:isValid})
     }
 
     //onINput change will be a function passed from parent. this will be called here every time
@@ -91,7 +105,7 @@ ProfileInput = props => {
     //this will allow for the parent to remain updated on the state of the child
     useEffect(()=>{
         if(inputState.touched){
-            props.onInputChange(inputState.values, inputState.isValid);
+            props.onInputChange(inputState.inputValues, inputState.inputValidities);
         }
     }, [inputState, props.onInputChange]);
 
@@ -104,9 +118,9 @@ ProfileInput = props => {
                         <TextInput 
                             style = {styles.input}
                             underlineColorAndroid = "transparent"
-                            placeholder = "Enter a Valid Merchant Title"
+                            placeholder = "Merchant Title"
                             placeholderTextColor = {Colors.darkLines}
-                            defaultValue = {inputState.values.title}
+                            defaultValue = {initialValues.inputValues.title}
                             autoCapitalize = "none"
                             onChangeText = {handleTitle}
                         />
@@ -120,9 +134,9 @@ ProfileInput = props => {
                         <TextInput 
                             style = {styles.input}
                             underlineColorAndroid = "transparent"
-                            placeholder = "Enter a Valid Merchant Type"
+                            placeholder = "Merchant Type"
                             placeholderTextColor = {Colors.darkLines}
-                            defaultValue = {inputState.values.type}
+                            defaultValue = {initialValues.inputValues.type}
                             autoCapitalize = "none"
                             onChangeText = {handleType}
                         />
@@ -134,9 +148,9 @@ ProfileInput = props => {
                         <TextInput 
                             style = {styles.input}
                             underlineColorAndroid = "transparent"
-                            placeholder = "Enter a Valid Price"
+                            placeholder = "Price ($)"
                             placeholderTextColor = {Colors.darkLines}
-                            defaultValue = {inputState.values.price}
+                            defaultValue = {initialValues.inputValues.price}
                             autoCapitalize = "none"
                             onChangeText = {handlePrice}
                         />
@@ -152,7 +166,7 @@ ProfileInput = props => {
                             underlineColorAndroid = "transparent"
                             placeholder = "Address"
                             placeholderTextColor = {Colors.darkLines}
-                            defaultValue = {inputState.values.address}
+                            defaultValue = {initialValues.inputValues.address}
                             autoCapitalize = "none"
                             onChangeText = {handleAddress}
                         />  
@@ -166,7 +180,7 @@ ProfileInput = props => {
                             underlineColorAndroid = "transparent"
                             placeholder = "City"
                             placeholderTextColor = {Colors.darkLines}
-                            defaultValue = {inputState.values.city}
+                            defaultValue = {initialValues.inputValues.city}
                             autoCapitalize = "none"
                             onChangeText = {handleCity}
                         />  

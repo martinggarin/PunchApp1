@@ -18,6 +18,7 @@ import MerchantLoginScreen from '../screens/merchant/MerchantLoginScreen';
 import MerchantHomeScreen from '../screens/merchant/MerchantProfileScreen';
 import Colors from '../constants/Colors';
 import EditScreen from '../screens/merchant/EditScreen';
+import UpdateDealScreen from '../screens/merchant/UpdateDealScreen';
 import MerchantSignUpScreen from '../screens/merchant/MerchantSignUpScreen';
 import UserSignUpScreen from '../screens/user/UserSignUpScreen';
 import ScanScreen from '../screens/merchant/ScanScreen';
@@ -35,7 +36,12 @@ const MerchantHomeNavigator = createStackNavigator({
         screen: MerchantHomeScreen,
         navigationOptions: { title: 'Merchant Home' }
     },
-    Edit: EditScreen
+    Edit: EditScreen,
+    Scan: ScanScreen,
+    UpdateDeal:{
+        screen: UpdateDealScreen,
+        navigationOptions: { title: 'Update Deal' }
+    }
 }, {
     defaultNavigationOptions: defaultOptions
 })
@@ -163,7 +169,8 @@ const MerchantNavigator = createStackNavigator({
         screen: MerchantTabNavigator,
         navigationOptions: {headerShown:false}
     },
-    Edit:EditScreen
+    Edit:EditScreen,
+    UpdateDeal:UpdateDealScreen
 }, {
     defaultNavigationOptions: defaultOptions
 });
