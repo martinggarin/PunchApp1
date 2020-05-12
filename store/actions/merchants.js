@@ -89,12 +89,14 @@ export const loadAllMerchants = () => {
                 resData[key].email,
                 resData[key].password,
                 resData[key].title
-              );
-        
-            r.deal = [];
-            for(const k in resData[key].deal){
-              r.deal.push(resData[key].deal[k]);
-            }
+            );
+            r.price = resData[key].price
+            r.type = resData[key].type
+            r.address = resData[key].address
+            r.city = resData[key].city
+            r.deal = resData[key].deal
+            r.customers = resData[key].customers
+    
             //r.deal.concat(resData[key].deal);
             loadedMerchants.push(r);
           }

@@ -11,6 +11,7 @@ import * as UserActions from '../../store/actions/user';
 
 
 const UserHomeScreen = props => {
+    console.log('User Home')
     const [isLoading, setIsLoading] = useState(false);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [error, setError] = useState();

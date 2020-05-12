@@ -5,7 +5,7 @@ import Colors from '../constants/Colors';
 import {useSelector} from 'react-redux';
 import RewardBalance from '../components/RewardBalance';
 
-const MerchantList  = props => {
+const MerchantList = props => {
     const faves = useSelector(state => state.user.userMerchants);
     const rs = useSelector(state => state.user.userRewards);
     // console.log(rs);
@@ -33,6 +33,10 @@ const MerchantList  = props => {
                     })
                 }
                 title={itemData.item.title}
+                price={itemData.item.price}
+                type={itemData.item.type}
+                address={itemData.item.address}
+                city={itemData.item.city}
                 color={props.color}
                 //prog={prog}    
             >

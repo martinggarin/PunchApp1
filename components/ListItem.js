@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import Colors from '../constants/Colors';
+import { prototype } from 'react-native/Libraries/Image/ImageBackground';
 
 const ListItem = props => {
     return(
@@ -12,10 +13,10 @@ const ListItem = props => {
                         <View style={styles.textContainer}>
                             <Text style={styles.titleText}>{props.title}</Text>
                             <View style={styles.priceTextContainer}>
-                                <Text style={styles.priceText}>$$$ • American, Bar</Text>
+                                <Text style={styles.priceText}>{props.price} • {props.type}</Text>
                             </View>
                             <View style={styles.addressTextContainer}>
-                                <Text style={styles.addressText}>123 Imaginary street, Athens</Text>
+                                <Text style={styles.addressText}>{props.address} • {props.city}</Text>
                             </View>
                         </View>
                         <View style={styles.containerRight}>

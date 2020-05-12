@@ -46,7 +46,6 @@ export default (state = initialState, action) => {
             };
         case UPDATE_MERCHANT:
             var updatedMerchant = action.merchantData
-
             return {
                 ...state,
                 myMerchant: updatedMerchant,
