@@ -11,6 +11,7 @@ import Restaurants from '../../models/Restaurants';
 import RewardStatus from '../../models/RewardsStatus';
 
 export const updateRewards = (r_id, u_id, ammount) => {
+  console.log('~User Action: updateRewards')
   //update the value of user rewards status... TODO
   return async dispatch =>{
 
@@ -25,7 +26,7 @@ export const updateRewards = (r_id, u_id, ammount) => {
     //console.log('-----Updating RS-----');
     //console.log(rs);
 
-    let isPressent = false;
+    let isPresent = false;
     const RS = [];
     if(!(RS === undefined)){
       for(const key in rs){
@@ -40,7 +41,7 @@ export const updateRewards = (r_id, u_id, ammount) => {
               rs[key].r_id, (rs[key].ammount+ammount)
             )
           );
-          isPressent = true;
+          isPresent = true;
         }else{
           RS.push(
             new RewardStatus(
@@ -50,7 +51,7 @@ export const updateRewards = (r_id, u_id, ammount) => {
         }
       
       }//for
-      if(!isPressent){
+      if(!isPresent){
         if(ammount < 0){
           throw 'insufficient';
         }
@@ -160,7 +161,7 @@ export const toggleFav = (r_id, u_id) => {
           favorites.push(r_id);
         }
     }
-    console.log(favorites);
+    //console.log(favorites);
 
     const response = await fetch(
       `https://punchapp-86a47.firebaseio.com/users/${u_id}.json`,
@@ -208,7 +209,7 @@ export const createUser = (email, password) => {
         );
     
         const resData = await response.json();
-        console.log(resData);
+        //console.log(resData);
     
         dispatch({
           type: CREATE_USER,

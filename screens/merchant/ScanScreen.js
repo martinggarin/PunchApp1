@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, Button, Alert } from 'react-native';
+import { Text, TextInput, View, StyleSheet, Button, Alert } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import {useDispatch, useSelector} from 'react-redux';
 import * as userActions from '../../store/actions/user';
 import * as merchanActions from '../../store/actions/merchants';
 import Colors from '../../constants/Colors';
 
+
+
 const ScanScreen = props => {
     console.log('Scan')
     const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
+    const [input, setInput] = useState('1')
     const dispatch = useDispatch();
     const r_id = useSelector(state => state.merchants.myMerchant.id);
     const ammount = props.navigation.getParam('ammount');
+
     
     useEffect(() => {
         (async () => {
@@ -20,6 +24,11 @@ const ScanScreen = props => {
         setHasPermission(status === 'granted');
         })();
     }, []);
+
+    const handleInput = (value) => {
+        console.log('-Input Change Handler')
+        setInput(value)
+    };
 
     const handleBarCodeScanned = async ({ type, data })  => {
         setScanned(true)
@@ -64,12 +73,22 @@ const ScanScreen = props => {
                 // console.log('_________Updating Rewards__________');
                 // console.log('R_id: ' + r_id);
                 // console.log('U_ID: ' + data); 
-                await dispatch(userActions.updateRewards(r_id, data, 1));
+                await dispatch(userActions.updateRewards(r_id, data, Number(input)));
                 await dispatch(merchanActions.updateCustomers(r_id, data));
             }catch(err){
-                console.log('there was an error')
+                if (!(err === 'none')){
+                    Alert.alert('An error occurred!', err, [{ text: 'Okay' }]);
+                }
+                
             }
-            alert(`1 POINT ADDED TO USER: ${data}!`);
+            Alert.alert(
+                "Deal Redeemed",
+                input+" points added to user: "+data,
+                [
+                    { text: "Ok"},
+                ],
+                { cancelable: false }
+            );
         };
     };
     if (hasPermission === null) {
@@ -87,9 +106,24 @@ const ScanScreen = props => {
                 barCodeTypes={[BarCodeScanner.Constants.BarCodeType.qr]}
             />
             {scanned && <View style={styles.button}> 
-                <Button title={'Scan Again?'} color={Colors.backgrounddark} onPress={() => setScanned(false)} />
-            </View>
-            }
+                <Button title={'Scan Again?'} titleColor={'black'} color={Colors.backgrounddark} onPress={() => setScanned(false)} />
+            </View>}
+            {(ammount === undefined) && <View style={styles.inputContainer}>
+                <Text style={styles.text}>Points to Credit Customer</Text>
+                <View style={styles.inputView}>
+                    <TextInput 
+                        style = {styles.input}
+                        underlineColorAndroid = "transparent"
+                        keyboardType = 'decimal-pad'
+                        placeholder = "Loyalty Points"
+                        placeholderTextColor = {Colors.darkLines}
+                        defaultValue = {input.toString()}
+                        autoCapitalize = "none"
+                        onChangeText = {handleInput}
+                        textAlign = "center"
+                    />  
+                </View> 
+            </View>}
         </View>
     );
 };
@@ -104,10 +138,44 @@ const styles = StyleSheet.create({
         ...StyleSheet.absoluteFill,
         height:"100%",
     },
+    inputContainer:{
+        
+        width:'55%',
+        height:'12.5%',
+        alignItems:'center',
+        justifyContent:'space-between',
+        backgroundColor:Colors.backgrounddark,
+        borderRadius:3,
+        top:'2.5%',
+        
+    },
+    inputView:{
+        marginLeft:2,
+        marginRight:2,
+        borderColor: Colors.lightLines,
+        borderWidth: 1,
+        height:30,
+        justifyContent:'center',
+        alignItems:'center',
+        marginBottom:5
+    },
+    input: {
+        color:Colors.lightLines,
+    },   
+    text: {
+        fontSize: 14,
+        fontWeight: "bold",
+        color:Colors.lightLines,
+        marginTop:5
+    },
     button:{
+        ...StyleSheet.absoluteFill,
         height:50,
-        width:'50%',
-        marginTop:20
+        width:'55%',
+        top:'90%',
+        marginLeft:'22.5%',
+        marginRight:'22.5%'
+        
     }
 
 });
