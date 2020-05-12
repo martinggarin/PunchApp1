@@ -34,7 +34,7 @@ export default (state = initialState, action) => {
                 action.user.password);
             fetchUser.favorites = [];
             fetchUser.RS = [];
-            console.log('_______RS______');
+            //console.log('_______RS______');
 
             if(!(action.user.RS === undefined)){
                 for (const key in action.user.RS){
@@ -64,7 +64,7 @@ export default (state = initialState, action) => {
                 action.user.password);
             refreshUser.favorites = [];
             refreshUser.RS = [];
-            console.log('_______RS______');
+            //console.log('_______RS______');
 
             if(!(action.user.RS === undefined)){
                 for (const key in action.user.RS){
@@ -104,7 +104,7 @@ export default (state = initialState, action) => {
                 userMerchants: action.favorites
             };
         case UPDATE_RS:
-            console.log('______updated RS_______');
+            //console.log('______updated RS_______');
             console.log(action.RS)
             
             return{

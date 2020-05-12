@@ -37,6 +37,7 @@ const formReducer = (state, action) =>{
   };
 
 const MerchantLoginScreen = props => {
+    console.log('Merchant Login')
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
     //const merchants = useSelector(state => state.merchants.availableMerchants);
@@ -109,7 +110,7 @@ const MerchantLoginScreen = props => {
     }, [formState]);
 
     const inputChangeHandler = useCallback((inputIdentifier, inputValue, inputValidity) => {
-        console.log('inputChangeHandler');
+        console.log('-Input Change Handler');
         dispatchFormState({
             type: FORM_INPUT_UPDATE, 
             value: inputValue, 

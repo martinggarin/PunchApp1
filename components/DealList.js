@@ -6,48 +6,30 @@ import RewardBalance from './RewardBalance';
 
 
 const DealList = props => {
-    const tap = (ammount) => {
-        if(props.merchantSide){
-            console.log("ammount: "+ammount);
-            
-            props.navigation.setParams({
-                Ammount: ammount
-            });
-            props.navigation.navigate({
-                routeName:'Scan', 
-                params:{
-                    RedeemAmmount: ammount
-                }
-            });
-        }
-        else {
-            console.log('User Side!');
-        }
+
+    
+    if (!(props.dealData === undefined)){
+        var sortedDealData = props.dealData
+        sortedDealData.sort((a, b) => parseFloat(a.ammount) - parseFloat(b.ammount));
     }
-    const renderDeal = itemData =>{
-        console.log('render');
+    else{
+        var sortedDealData = []
+    }
+
+    
+    const renderDeal = itemData => {
         return(
-            <View style={{height:70, marginLeft:10, marginRight:10, alignContent:'center'}}>
+            <View style={styles.container}>
                 <DealItem
                     title={itemData.item.reward}
-                    onClick={() => {
-                        if(props.merchantSide){
-                            console.log("ammount: "+itemData.item.ammount);
-                            
-                            // props.navigation.setParams({
-                            //     Ammount: itemData.item.ammount
-                            // });
-                            props.navigation.navigate("ScanNavigator",
-                                {
-                                // // type: "Navigate",
-                                //screen: "Scan",
-                                params: {Ammount:itemData.item.ammount}
-                                });
+                    onClick={ () => {
+                        if (props.merchantSide) {
+                            console.log('-Merchant Side!');
+                            props.onTap(itemData.item.code)
                         }
                         else {
-                            console.log('User Side!');
+                            console.log('-User Side!');
                         }
-
                     }}
                     color={Colors.background}
                 >
@@ -64,12 +46,21 @@ const DealList = props => {
     
     return (
         <FlatList 
-            data={props.dealData}
+            data={sortedDealData}
             renderItem={renderDeal}
             keyExtractor={(item, index) => item.reward}
             ListFooterComponent={props.footer}
         />
     );
 };
+
+const styles = StyleSheet.create({
+    container:{
+        height:70,
+        marginLeft:10,
+        marginRight:10,
+        alignContent:'center'
+    }
+})
 
 export default DealList;

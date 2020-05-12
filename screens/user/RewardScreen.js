@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text, Image, StyleSheet} from 'react-native';
 import {useSelector} from 'react-redux';
-import QRCode from "react-qr-code";
+import QRCode from 'react-native-qrcode-generator';
 import Colors from '../../constants/Colors';
 
 const RewardScreen = props => {
@@ -11,9 +11,9 @@ const RewardScreen = props => {
     return (
         <View style={styles.screen}>
             <Text>
-                Scan this QR Code to claim rewards!
+                Scan this QR Code to credit loyalty points!
             </Text>
-            <QRCode value={u_id}/>
+            <QRCode value={u_id} size={250}/>
         </View>
         
     );

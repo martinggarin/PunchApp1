@@ -37,6 +37,7 @@ const formReducer = (state, action) =>{
   };
 
 const MerchantSignUpScreen = props => {
+    console.log('Merchant Sign Up')
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
 
@@ -66,7 +67,7 @@ const MerchantSignUpScreen = props => {
 
     const submitHandler = useCallback( async () => {
         if(!formState.formIsValid ){
-            console.log(formState);
+            //console.log(formState);
             Alert.alert('Wrong Login!' , 'Please check your inputs', [{text: 'Okay'}]);
             return;
         }//if
@@ -97,6 +98,7 @@ const MerchantSignUpScreen = props => {
     }, [formState]);
 
     const inputChangeHandler = useCallback((inputIdentifier, inputValue, inputValidity) => {
+        console.log('-Input Change Handler')
         dispatchFormState({
             type: FORM_INPUT_UPDATE, 
             value: inputValue, 

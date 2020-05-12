@@ -11,6 +11,7 @@ import * as UserActions from '../../store/actions/user';
 
 
 const UserHomeScreen = props => {
+    console.log('User Home')
     const [isLoading, setIsLoading] = useState(false);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [error, setError] = useState();
@@ -40,9 +41,9 @@ const UserHomeScreen = props => {
         setError(null);
         setIsRefreshing(true);
         try {
-            console.log('________________');
-            console.log(u_id);
-            console.log('________________');
+            //console.log('________________');
+            //console.log(u_id);
+            //console.log('________________');
             await dispatch(MerchantActions.loadAllMerchants());
             await dispatch(UserActions.refreshUser(u_id));
 

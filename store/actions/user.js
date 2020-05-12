@@ -11,6 +11,7 @@ import Restaurants from '../../models/Restaurants';
 import RewardStatus from '../../models/RewardsStatus';
 
 export const updateRewards = (r_id, u_id, ammount) => {
+  console.log('~User Action: updateRewards')
   //update the value of user rewards status... TODO
   return async dispatch =>{
 
@@ -22,10 +23,10 @@ export const updateRewards = (r_id, u_id, ammount) => {
     const resData1 = await response1.json();
     const rs = resData1.RS; 
 
-    console.log('-----Updating RS-----');
-    console.log(rs);
+    //console.log('-----Updating RS-----');
+    //console.log(rs);
 
-    let isPressent = false;
+    let isPresent = false;
     const RS = [];
     if(!(RS === undefined)){
       for(const key in rs){
@@ -33,14 +34,14 @@ export const updateRewards = (r_id, u_id, ammount) => {
         if(rs[key].r_id === r_id){
           //this handles if the user doesn't have enough rewards, when redeeming
           if((rs[key].ammount+ammount) < 0){
-            throw new Error('User has not enough Rewards!');
+            throw 'insufficient';
           }
           RS.push(
             new RewardStatus(
               rs[key].r_id, (rs[key].ammount+ammount)
             )
           );
-          isPressent = true;
+          isPresent = true;
         }else{
           RS.push(
             new RewardStatus(
@@ -50,20 +51,20 @@ export const updateRewards = (r_id, u_id, ammount) => {
         }
       
       }//for
-      if(!isPressent){
+      if(!isPresent){
         if(ammount < 0){
-          throw new Error('User has not enough funds!');
+          throw 'insufficient';
         }
         RS.push(new RewardStatus(r_id, ammount));
       }
     }//if
     else{
       if(ammount < 0){
-        throw new Error('User has not enough funds!');
+        throw 'insufficient';
       }
       RS.push(new RewardStatus(r_id, ammount));
     }
-    console.log(RS);
+    //console.log(RS);
     //const d = new Deal(ammount, reward, '|.||..|.||..|');
 
     const response = await fetch(`https://punchapp-86a47.firebaseio.com/users/${u_id}.json`,
@@ -80,14 +81,13 @@ export const updateRewards = (r_id, u_id, ammount) => {
     if(!response.ok){
         throw new Error('error updating RS');
     };
-
-
     dispatch({
       type: UPDATE_RS,
       merchant:r_id,
       user:u_id, 
       RS: RS
     })
+    throw 'none'
   }
 
 }
@@ -161,7 +161,7 @@ export const toggleFav = (r_id, u_id) => {
           favorites.push(r_id);
         }
     }
-    console.log(favorites);
+    //console.log(favorites);
 
     const response = await fetch(
       `https://punchapp-86a47.firebaseio.com/users/${u_id}.json`,
@@ -209,7 +209,7 @@ export const createUser = (email, password) => {
         );
     
         const resData = await response.json();
-        console.log(resData);
+        //console.log(resData);
     
         dispatch({
           type: CREATE_USER,
@@ -277,7 +277,7 @@ export const refreshUser = (id) => {
       }
 
       const resData = await response.json();
-      console.log("_________Refreshing USer________");
+      console.log("_________Refreshing Uer________");
       const user = new Customer(id, resData.email, resData.password);
 
       user.RS = resData.RS;
