@@ -63,7 +63,6 @@ export const updateRewards = (r_id, u_id, ammount) => {
       }
       RS.push(new RewardStatus(r_id, ammount));
     }
-    throw 'none'
     //console.log(RS);
     //const d = new Deal(ammount, reward, '|.||..|.||..|');
 
@@ -81,14 +80,13 @@ export const updateRewards = (r_id, u_id, ammount) => {
     if(!response.ok){
         throw new Error('error updating RS');
     };
-
-
     dispatch({
       type: UPDATE_RS,
       merchant:r_id,
       user:u_id, 
       RS: RS
     })
+    throw 'none'
   }
 
 }
