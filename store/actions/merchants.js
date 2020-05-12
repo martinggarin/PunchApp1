@@ -1,9 +1,9 @@
 export const CREATE_MERCHANT = 'ADD_MERCHANT';
 export const TOGGLE_FAV = 'ADD_RESTAURANT';
-export const UPDATE_MERCHANT = 'UPDATE_MERCHANT';
 export const LOAD_SINGLE_MERCHANT = 'LOAD_SINGLE_MERCHANT';
 export const LOAD_ALL_MERCHANTS = 'LOAD_ALL_MERCHANTS';
 export const GET_MERCHANT = 'GET_MERCHANT';
+export const UPDATE_MERCHANT = 'UPDATE_MERCHANT';
 export const UPDATE_DEALS = 'UPDATE_DEALS';
 
 import Restaurants from '../../models/Restaurants';
@@ -28,14 +28,22 @@ export const getMerchant = (email, password) => {
         for (const key in resData) {
           if (resData[key].email === email && resData[key].password === password){
             merchant = new Restaurants(key, email, password, resData[key].title);
-            merchant.deal = [];
-            for(const k in resData[key].deal){
-              merchant.deal.push(resData[key].deal[k]);
-            }
             merchant.price = resData[key].price
             merchant.type = resData[key].type
             merchant.address = resData[key].address
             merchant.city = resData[key].city
+            if (resData[key].deal === undefined){
+              merchant.deal = [];
+            }
+            else{
+              merchant.deal = resData[key].deal
+            }
+            if (resData[key].customers === undefined){
+              merchant.customers = []
+            }
+            else{
+              merchant.customers = resData[key].customers
+            }
 
             //merchant.deal.concat(resData[key].deal);
             //console.log('Fetching Deal')
@@ -159,7 +167,12 @@ export const updateMerchant = (id, title, price, type, address, city) =>{
     };
     const merchantData = await response1.json();
 
-    const updatedMerchantData = {email:merchantData.email, password:merchantData.password, deal:merchantData.deal}
+    const updatedMerchantData = {
+      email:merchantData.email,
+      password:merchantData.password,
+      deal:merchantData.deal,
+      customers:merchantData.customers
+    }
     updatedMerchantData.id = id
     updatedMerchantData.title = title
     updatedMerchantData.price = price
@@ -186,6 +199,53 @@ export const updateMerchant = (id, title, price, type, address, city) =>{
     dispatch({
       type: UPDATE_MERCHANT,
       merchantData: updatedMerchantData 
+    })
+  }
+}
+
+export const updateCustomers = (id, customerID) => {
+  console.log('~Merchant Action: updateCustomers')
+  return async dispatch =>{
+    const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json`);
+    if(!response1.ok){
+      throw new Error('response 1 was not fetched');
+    };
+    const merchantData = await response1.json();
+    merchantData.id = id
+    if (merchantData.customers === undefined){
+      var customers = [customerID]
+    }
+    else{
+      var customers = merchantData.customers
+    }
+    var isExistingCustomer = false
+    for (const key in customers){
+      if (customers[key] === customerID){
+        isExistingCustomer = true
+        break
+      }
+    }
+    if (!isExistingCustomer){
+      customers.push(customerID)
+    }
+
+    merchantData.customers = customers
+
+    const response = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          customers
+        })
+      }
+    );
+
+    dispatch({
+      type:UPDATE_MERCHANT,
+      merchantData:merchantData
     })
   }
 }

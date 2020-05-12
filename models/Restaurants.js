@@ -14,7 +14,9 @@ class Restaurants {
         this.deal = [
             new Deal(10.0, 'Free Coffee', 'code1'),
             new Deal(15.0, 'Free Cake', 'code2'),
-            new Deal(20, 'Free IceCream', 'code3')];    
+            new Deal(20, 'Free IceCream', 'code3')
+        ];
+        this.customers = []
     }
 }
 export default Restaurants;

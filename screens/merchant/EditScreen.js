@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
         margin:'2.5%'
     },
     lowerContainer:{
-        height:'55%',
+        height:'60%',
         justifyContent:'center'
     },
     addContainer:{

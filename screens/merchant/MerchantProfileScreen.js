@@ -11,12 +11,19 @@ const MerchantProfileScreen = props => {
     console.log('Merchant Profile');
 
     const r_item = useSelector(state => state.merchants.myMerchant);
+    //console.log(r_item)
     const deals = useSelector(state => state.merchants.myDeals);
     if (deals === undefined){
-        totalDeals = 0
+        var totalDeals = 0
     }
     else{
-        totalDeals = deals.length
+        var totalDeals = deals.length
+    }
+    if (r_item.customers === undefined){
+        var totalCustomers = 0
+    }
+    else{
+        var totalCustomers = r_item.customers.length
     }
 
     const dealTapHandler = useCallback((dealCode) => {
@@ -74,7 +81,7 @@ const MerchantProfileScreen = props => {
                         </View>
                         <View>
                             <Text style={styles.smallBoldText}>Customers</Text>
-                            <Text style={{textAlign:'center'}}>{totalDeals}</Text>
+                            <Text style={{textAlign:'center'}}>{totalCustomers}</Text>
                         </View>
                     </View>
                 </View>
@@ -125,7 +132,7 @@ const styles = StyleSheet.create({
         margin:'2.5%'
     },
     lowerContainer:{
-        height:'75%',
+        height:'77.5%',
         justifyContent:'center'
     },
     rowContainer:{
