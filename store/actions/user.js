@@ -22,8 +22,8 @@ export const updateRewards = (r_id, u_id, ammount) => {
     const resData1 = await response1.json();
     const rs = resData1.RS; 
 
-    console.log('-----Updating RS-----');
-    console.log(rs);
+    //console.log('-----Updating RS-----');
+    //console.log(rs);
 
     let isPressent = false;
     const RS = [];
@@ -33,7 +33,7 @@ export const updateRewards = (r_id, u_id, ammount) => {
         if(rs[key].r_id === r_id){
           //this handles if the user doesn't have enough rewards, when redeeming
           if((rs[key].ammount+ammount) < 0){
-            throw new Error('User has not enough Rewards!');
+            throw 'insufficient';
           }
           RS.push(
             new RewardStatus(
@@ -52,18 +52,19 @@ export const updateRewards = (r_id, u_id, ammount) => {
       }//for
       if(!isPressent){
         if(ammount < 0){
-          throw new Error('User has not enough funds!');
+          throw 'insufficient';
         }
         RS.push(new RewardStatus(r_id, ammount));
       }
     }//if
     else{
       if(ammount < 0){
-        throw new Error('User has not enough funds!');
+        throw 'insufficient';
       }
       RS.push(new RewardStatus(r_id, ammount));
     }
-    console.log(RS);
+    throw 'none'
+    //console.log(RS);
     //const d = new Deal(ammount, reward, '|.||..|.||..|');
 
     const response = await fetch(`https://punchapp-86a47.firebaseio.com/users/${u_id}.json`,
@@ -277,7 +278,7 @@ export const refreshUser = (id) => {
       }
 
       const resData = await response.json();
-      console.log("_________Refreshing USer________");
+      console.log("_________Refreshing Uer________");
       const user = new Customer(id, resData.email, resData.password);
 
       user.RS = resData.RS;

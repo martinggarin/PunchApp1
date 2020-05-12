@@ -8,20 +8,11 @@ import Colors from '../../constants/Colors';
 
 const ScanScreen = props => {
     console.log('Scan')
-    //const [ammount, setAmmount] = useState(props.navigation.state.params);
     const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
     const dispatch = useDispatch();
     const r_id = useSelector(state => state.merchants.myMerchant.id);
-
     const ammount = props.navigation.getParam('ammount');
-    //useEffect(()=>{
-    //    setAmmount(props.navigation.state.params);
-    //},[props])
-    //console.log('__________ammount________');
-    //if(!(ammount.params === undefined)){
-    //    console.log(ammount.params.Ammount);
-    //}
     
     useEffect(() => {
         (async () => {
@@ -43,29 +34,41 @@ const ScanScreen = props => {
                 
             //need to handle error if user doesn't have enough rewards... 
             }catch(err){
-                console.log('there was an error')
+                if (err === 'insufficient'){
+                    Alert.alert(
+                        "Insufficient Balance",
+                        "Unable to subtract "+ammount+" points from user: "+data,
+                        [
+                            { text: "Ok", onPress:  async () => {await props.navigation.goBack()}},
+                        ],
+                        { cancelable: false }
+                    ); 
+                }
+                else if(err === 'none'){
+                    Alert.alert(
+                        "Deal Redeemed",
+                        ammount+" points subtracted from user: "+data,
+                        [
+                            { text: "Ok", onPress: () => props.navigation.goBack()},
+                        ],
+                        { cancelable: false }
+                    );
+                }
+                else {
+                    Alert.alert('An error occurred!', err, [{ text: 'Okay' }]);
+                }
             }
-            Alert.alert(
-                "Deal Redeemed",
-                ammount+" points subtracted from user: "+data,
-                [
-                    { text: "Ok", onPress: async () => {props.navigation.goBack()}},
-                ],
-                { cancelable: false }
-            ); 
-            //alert(`Deal Redeemed!!\n${ammount} points subtracted from user: ${data}!`);
-            //props.navigation.goBack();
-
-        }else{
-            //try{
+        }
+        else{
+            try{
                 // console.log('_________Updating Rewards__________');
                 // console.log('R_id: ' + r_id);
                 // console.log('U_ID: ' + data); 
                 await dispatch(userActions.updateRewards(r_id, data, 1));
                 await dispatch(merchanActions.updateCustomers(r_id, data));
-            //}catch(err){
-            //    console.log('there was an error')
-            //}
+            }catch(err){
+                console.log('there was an error')
+            }
             alert(`1 POINT ADDED TO USER: ${data}!`);
         };
     };
