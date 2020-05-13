@@ -41,15 +41,14 @@ const EditScreen = props => {
     const deals = useSelector(state => state.merchants.myDeals);
     const newMerchant = props.navigation.getParam('newMerchant');
     const dispatch = useDispatch();
-    
     if (deals === undefined){
-        totalDeals = 0
+        var totalDeals = 0
     }
     else{
-        totalDeals = deals.length
+        var totalDeals = deals.length
     }
 
-    initialValues = {
+    const initialValues = {
         inputValues:{
             title: r_item.title,
             price: r_item.price,
@@ -159,7 +158,7 @@ const EditScreen = props => {
         <TouchableOpacity
             onPress={()=> {
                 console.log('-Deal Add Handler')
-                props.navigation.navigate('UpdateDeal', {id:r_item.id, deals:deals, dealCode:deals.length})
+                props.navigation.navigate('UpdateDeal', {id:r_item.id, deals:deals, dealCode:totalDeals})
             }}
             style={styles.addContainer}
         >

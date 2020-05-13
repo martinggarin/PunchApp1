@@ -3,7 +3,7 @@ import { Text, TextInput, View, StyleSheet, Button, Alert } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import {useDispatch, useSelector} from 'react-redux';
 import * as userActions from '../../store/actions/user';
-import * as merchanActions from '../../store/actions/merchants';
+import * as merchantActions from '../../store/actions/merchants';
 import Colors from '../../constants/Colors';
 
 
@@ -74,21 +74,21 @@ const ScanScreen = props => {
                 // console.log('R_id: ' + r_id);
                 // console.log('U_ID: ' + data); 
                 await dispatch(userActions.updateRewards(r_id, data, Number(input)));
-                await dispatch(merchanActions.updateCustomers(r_id, data));
             }catch(err){
-                if (!(err === 'none')){
+                if (err === 'none'){
+                    await dispatch(merchantActions.updateCustomers(r_id, data))
+                    Alert.alert(
+                        "Reward Redeemed",
+                        input+" points added to user: "+data,
+                        [
+                            { text: "Ok"},
+                        ],
+                        { cancelable: false }
+                    );
+                }else{
                     Alert.alert('An error occurred!', err, [{ text: 'Okay' }]);
                 }
-                
             }
-            Alert.alert(
-                "Deal Redeemed",
-                input+" points added to user: "+data,
-                [
-                    { text: "Ok"},
-                ],
-                { cancelable: false }
-            );
         };
     };
     if (hasPermission === null) {
