@@ -139,9 +139,8 @@ const styles = StyleSheet.create({
         height:"100%",
     },
     inputContainer:{
-        
         width:'55%',
-        height:'12.5%',
+        height:60,
         alignItems:'center',
         justifyContent:'space-between',
         backgroundColor:Colors.backgrounddark,

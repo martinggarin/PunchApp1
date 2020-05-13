@@ -37,7 +37,6 @@ export default (state = initialState, action) => {
                 action.merchantData.id,
                 action.merchantData.email, 
                 action.merchantData.password, 
-                action.merchantData.title
                 );
             return {
                 ...state,

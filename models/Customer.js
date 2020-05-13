@@ -5,9 +5,8 @@ class Customer {
         this.id = id; //unique identifier for customer
         this.email = email;
         this.password = password;
-
         this.RS = []; //array
-        this.favorites = []; //array of restaurant ids
+        this.favorites = []; //array of merchant ids
     }
 }
 export default Customer;

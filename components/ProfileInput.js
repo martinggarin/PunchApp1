@@ -191,13 +191,11 @@ ProfileInput = props => {
     )
 }
 
-export default ProfileInput
-
 const styles = StyleSheet.create({
     container: {
         justifyContent:'center',
         width:'90%',
-        height:'85%'
+        height:'90%'
     },
     rowView: {
         flex: 1, 
@@ -236,3 +234,5 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     },
 })
+
+export default ProfileInput
