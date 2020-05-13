@@ -7,8 +7,8 @@ import DealList from '../../components/DealList';
 import Colors from '../../constants/Colors';
 import * as MerchantActions from '../../store/actions/merchants';
 import { setLightEstimationEnabled } from 'expo/build/AR';
-const INPUT_UPDATE = 'UPDATE';
 
+const INPUT_UPDATE = 'UPDATE';
 
 const formReducer = (state, action) =>{
     switch (action.type) {
@@ -39,7 +39,9 @@ const EditScreen = props => {
     const [error, setError] = useState();
     const r_item = useSelector(state => state.merchants.myMerchant);
     const deals = useSelector(state => state.merchants.myDeals);
+    const newMerchant = props.navigation.getParam('newMerchant');
     const dispatch = useDispatch();
+    
     if (deals === undefined){
         totalDeals = 0
     }
@@ -64,6 +66,16 @@ const EditScreen = props => {
         },
         formIsValid:true
     }
+    if (newMerchant){
+        initialValues.inputValidities = {
+            price: true,
+            type: true,
+            address: true,
+            city: true
+        }
+        initialValues.formIsValid = false
+    }
+
     //different initial values depending on entry
     const [formState, dispatchFormState] = useReducer(formReducer, initialValues);
 
@@ -87,7 +99,13 @@ const EditScreen = props => {
                 formState.inputValues.address,
                 formState.inputValues.city,
             ));
-            props.navigation.goBack();
+            if (newMerchant){
+                props.navigation.navigate('MerchantHome')
+            }
+            else{
+                props.navigation.goBack();
+            }
+            
         }catch (err) {
             setError(err.message);
         }

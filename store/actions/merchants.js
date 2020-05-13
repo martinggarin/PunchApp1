@@ -27,23 +27,14 @@ export const getMerchant = (email, password) => {
   
         for (const key in resData) {
           if (resData[key].email === email && resData[key].password === password){
-            merchant = new Restaurants(key, email, password, resData[key].title);
+            merchant = new Restaurants(key, email, password);
+            merchant.title = resData[key].title
             merchant.price = resData[key].price
             merchant.type = resData[key].type
             merchant.address = resData[key].address
             merchant.city = resData[key].city
-            if (resData[key].deal === undefined){
-              merchant.deal = [];
-            }
-            else{
-              merchant.deal = resData[key].deal
-            }
-            if (resData[key].customers === undefined){
-              merchant.customers = []
-            }
-            else{
-              merchant.customers = resData[key].customers
-            }
+            merchant.deal = resData[key].deal
+            merchant.customers = resData[key].customers
 
             //merchant.deal.concat(resData[key].deal);
             //console.log('Fetching Deal')
@@ -88,8 +79,8 @@ export const loadAllMerchants = () => {
                 key,
                 resData[key].email,
                 resData[key].password,
-                resData[key].title
             );
+            r.title = resData[key].title
             r.price = resData[key].price
             r.type = resData[key].type
             r.address = resData[key].address
@@ -125,10 +116,27 @@ export const loadAllMerchants = () => {
 //     //the input will be an array of restaurant ids saved in user object
 // };
 
-export const createMerchant = (email, password, title) => {
+export const createMerchant = (email, password) => {
     console.log('~Merchant Action: createMerchant')
     return async dispatch => {
         // any async code you want!
+        const response1 = await fetch(
+          'https://punchapp-86a47.firebaseio.com/merchants.json'
+        );
+        if (!response1.ok) {
+          throw new Error('Something went wrong!');
+        }
+        const merchants = await response1.json();
+        var merchantExists = false
+        for (const key in merchants){
+          if (merchants[key].email === email){
+            var merchantExists = true
+          }
+        }
+        if (merchantExists) {
+          throw new Error('A merchant with this email already exists')
+        }
+
         const response = await fetch(
           'https://punchapp-86a47.firebaseio.com/merchants.json',
           {
@@ -137,7 +145,6 @@ export const createMerchant = (email, password, title) => {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-              title,
               email,
               password
             })
@@ -151,7 +158,6 @@ export const createMerchant = (email, password, title) => {
           type: CREATE_MERCHANT,
           merchantData: {
             id: resData.name,
-            title,
             email,
             password
           }

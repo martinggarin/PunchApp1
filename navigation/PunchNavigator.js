@@ -19,8 +19,6 @@ import MerchantHomeScreen from '../screens/merchant/MerchantProfileScreen';
 import Colors from '../constants/Colors';
 import EditScreen from '../screens/merchant/EditScreen';
 import UpdateDealScreen from '../screens/merchant/UpdateDealScreen';
-import MerchantSignUpScreen from '../screens/merchant/MerchantSignUpScreen';
-import UserSignUpScreen from '../screens/user/UserSignUpScreen';
 import ScanScreen from '../screens/merchant/ScanScreen';
 
 
@@ -164,7 +162,6 @@ const UserTabNavigator = Platform.OS ==='android'
 
 const MerchantNavigator = createStackNavigator({
     Login: MerchantLoginScreen,
-    SignUp: MerchantSignUpScreen,
     MerchantHome: {
         screen: MerchantTabNavigator,
         navigationOptions: {headerShown:false}
@@ -177,7 +174,6 @@ const MerchantNavigator = createStackNavigator({
 
 const UserNavigator = createStackNavigator({
     UserLogin: UserLoginScreen,
-    UserSignUp: UserSignUpScreen,
     Home: {
         screen: UserTabNavigator,
         navigationOptions: {headerShown:false}
