@@ -1,44 +1,48 @@
 import React, {useCallback, useEffect, useReducer, useState} from 'react';
 import { View, Text, StyleSheet, Button , Alert} from 'react-native';
-import Input from '../../components/Input';
-import Colors from '../../constants/Colors';
+import Dialog from 'react-native-dialog'
+import LoginInput from '../../components/LoginInput';
 import { useDispatch } from 'react-redux';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import HeaderButton from '../../components/HeaderButton';
 import * as userActions from '../../store/actions/user';
+import { Colors } from 'react-native-paper';
 
-const FORM_INPUT_UPDATE = 'UPDATE';
+const INPUT_UPDATE = 'INPUT_UPDATE';
+const RE_PASSWORD_UPDATE = 'RE_PASSWORD_UPDATE'
 
 const formReducer = (state, action) =>{
-    switch(action.type){
-        case FORM_INPUT_UPDATE:
-            const updatedValues = {
-                ...state.inputValues,
-                [action.inputId]:action.value
-            };//uval
-            const updatedValidity = {
-                ...state.inputValidities,
-                [action.inputId]:action.isValid
-            }//uvalid
-            let totalValidity = true;
-            for (const key in updatedValidity){
-                totalValidity = totalValidity && updatedValidity[key];
-            };//for
-            const updatedState = {
-                inputValues: updatedValues,
-                inputValidities: updatedValidity,
-                formIsValid: totalValidity
+    switch (action.type) {
+        case INPUT_UPDATE:
+            var updatedValues = action.values
+            var updatedValidities = action.validities
+            break
+        case RE_PASSWORD_UPDATE:
+            return {...state,
+                rePassword:action.text
             }
-            return updatedState;
-
         default:
             return state;
     }
-  };
+    var formIsValid = true
+    for (const key in updatedValidities){
+        if (updatedValidities[key] === false){
+            formIsValid = false
+        }
+    }
+    return {...state,
+        inputValues:updatedValues,
+        inputValidities:updatedValidities,
+        formIsValid:formIsValid
+    }
+};
 
 const UserLoginScreen = props => {
+    console.log('User Login')
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
+    const [promptVisability, setPromptVisability] = useState(false)
+    const dispatch = useDispatch();
 
     const [formState, dispatchFormState] = useReducer(formReducer, {
         inputValues:{
@@ -49,18 +53,12 @@ const UserLoginScreen = props => {
             email:false,
             password:false
         },
-        formIsValid:false
+        formIsValid:false,
+        rePassword:''
     });
 
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        if (error) {
-          Alert.alert('An error occurred!', error, [{ text: 'Okay' }]);
-        }
-      }, [error]);
-
     const submitHandler = useCallback( async () => {
+        console.log('-Login Handler')
         if(!formState.formIsValid){
             console.log(formState);
             Alert.alert('Wrong Login!' , 'Please check your inputs', [{text: 'Okay'}]);
@@ -74,66 +72,85 @@ const UserLoginScreen = props => {
                 formState.inputValues.password,
             ));
             
-            props.navigation.replace({
-                routeName:'Home',
-                params:{
-                    email:formState.inputValues.email
-                }
-            });
+            props.navigation.navigate('Home');
         } catch(err){
             setError(err.message);
         }
         setIsLoading(false);
     
-    }, [formState, formState]);
+    }, [formState]);
 
-    const inputChangeHandler = useCallback((inputIdentifier, inputValue, inputValidity) => {
+    const signUpHandler = useCallback(async () => {
+        console.log('-Sign Up Handler')
+        setPromptVisability(false)
+        if (!formState.formIsValid){
+            Alert.alert(
+                'Invalid Input!',
+                'Please check your inputs...', 
+                [{text: 'Okay'}]
+            );
+            return;
+        }
+        if(!(formState.inputValues.password === formState.rePassword)){
+            Alert.alert(
+                'Passwords do not match!',
+                'Please check your passwords', 
+                [{text: 'Okay'}]);
+            return;
+        }
+        setError(null);
+        setIsLoading(true);
+        try{
+            await dispatch(userActions.createUser(
+                formState.inputValues.email,
+                formState.inputValues.password,
+            ));
+            props.navigation.navigate('Home');
+        }
+        catch(err){
+            setError(err.message);
+        }
+        setIsLoading(false);
+    }, [formState]);
+
+    const inputChangeHandler = useCallback((inputValues, inputValidities) => {
+        console.log('-Input Change Handler');
         dispatchFormState({
-            type: FORM_INPUT_UPDATE, 
-            value: inputValue, 
-            isValid: inputValidity,
-            inputId: inputIdentifier
+            type: INPUT_UPDATE,
+            values: inputValues,
+            validities: inputValidities,
         })
-      },[dispatchFormState]);
+    },[dispatchFormState]);
+
+    useEffect(() => {
+        if (error) {
+          Alert.alert('An error occurred!', error, [{ text: 'Okay' }]);
+        }
+    }, [error]);
 
     return(
         <View style={styles.screen}>
-            
-            <Input 
-                id='email'
-                label='email'
-                errorText='please enter a valid email'
-                keyboardType='default'
-                returnKeyType='next'
-                autoCorrect
-                autoCapitalize='none'
-                initialValue=''
-                initiallyValid={false}
+            <LoginInput
                 onInputChange={inputChangeHandler}
-                required
+                onLogin={submitHandler}
+                onSignUp={() => setPromptVisability(true)}
             />
-            <Input 
-                id='password'
-                label='password'
-                errorText='please enter a valid password'
-                keyboardType='default'
-                returnKeyType='next'
-                autoCapitalize='none'
-                autoCorrect
-                initialValue=''
-                initiallyValid={false}
-                onInputChange={inputChangeHandler}
-                required
-            />
-
-            <View style={styles.buttonContainer}>
-                <Button title='Login' color={Colors.backgrounddark} onPress={submitHandler}/>
-                <Button title='Sign Up' color={Colors.backgrounddark} onPress={()=>props.navigation.navigate('UserSignUp')} />
-            </View>
+            <Dialog.Container visible={promptVisability}>
+                <Dialog.Title style={{fontWeight:'bold'}}>Confirmation Required!</Dialog.Title>
+                <Dialog.Description>
+                    Please re-enter your password to create an account...
+                </Dialog.Description>
+                <Dialog.Input 
+                    style={{borderBottomWidth:1}}
+                    onChangeText={(text) => {dispatchFormState({type:RE_PASSWORD_UPDATE, text:text})}}
+                    autoCapitalize = "none"
+                />
+                <Dialog.Button label="Cancel" onPress={() => setPromptVisability(false)}/>
+                <Dialog.Button label="Confirm" onPress={signUpHandler}/>
+            </Dialog.Container>
         </View>
     );
 };
-
 UserLoginScreen.navigationOptions = navData => {
     return {
         headerTitle:'User Login',
@@ -151,17 +168,8 @@ const styles = StyleSheet.create({
     screen:{
         flex:1,
         alignItems:'center',
-        padding:10,
-        //justifyContent:'center'
+        height:'100%'
     },
-    buttonContainer:{
-        padding:10,
-        marginTop:20,
-        height:60,
-        flexDirection:'row',
-        alignContent:'center',
-        justifyContent:'center',
-    }
 });
 
 export default UserLoginScreen;

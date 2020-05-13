@@ -93,6 +93,7 @@ export const updateRewards = (r_id, u_id, ammount) => {
 }
 
 export const fetchMerchants = () => {
+  console.log('~User Action: fetchMerchants')
   return async dispatch => {
     // any async code you want!
     try {
@@ -114,9 +115,14 @@ export const fetchMerchants = () => {
             key,
             resData[key].email,
             resData[key].password,
-            resData[key].title
         );
+        m.title = resData[key].title
+        m.price = resData[key].price
+        m.type = resData[key].type
+        m.address = resData[key].address
+        m.city = resData[key].city
         m.deal = resData[key].deal;
+        m.customers = resData[key].customers
         merchants.push(m);
       };
       if(merchants === 0){
@@ -132,7 +138,7 @@ export const fetchMerchants = () => {
 };
 
 export const toggleFav = (r_id, u_id) => {
-
+  console.log('~User Action: toggleFav')
   return async dispatch => {
 
     const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/users/${u_id}.json`);
@@ -188,38 +194,55 @@ export const toggleFav = (r_id, u_id) => {
 };
 
 export const createUser = (email, password) => {
-    return async dispatch => {
-        // any async code you want!
-        const RS = [];
-        const favorites = [];
-        const response = await fetch(
-          'https://punchapp-86a47.firebaseio.com/users.json',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              email,
-              password,
-              RS,
-              favorites
-            })
-          }
-        );
-    
-        const resData = await response.json();
-        //console.log(resData);
-    
-        dispatch({
-          type: CREATE_USER,
-          userData: {
-            id: resData.name,
-            email,
-            password
-          }
-        });
-      };
+  console.log('~User Action: createUser')
+  return async dispatch => {
+    const response1 = await fetch(
+      'https://punchapp-86a47.firebaseio.com/users.json'
+    );
+    if (!response1.ok) {
+      throw new Error('Something went wrong!');
+    }
+    const users = await response1.json();
+    var userExists = false
+    for (const key in users){
+      if (users[key].email === email){
+        var userExists = true
+      }
+    }
+    if (userExists) {
+      throw new Error('A user with this email already exists')
+    }
+    // any async code you want!
+    const RS = [];
+    const favorites = [];
+    const response = await fetch(
+      'https://punchapp-86a47.firebaseio.com/users.json',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          RS,
+          favorites
+        })
+      }
+    );
+
+    const resData = await response.json();
+    //console.log(resData);
+
+    dispatch({
+      type: CREATE_USER,
+      userData: {
+        id: resData.name,
+        email,
+        password
+      }
+    });
+  };
 };
 
 export const getUser = (email, password) => {
