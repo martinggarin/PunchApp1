@@ -59,11 +59,6 @@ const UserLoginScreen = props => {
 
     const submitHandler = useCallback( async () => {
         console.log('-Login Handler')
-        if(!formState.formIsValid){
-            console.log(formState);
-            Alert.alert('Wrong Login!' , 'Please check your inputs', [{text: 'Okay'}]);
-            return;
-        }//if
         setError(null);
         setIsLoading(true);
         try{
@@ -83,14 +78,6 @@ const UserLoginScreen = props => {
     const signUpHandler = useCallback(async () => {
         console.log('-Sign Up Handler')
         setPromptVisability(false)
-        if (!formState.formIsValid){
-            Alert.alert(
-                'Invalid Input!',
-                'Please check your inputs...', 
-                [{text: 'Okay'}]
-            );
-            return;
-        }
         if(!(formState.inputValues.password === formState.rePassword)){
             Alert.alert(
                 'Passwords do not match!',
@@ -132,8 +119,28 @@ const UserLoginScreen = props => {
         <View style={styles.screen}>
             <LoginInput
                 onInputChange={inputChangeHandler}
-                onLogin={submitHandler}
-                onSignUp={() => setPromptVisability(true)}
+                onLogin={() => {
+                    if (formState.formIsValid){
+                        submitHandler()
+                    }else{
+                        Alert.alert(
+                            'Invalid Input!',
+                            'Please check that your inputs...', 
+                            [{text: 'Okay'}]
+                        );
+                    }
+                }}
+                onSignUp={() => {
+                    if (formState.formIsValid){
+                        setPromptVisability(true)
+                    }else{
+                        Alert.alert(
+                            'Invalid Input!',
+                            'Please check that your inputs...', 
+                            [{text: 'Okay'}]
+                        );
+                    }
+                }}
             />
             <Dialog.Container visible={promptVisability}>
                 <Dialog.Title style={{fontWeight:'bold'}}>Confirmation Required!</Dialog.Title>
@@ -142,6 +149,7 @@ const UserLoginScreen = props => {
                 </Dialog.Description>
                 <Dialog.Input 
                     style={{borderBottomWidth:1}}
+                    secureTextEntry
                     onChangeText={(text) => {dispatchFormState({type:RE_PASSWORD_UPDATE, text:text})}}
                     autoCapitalize = "none"
                 />

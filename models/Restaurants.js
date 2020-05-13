@@ -1,10 +1,9 @@
 import Deal from './Deal';
 
 class Restaurants {
-    constructor( id, email, password){
+    constructor(id, email){
+        this.id = id
         this.email = email;
-        this.password = password;
-        this.id = id;
         this.title = '';
         this.price = ''
         this.type = '';

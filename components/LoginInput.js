@@ -52,7 +52,7 @@ const LoginInput = props => {
     }
     const handlePassword = (text) => {
         let isValid = true;
-        if (text.length === 0) {
+        if (text.length < 5) {
             isValid = false;
         }
         dispatch({type:PASSWORD_INPUT_CHANGE, newValue:text, isValid:isValid})
@@ -75,6 +75,7 @@ const LoginInput = props => {
                     <View style={styles.inputView}>
                         <TextInput 
                             style = {styles.input}
+                            keyboardType = "email-address"
                             underlineColorAndroid = "transparent"
                             placeholder = "Enter Your Email Address"
                             placeholderTextColor = {Colors.darkLines}
@@ -89,6 +90,7 @@ const LoginInput = props => {
                     <View style={styles.inputView}>
                         <TextInput 
                             style = {styles.input}
+                            secureTextEntry
                             underlineColorAndroid = "transparent"
                             placeholder = "Enter Your Password"
                             placeholderTextColor = {Colors.darkLines}

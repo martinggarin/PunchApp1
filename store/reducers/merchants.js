@@ -26,22 +26,19 @@ export default (state = initialState, action) => {
         //     }else{
         //         return{...state, userRestaurants: state.userRestaurants.concat(state.availableRestaurants.find(r=>r.id===action.restaurant_id))};
         //     }
+        case CREATE_MERCHANT:
+            const newMerchant = new Restaurants(action.merchantData.id, action.merchantData.email);
+            return {
+                ...state,
+                myMerchant: newMerchant, 
+                myDeals: newMerchant.deal,
+                availableMerchants: state.availableMerchants.concat(newMerchant)
+            };
         case GET_MERCHANT:
             return{
                 ...state, 
                 myMerchant: action.merchant,
                 myDeals: action.merchant.deal
-            };
-        case CREATE_MERCHANT:
-            const newMerchant = new Restaurants(
-                action.merchantData.id,
-                action.merchantData.email, 
-                action.merchantData.password, 
-                );
-            return {
-                ...state,
-                myMerchant: newMerchant, 
-                availableMerchants: state.availableMerchants.concat(newMerchant)
             };
         case UPDATE_MERCHANT:
             var updatedMerchant = action.merchantData

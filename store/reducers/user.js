@@ -19,43 +19,16 @@ export default (state = initialState, action) => {
 
     switch(action.type){
         case CREATE_USER:
-            const newUser = new Customer(
-                action.userData.id, 
-                action.userData.email, 
-                action.userData.password);
+            const newUser = new Customer(action.userData.id, action.userData.email);
             newUser.RD = [];
             newUser.favorites = [];
             return {...state, user: newUser};
 
         case GET_USER:
-            const fetchUser = new Customer(
-                action.user.id,
-                action.user.email,
-                action.user.password);
-            fetchUser.favorites = [];
-            fetchUser.RS = [];
-            //console.log('_______RS______');
-
-            if(!(action.user.RS === undefined)){
-                for (const key in action.user.RS){
-                    fetchUser.RS.push(
-                        new RewardsStatus(action.user.RS[key].r_id, action.user.RS[key].ammount)
-                        );
-                };
-            }//if rs
-            console.log(fetchUser.RS);
-            if(!(action.user.favorites === undefined)){
-                for(const key in action.user.favorites){
-                    fetchUser.favorites.push(
-                        action.user.favorites[key]
-                    );
-                }
-            }//if favorites
-            
-            return {
-                user: fetchUser, 
-                userMerchants: fetchUser.favorites,
-                userRewards: fetchUser.RS};
+            return {...state,
+                user: action.user, 
+                userMerchants: action.user.favorites,
+                userRewards: action.user.RS};
                 
         case REFRESH_USER: 
             const refreshUser = new Customer(
@@ -105,7 +78,7 @@ export default (state = initialState, action) => {
             };
         case UPDATE_RS:
             //console.log('______updated RS_______');
-            console.log(action.RS)
+            //console.log(action.RS)
             
             return{
                 ...state,

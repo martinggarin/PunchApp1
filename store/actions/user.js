@@ -114,7 +114,6 @@ export const fetchMerchants = () => {
           new Restaurants(
             key,
             resData[key].email,
-            resData[key].password,
         );
         m.title = resData[key].title
         m.price = resData[key].price
@@ -196,25 +195,27 @@ export const toggleFav = (r_id, u_id) => {
 export const createUser = (email, password) => {
   console.log('~User Action: createUser')
   return async dispatch => {
-    const response1 = await fetch(
-      'https://punchapp-86a47.firebaseio.com/users.json'
+    // any async code you want!
+    const authResponse = await fetch(
+      'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCvSHOaKLtLtXsdln3K_GtNfRMQ_kONSZw',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+          returnSecureToken: true
+        })
+      }
     );
-    if (!response1.ok) {
+    if (!authResponse.ok) {
       throw new Error('Something went wrong!');
     }
-    const users = await response1.json();
-    var userExists = false
-    for (const key in users){
-      if (users[key].email === email){
-        var userExists = true
-      }
-    }
-    if (userExists) {
-      throw new Error('A user with this email already exists')
-    }
-    // any async code you want!
-    const RS = [];
-    const favorites = [];
+    //const authenticatedUser = await authResponse.json();
+    //console.log(authenticatedUser)
+
     const response = await fetch(
       'https://punchapp-86a47.firebaseio.com/users.json',
       {
@@ -223,69 +224,99 @@ export const createUser = (email, password) => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          email,
-          password,
-          RS,
-          favorites
+          email:email,
         })
       }
     );
-
+    if (!response.ok) {
+      throw new Error('Something went wrong!');
+    }
     const resData = await response.json();
     //console.log(resData);
+
+    const keyResponse = await fetch(
+      'https://punchapp-86a47.firebaseio.com/userKeys.json',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email:email,
+          key:resData.name,
+        })
+      }
+    );
+    if (!keyResponse.ok) {
+      throw new Error('Something went wrong!');
+    }
 
     dispatch({
       type: CREATE_USER,
       userData: {
         id: resData.name,
-        email,
-        password
+        email: email,
       }
     });
   };
 };
 
 export const getUser = (email, password) => {
-    return async dispatch => {
-      // any async code you want!
-      try {
-        const response = await fetch(
-          'https://punchapp-86a47.firebaseio.com/users.json'
-        );
-  
-        if (!response.ok) {
-          throw new Error('Something went wrong!');
-        }
-  
-        const resData = await response.json();
-        let user = 0;
-  
-        for (const key in resData) {
-          if (resData[key].email === email && resData[key].password === password){
-            user = new Customer(key, email, password);
-            user.RS = resData[key].RS;
-            user.favorites = [];
-            
-            if(!(resData[key].favorites === undefined))
-            {  for(const k in resData[key].favorites){
-                user.favorites.push(resData[key].favorites[k]);
-              };
-            }
-            //add rs... todo
-            //console.log(user);
-          }
-        };
-        if(user === 0){
-          throw new Error('email and password arent valid'); 
-        }
-        
-        dispatch({ type: GET_USER, user: user });
-      } catch (err) {
-        // send to custom analytics server
-        throw err;
+  return async dispatch => {
+    // any async code you want!
+    const authResponse = await fetch(
+      'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCvSHOaKLtLtXsdln3K_GtNfRMQ_kONSZw',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+          returnSecureToken: true
+        })
       }
-    };
+    );
+    if (!authResponse.ok) {
+      throw new Error('Something went wrong!');
+    }
+    const authenticatedUser = await authResponse.json();
+      
+    const keyResponse = await fetch(
+      'https://punchapp-86a47.firebaseio.com/userKeys.json'
+    );
+    if (!keyResponse.ok) {
+      throw new Error('Something went wrong!');
+    }
+    const keyData = await keyResponse.json();
+    
+    let userKey = 0
+    for (const index in keyData){
+      if (keyData[index].email === authenticatedUser.email ){
+        userKey = keyData[index].key
+        break
+      }
+    }
+    if (userKey === 0){
+      throw new Error('email and password arent valid');
+    }
+    const response = await fetch(
+      `https://punchapp-86a47.firebaseio.com/users/${userKey}.json`
+    );
+    if (!response.ok) {
+      throw new Error('Something went wrong!');
+    }
+    const resData = await response.json()
+    
+    const user = new Customer(userKey, email);
+    user.RS = resData.RS;
+    user.favorites = resData.favorites;
+    //console.log(user);
+    
+    dispatch({ type: GET_USER, user: user });
   };
+};
 
 export const refreshUser = (id) => {
   return async dispatch => {
