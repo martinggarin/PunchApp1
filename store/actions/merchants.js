@@ -57,7 +57,7 @@ export const getMerchant = (email, password) => {
         throw new Error('Something went wrong!');
       }
       const resData = await response.json()
-      
+
       const merchant = new Restaurants(merchantKey, email);
       merchant.title = resData.title
       merchant.price = resData.price
@@ -136,72 +136,72 @@ export const loadAllMerchants = () => {
 // };
 
 export const createMerchant = (email, password) => {
-    console.log('~Merchant Action: createMerchant')
-    return async dispatch => {
-        // any async code you want!
-        const authResponse = await fetch(
-          'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCvSHOaKLtLtXsdln3K_GtNfRMQ_kONSZw',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              email: email,
-              password: password,
-              returnSecureToken: true
-            })
-          }
-        );
-        if (!authResponse.ok) {
-          throw new Error('Something went wrong!');
-        }
-        //const authenticatedMerchant = await authResponse.json();
-        //console.log(authenticatedMerchant)
+  console.log('~Merchant Action: createMerchant')
+  return async dispatch => {
+    // any async code you want!
+    const authResponse = await fetch(
+      'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCvSHOaKLtLtXsdln3K_GtNfRMQ_kONSZw',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+          returnSecureToken: true
+        })
+      }
+    );
+    if (!authResponse.ok) {
+      throw new Error('Something went wrong!');
+    }
+    //const authenticatedMerchant = await authResponse.json();
+    //console.log(authenticatedMerchant)
 
-        const response = await fetch(
-          'https://punchapp-86a47.firebaseio.com/merchants.json',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              email:email,
-            })
-          }
-        );
-        if (!response.ok) {
-          throw new Error('Something went wrong!');
-        }
-        const resData = await response.json();
-        //console.log(resData);
+    const response = await fetch(
+      'https://punchapp-86a47.firebaseio.com/merchants.json',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email:email,
+        })
+      }
+    );
+    if (!response.ok) {
+      throw new Error('Something went wrong!');
+    }
+    const resData = await response.json();
+    //console.log(resData);
 
-        const keyResponse = await fetch(
-          'https://punchapp-86a47.firebaseio.com/merchantKeys.json',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              email:email,
-              key:resData.name,
-            })
-          }
-        );
-        if (!keyResponse.ok) {
-          throw new Error('Something went wrong!');
-        }
-    
-        dispatch({
-          type: CREATE_MERCHANT,
-          merchantData: {
-            id: resData.name,
-            email: email
-          }
-        });
-      };
+    const keyResponse = await fetch(
+      'https://punchapp-86a47.firebaseio.com/merchantKeys.json',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email:email,
+          key:resData.name,
+        })
+      }
+    );
+    if (!keyResponse.ok) {
+      throw new Error('Something went wrong!');
+    }
+
+    dispatch({
+      type: CREATE_MERCHANT,
+      merchantData: {
+        id: resData.name,
+        email: email
+      }
+    });
+  };
 };
 
 //make it so you can edit merchant profile information
