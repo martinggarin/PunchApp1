@@ -13,14 +13,19 @@ import RewardStatus from '../../models/RewardsStatus';
 export const updateRewards = (r_id, u_id, ammount) => {
   console.log('~User Action: updateRewards')
   //update the value of user rewards status... TODO
+  console.log(u_id)
   return async dispatch =>{
 
-    const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/users/${u_id}.json`);
+    const response1 = await fetch('https://punchapp-86a47.firebaseio.com/users/'+u_id+'.json');
     if(!response1.ok){
-      throw new Error('response 1 was not fetched');
+      throw new Error('Something Went Wrong!');
     };
-
     const resData1 = await response1.json();
+    console.log(resData1)
+    if(resData1 === null){
+      throw new Error('User does not exist!')
+    }
+    console.log('failed catch null')
     const rs = resData1.RS; 
 
     //console.log('-----Updating RS-----');
