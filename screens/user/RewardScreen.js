@@ -11,7 +11,7 @@ const RewardScreen = props => {
     return (
         <View style={styles.screen}>
             <Text>
-                Scan this QR Code to credit loyalty points!
+                Scan this QR Code to process rewards!
             </Text>
             <QRCode value={u_id} size={250}/>
         </View>
