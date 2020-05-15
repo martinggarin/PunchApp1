@@ -12,7 +12,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 const PunchScreen = props => {
     const r_id = props.navigation.getParam('merchant_id');
-    console.log(r_id);
+    //console.log(r_id);
     const r_item = useSelector(state => state.merchants.availableMerchants).find(r=> r.id === r_id);
     const faves = useSelector(state => state.user.userMerchants);
     const u_id = useSelector(state=> state.user.user.id);
@@ -62,6 +62,7 @@ const PunchScreen = props => {
                 <DealList 
                     merchantSide={false}
                     dealData={r_item.deal}
+                    onTap={() => props.navigation.navigate('Reward')}
                 />
             </View>
         </View>

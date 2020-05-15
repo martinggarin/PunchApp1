@@ -22,8 +22,6 @@ import ScanScreen from '../screens/merchant/ScanScreen';
 import * as MerchantActions from '../store/actions/merchants';
 import * as UserActions from '../store/actions/user';
 
-
-
 const defaultOptions = {
     headerStyle:{
         backgroundColor:Colors.backgrounddark
@@ -118,7 +116,7 @@ const tabScreen = {
             tabBarColor: Colors.header,
         }
     },
-    Rewards: {
+    Reward: {
         screen: RewardNavigator, 
         navigationOptions:{
             tabBarIcon: (tabInfo) => {

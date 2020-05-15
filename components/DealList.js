@@ -6,7 +6,6 @@ import RewardBalance from './RewardBalance';
 
 
 const DealList = props => {
-
     
     if (!(props.dealData === undefined)){
         var sortedDealData = props.dealData
@@ -16,7 +15,6 @@ const DealList = props => {
         var sortedDealData = []
     }
 
-    
     const renderDeal = itemData => {
         return(
             <View style={styles.container}>
@@ -29,6 +27,7 @@ const DealList = props => {
                         }
                         else {
                             console.log('-User Side!');
+                            props.onTap()
                         }
                     }}
                     color={Colors.background}
