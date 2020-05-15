@@ -52,7 +52,7 @@ const LoginInput = props => {
     }
     const handlePassword = (text) => {
         let isValid = true;
-        if (text.length < 5) {
+        if (text.length < 6) {
             isValid = false;
         }
         dispatch({type:PASSWORD_INPUT_CHANGE, newValue:text, isValid:isValid})

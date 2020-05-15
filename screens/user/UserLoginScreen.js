@@ -80,7 +80,6 @@ const UserLoginScreen = props => {
 
     const signUpHandler = useCallback(async () => {
         console.log('-Sign Up Handler')
-        setPromptVisability(false)
         if(!(formState.inputValues.password === formState.rePassword)){
             Alert.alert(
                 'Passwords do not match!',
@@ -101,6 +100,7 @@ const UserLoginScreen = props => {
             setError(err.message);
         }
         setIsLoading(false);
+        setPromptVisability(false)
     }, [formState]);
 
     const inputChangeHandler = useCallback((inputValues, inputValidities) => {
