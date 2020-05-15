@@ -17,7 +17,7 @@ const UserHomeScreen = props => {
     const [error, setError] = useState();
     const allMerchants = useSelector(state => state.merchants.availableMerchants);
     const display = useSelector(state => state.user.userMerchants);
-    const u_id = useSelector(state => state.user.user).id
+    const u_id = useSelector(state => state.user.user).id;
     let updatedUserMerchants = [];
     const dispatch = useDispatch();
 

@@ -6,8 +6,8 @@ import Colors from '../../constants/Colors';
 
 const RewardScreen = props => {
     const u_id = useSelector(state => state.user.user.id);
-    console.log('------ID--------');
-    console.log(u_id);
+    //console.log('------ID--------');
+    //console.log(u_id);
     return (
         <View style={styles.screen}>
             <Text>
