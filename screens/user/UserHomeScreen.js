@@ -17,7 +17,7 @@ const UserHomeScreen = props => {
     const [error, setError] = useState();
     const allMerchants = useSelector(state => state.merchants.availableMerchants);
     const display = useSelector(state => state.user.userMerchants);
-    const u_id = useSelector(state => state.user.user).id;
+    const u_id = useSelector(state => state.user.user).id
     let updatedUserMerchants = [];
     const dispatch = useDispatch();
 
@@ -26,7 +26,7 @@ const UserHomeScreen = props => {
     // console.log('------display-------------');
     // console.log(display)
 
-    if(display && allMerchants.length >0){
+    if(display && allMerchants.length > 0){
         for(const key in display){
             const merch = allMerchants.find(m=>m.id === display[key]);
             // console.log('....merch....');
@@ -69,7 +69,7 @@ const UserHomeScreen = props => {
         setIsLoading(true);
         loadMerchants().then(() => {
           setIsLoading(false);
-          console.log('is loading');
+          //console.log('is loading');
           //console.log(allMerchants);
         });
     }, [dispatch, loadMerchants]);    

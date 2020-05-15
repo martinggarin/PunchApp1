@@ -11,8 +11,8 @@ const SearchMerchantScreen = props => {
     const [isLoading, setIsLoading] = useState(false);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [error, setError] = useState();
-    console.log('----display------');
-    console.log(display);
+    //console.log('----display------');
+    //console.log(display);
     const dispatch = useDispatch();
 
     const loadMerchants = useCallback(async () => {

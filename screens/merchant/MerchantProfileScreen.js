@@ -9,7 +9,6 @@ import HeaderButton from '../../components/HeaderButton';
 
 const MerchantProfileScreen = props => {
     console.log('Merchant Profile');
-
     const r_item = useSelector(state => state.merchants.myMerchant);
     //console.log(r_item)
     const deals = useSelector(state => state.merchants.myDeals);

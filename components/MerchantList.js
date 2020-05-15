@@ -8,6 +8,7 @@ import RewardBalance from '../components/RewardBalance';
 const MerchantList = props => {
     const faves = useSelector(state => state.user.userMerchants);
     const rs = useSelector(state => state.user.userRewards);
+    // console.log(faves)
     // console.log(rs);
     const renderItems = (itemData) => {
         //const prog = itemData.item.punches/itemData.item.getDeal().ammount;

@@ -24,7 +24,7 @@ export default function App() {
   
   return (
     <Provider store={store}>
-      <PunchNavigator />
+      <PunchNavigator/>
     </Provider>
   );
 }

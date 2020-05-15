@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     },
     upperContainer:{
         width:'95%',
-        height:200,
+        height:180,
         alignItems:'center',
         justifyContent:'center',
         backgroundColor:Colors.backgrounddark,
