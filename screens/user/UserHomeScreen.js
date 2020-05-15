@@ -74,14 +74,19 @@ const UserHomeScreen = props => {
         });
     }, [dispatch, loadMerchants]);    
 
-    const footer = (<TouchableOpacity
-        onPress={()=> props.navigation.navigate('Explore')}
-        style={styles.addContainer}
-    >
-        <View style={styles.addContainer}>
-            <Ionicons name={'md-add-circle'} size={50}/>
-        </View>
-    </TouchableOpacity>);
+    const footer = (
+        <TouchableOpacity
+            onPress={()=> {
+                props.navigation.navigate('Explore')
+            }}
+            style={styles.addContainer}
+        >
+            <View style={styles.addContainer}>
+                <Ionicons name={'md-add-circle'} size={30} color={'black'} />
+                <Text>Add Favorites</Text>
+            </View>
+        </TouchableOpacity>
+    )
 
     if(updatedUserMerchants.length > 0){
         return(
@@ -100,10 +105,7 @@ const UserHomeScreen = props => {
             </SafeAreaView>
         );
     }else{
-        return(
-            <View>
-                <Text>There are no items, add some</Text>
-            </View>);
+        return(footer)
     }
 };
 
