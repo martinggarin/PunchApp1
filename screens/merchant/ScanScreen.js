@@ -78,6 +78,7 @@ const ScanScreen = props => {
                 }catch(err){
                     if (err === 'none'){
                         await dispatch(merchantActions.updateCustomers(r_id, data))
+                        await dispatch(userActions.toggleFav(r_id, data, true))
                         Alert.alert(
                             "Reward Redeemed",
                             input+" point(s) added to user: "+data,

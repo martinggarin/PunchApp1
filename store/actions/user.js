@@ -184,10 +184,14 @@ export const refreshUser = (id) => {
   };
 }
 
-export const toggleFav = (r_id, u_id) => {
+export const toggleFav = (r_id, u_id, merchantSide) => {
   console.log('~User Action: toggleFav')
   return async (dispatch, getState) => {
-    const token = getState().user.token
+    if (merchantSide) {
+      var token = getState().merchants.token
+    }else{
+      var token = getState().user.token
+    }
     const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/users/${u_id}.json?auth=${token}`);
     if(!response1.ok){
       throw new Error('response 1 was not fetched');
