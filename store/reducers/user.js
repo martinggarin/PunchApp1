@@ -20,7 +20,7 @@ export default (state = initialState, action) => {
 
         case CREATE_USER:
             const newUser = new Customer(action.userData.id, action.userData.email);
-            newUser.RD = [];
+            newUser.RS = [];
             newUser.favorites = [];
             return {...state,
                 user:newUser,
@@ -39,32 +39,10 @@ export default (state = initialState, action) => {
             return initialState
 
         case REFRESH_USER: 
-            const refreshUser = new Customer(
-                action.user.id,
-                action.user.email,
-                action.user.password);
-            refreshUser.favorites = [];
-            refreshUser.RS = [];
-            //console.log('_______RS______');
-            if(!(action.user.RS === undefined)){
-                for (const key in action.user.RS){
-                    refreshUser.RS.push(
-                        new RewardsStatus(action.user.RS[key].r_id, action.user.RS[key].ammount)
-                        );
-                };
-            }//if rs
-            //console.log(refreshUser.RS);
-            if(!(action.user.favorites === undefined)){
-                for(const key in action.user.favorites){
-                    refreshUser.favorites.push(
-                        action.user.favorites[key]
-                    );
-                }
-            }//if favorites
             return {...state,
-                user: refreshUser, 
-                userMerchants: refreshUser.favorites,
-                userRewards: refreshUser.RS};   
+                user: action.user, 
+                userMerchants: action.user.favorites,
+                userRewards: action.user.RS};   
 
         case TOGGLE_FAV:
             // const updatedUserMerchants = [...];

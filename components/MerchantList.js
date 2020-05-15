@@ -9,11 +9,20 @@ const MerchantList = props => {
     const faves = useSelector(state => state.user.userMerchants);
     const rs = useSelector(state => state.user.userRewards);
     // console.log(faves)
-    // console.log(rs);
+    //console.log(rs);
     const renderItems = (itemData) => {
         //const prog = itemData.item.punches/itemData.item.getDeal().ammount;
-        const isFav = faves.some(r => r === itemData.item.id);
-        const hasRS = rs.some(r => r.r_id === itemData.item.id);
+        if (faves === undefined){
+            var isFav = false
+        }else{
+            var isFav = faves.some(r => r === itemData.item.id);
+        }
+        if (rs === undefined){
+            var hasRS = false
+        }else{
+            var hasRS = rs.some(r => r.r_id === itemData.item.id);
+        }
+            
         let loyaltyPoints = 0;
         if(hasRS){
             // console.log('________hasRS________');

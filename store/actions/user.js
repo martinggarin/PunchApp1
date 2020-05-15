@@ -128,7 +128,7 @@ export const getUser = (email, password) => {
       throw new Error('Something went wrong!');
     }
     const resData = await response.json()
-    
+    //console.log(resData)
     const user = new Customer(userKey, email);
     user.RS = resData.RS;
     user.favorites = resData.favorites;
@@ -165,16 +165,16 @@ export const refreshUser = (id) => {
 
       const resData = await response.json();
       //console.log("_________Refreshing User________");
-      const user = new Customer(id, resData.email, resData.password);
+      const user = new Customer(id, resData.email);
 
       user.RS = resData.RS;
-      user.favorites = [];
+      user.favorites = resData.favorites;
       
-      if(!(resData.favorites === undefined)){
-        for(const key in resData.favorites){
-          user.favorites.push(resData.favorites[key]);
-        }
-      }
+      // if(!(resData.favorites === undefined)){
+      //   for(const key in resData.favorites){
+      //     user.favorites.push(resData.favorites[key]);
+      //   }
+      // }
       
       dispatch({ type: REFRESH_USER, user: user });
     } catch (err) {

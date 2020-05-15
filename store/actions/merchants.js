@@ -155,7 +155,7 @@ export const logoutMerchant = () => {
   return async dispatch => {
     await dispatch({ type: LOGOUT_MERCHANT})
   }
-}
+};
 
 export const updateMerchant = (id, title, price, type, address, city) => {
   console.log('~Merchant Action: updateMerchant')
@@ -201,7 +201,7 @@ export const updateMerchant = (id, title, price, type, address, city) => {
       merchantData: updatedMerchantData 
     })
   }
-}
+};
 
 export const updateCustomers = (id, customerID) => {
   console.log('~Merchant Action: updateCustomers')
@@ -248,7 +248,7 @@ export const updateCustomers = (id, customerID) => {
       merchantData:merchantData
     })
   }
-}
+};
 
 export const updateDeal = (id, ammount, reward, code) => {
   console.log('~Merchant Action: updateDeal')
@@ -298,7 +298,7 @@ export const updateDeal = (id, ammount, reward, code) => {
       deal: deal
     })
   }
-}
+};
 
 export const removeDeal = (id, code) => {
   console.log('~Merchant Action: removeDeal')
@@ -348,7 +348,7 @@ export const removeDeal = (id, code) => {
       deal: deal
     })
   }
-}
+};
 
 export const loadAllMerchants = () => {
     console.log('~Merchant Action: loadAllMerchants')

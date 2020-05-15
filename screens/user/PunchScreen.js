@@ -15,15 +15,23 @@ const PunchScreen = props => {
     console.log(r_id);
     const r_item = useSelector(state => state.merchants.availableMerchants).find(r=> r.id === r_id);
     const faves = useSelector(state => state.user.userMerchants);
-    const isFav = faves.some(r => r === r_id);
     const u_id = useSelector(state=> state.user.user.id);
-    
     const rs = useSelector(state => state.user.userRewards);
-    const hasRS = rs.some(r => r.r_id === r_id);
+    
+    if (faves === undefined){
+        var isFav = false
+    }else{
+        var isFav = faves.some(r => r === r_id);
+    }
+    if (rs === undefined){
+        var hasRS = false
+    }else{
+        var hasRS = rs.some(r => r.r_id === r_id);
+    }
     let loyaltyPoints = 0;
     if(hasRS){
         loyaltyPoints = rs.find(r=>r.r_id === r_id).ammount;
-        }
+    }
 
     const dispatch = useDispatch();
 
@@ -50,7 +58,7 @@ const PunchScreen = props => {
                    <Ionicons name={'md-add-circle'} size={75}/>
                 </View>
             </PunchCard>
-            <View style={{height:'67.5%', width:'95%', justifyContent:'center'}}>
+            <View style={{height:'67.5%', width:'100%', justifyContent:'center'}}>
                 <DealList 
                     merchantSide={false}
                     dealData={r_item.deal}
