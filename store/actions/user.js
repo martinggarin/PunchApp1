@@ -2,9 +2,9 @@ export const CREATE_USER = 'CREATE_USER';
 export const GET_USER = 'GET_USER';
 export const UPDATE_USER = 'UPDATE_USER';
 export const TOGGLE_FAV = 'TOGGLE_FAV';
-export const FETCH_MERCHANTS = 'FETCH_MERCHANTS';
 export const UPDATE_RS = 'UPDATE_RS';
 export const REFRESH_USER = 'REFRESH_USER';
+export const LOGOUT_USER = 'LOGOUT_USER'
 
 import Customer from '../../models/Customer';
 import Restaurants from '../../models/Restaurants';
@@ -13,19 +13,18 @@ import RewardStatus from '../../models/RewardsStatus';
 export const updateRewards = (r_id, u_id, ammount) => {
   console.log('~User Action: updateRewards')
   //update the value of user rewards status... TODO
-  console.log(u_id)
-  return async dispatch =>{
-
-    const response1 = await fetch('https://punchapp-86a47.firebaseio.com/users/'+u_id+'.json');
+  //console.log(u_id)
+  return async (dispatch, getState) =>{
+    const token = getState().user.token
+    const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/users/${u_id}.json?auth=${token}`);
     if(!response1.ok){
       throw new Error('Something Went Wrong!');
     };
     const resData1 = await response1.json();
-    console.log(resData1)
+    //console.log(resData1)
     if(resData1 === null){
       throw new Error('User does not exist!')
     }
-    console.log('failed catch null')
     const rs = resData1.RS; 
 
     //console.log('-----Updating RS-----');
@@ -72,7 +71,7 @@ export const updateRewards = (r_id, u_id, ammount) => {
     //console.log(RS);
     //const d = new Deal(ammount, reward, '|.||..|.||..|');
 
-    const response = await fetch(`https://punchapp-86a47.firebaseio.com/users/${u_id}.json`,
+    const response = await fetch(`https://punchapp-86a47.firebaseio.com/users/${u_id}.json?auth=${token}`,
       {
         method: 'PATCH',
         headers: {
@@ -97,55 +96,11 @@ export const updateRewards = (r_id, u_id, ammount) => {
 
 }
 
-export const fetchMerchants = () => {
-  console.log('~User Action: fetchMerchants')
-  return async dispatch => {
-    // any async code you want!
-    try {
-      const response = await fetch(
-        'https://punchapp-86a47.firebaseio.com/merchants.json'
-      );
-      console.log('merchant loading');
-
-      if (!response.ok) {
-        throw new Error('Something went wrong!');
-      }
-
-      const resData = await response.json();
-      const merchants = [];
-
-      for (const key in resData) {
-        const m =
-          new Restaurants(
-            key,
-            resData[key].email,
-        );
-        m.title = resData[key].title
-        m.price = resData[key].price
-        m.type = resData[key].type
-        m.address = resData[key].address
-        m.city = resData[key].city
-        m.deal = resData[key].deal;
-        m.customers = resData[key].customers
-        merchants.push(m);
-      };
-      if(merchants === 0){
-        throw new Error('email and password arent valid'); 
-      }
-      
-      dispatch({ type: FETCH_MERCHANTS, merchants: merchants });
-    } catch (err) {
-      // send to custom analytics server
-      throw err;
-    }
-  };
-};
-
 export const toggleFav = (r_id, u_id) => {
   console.log('~User Action: toggleFav')
-  return async dispatch => {
-
-    const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/users/${u_id}.json`);
+  return async (dispatch, getState) => {
+    const token = getState().user.token
+    const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/users/${u_id}.json?auth=${token}`);
     if(!response1.ok){
       throw new Error('response 1 was not fetched');
     };
@@ -174,7 +129,7 @@ export const toggleFav = (r_id, u_id) => {
     //console.log(favorites);
 
     const response = await fetch(
-      `https://punchapp-86a47.firebaseio.com/users/${u_id}.json`,
+      `https://punchapp-86a47.firebaseio.com/users/${u_id}.json?auth=${token}`,
       {
         method: 'PATCH',
         headers: {
@@ -216,13 +171,14 @@ export const createUser = (email, password) => {
       }
     );
     if (!authResponse.ok) {
-      throw new Error('Something went wrong!');
+      throw new Error('That username is taken.');
     }
-    //const authenticatedUser = await authResponse.json();
+    const authenticatedUser = await authResponse.json();
+    const token = authenticatedUser.idToken
     //console.log(authenticatedUser)
 
     const response = await fetch(
-      'https://punchapp-86a47.firebaseio.com/users.json',
+      `https://punchapp-86a47.firebaseio.com/users.json?auth=${token}`,
       {
         method: 'POST',
         headers: {
@@ -240,7 +196,7 @@ export const createUser = (email, password) => {
     //console.log(resData);
 
     const keyResponse = await fetch(
-      'https://punchapp-86a47.firebaseio.com/userKeys.json',
+      `https://punchapp-86a47.firebaseio.com/userKeys.json?auth=${token}`,
       {
         method: 'POST',
         headers: {
@@ -261,12 +217,14 @@ export const createUser = (email, password) => {
       userData: {
         id: resData.name,
         email: email,
-      }
+      },
+      token:token,
     });
   };
 };
 
 export const getUser = (email, password) => {
+  console.log('~User Action: getUser')
   return async dispatch => {
     // any async code you want!
     const authResponse = await fetch(
@@ -284,12 +242,13 @@ export const getUser = (email, password) => {
       }
     );
     if (!authResponse.ok) {
-      throw new Error('Something went wrong!');
+      throw new Error('Wrong password. Try again.');
     }
     const authenticatedUser = await authResponse.json();
+    const token = authenticatedUser.idToken
       
     const keyResponse = await fetch(
-      'https://punchapp-86a47.firebaseio.com/userKeys.json'
+      `https://punchapp-86a47.firebaseio.com/userKeys.json?auth=${token}`
     );
     if (!keyResponse.ok) {
       throw new Error('Something went wrong!');
@@ -298,16 +257,16 @@ export const getUser = (email, password) => {
     
     let userKey = 0
     for (const index in keyData){
-      if (keyData[index].email === authenticatedUser.email ){
+      if (keyData[index].email === email){
         userKey = keyData[index].key
         break
       }
     }
     if (userKey === 0){
-      throw new Error('email and password arent valid');
+      throw new Error('Wrong password. Try again.');
     }
     const response = await fetch(
-      `https://punchapp-86a47.firebaseio.com/users/${userKey}.json`
+      `https://punchapp-86a47.firebaseio.com/users/${userKey}.json?auth=${token}`
     );
     if (!response.ok) {
       throw new Error('Something went wrong!');
@@ -319,16 +278,22 @@ export const getUser = (email, password) => {
     user.favorites = resData.favorites;
     //console.log(user);
     
-    dispatch({ type: GET_USER, user: user });
+    dispatch({
+      type: GET_USER,
+      user: user,
+      token: token
+    });
   };
 };
 
 export const refreshUser = (id) => {
-  return async dispatch => {
+  console.log('~User Action: refreshUser')
+  return async (dispatch, getState) => {
+    const token = getState().user.token
     // any async code you want!
     try {
       const response = await fetch(
-        `https://punchapp-86a47.firebaseio.com/users/${id}.json`
+        `https://punchapp-86a47.firebaseio.com/users/${id}.json?auth=${token}`
       );
 
       if (!response.ok) {
@@ -336,7 +301,7 @@ export const refreshUser = (id) => {
       }
 
       const resData = await response.json();
-      console.log("_________Refreshing Uer________");
+      //console.log("_________Refreshing User________");
       const user = new Customer(id, resData.email, resData.password);
 
       user.RS = resData.RS;
@@ -347,9 +312,6 @@ export const refreshUser = (id) => {
           user.favorites.push(resData.favorites[key]);
         }
       }
-      if(user === 0){
-        throw new Error('email and password arent valid'); 
-      }
       
       dispatch({ type: REFRESH_USER, user: user });
     } catch (err) {
@@ -357,4 +319,11 @@ export const refreshUser = (id) => {
       throw err;
     }
   };
+}
+
+export const logoutUser = () => {
+  console.log('~User Action: logoutUser')
+  return async dispatch => {
+    dispatch({ type: LOGOUT_USER})
+  }
 }

@@ -5,6 +5,7 @@ export const LOAD_ALL_MERCHANTS = 'LOAD_ALL_MERCHANTS';
 export const GET_MERCHANT = 'GET_MERCHANT';
 export const UPDATE_MERCHANT = 'UPDATE_MERCHANT';
 export const UPDATE_DEALS = 'UPDATE_DEALS';
+export const LOGOUT_MERCHANT = 'LOGOUT_MERCHANT'
 
 import Restaurants from '../../models/Restaurants';
 import Deal from '../../models/Deal';
@@ -28,12 +29,13 @@ export const getMerchant = (email, password) => {
         }
       );
       if (!authResponse.ok) {
-        throw new Error('Something went wrong!');
+        throw new Error('Wrong password. Try again.');
       }
       const authenticatedMerchant = await authResponse.json();
+      const token = authenticatedMerchant.idToken
         
       const keyResponse = await fetch(
-        'https://punchapp-86a47.firebaseio.com/merchantKeys.json'
+        `https://punchapp-86a47.firebaseio.com/merchantKeys.json?auth=${token}`
       );
       if (!keyResponse.ok) {
         throw new Error('Something went wrong!');
@@ -48,10 +50,10 @@ export const getMerchant = (email, password) => {
         }
       }
       if (merchantKey === 0){
-        throw new Error('email and password arent valid');
+        throw new Error('Wrong password. Try again.');
       }
       const response = await fetch(
-        `https://punchapp-86a47.firebaseio.com/merchants/${merchantKey}.json`
+        `https://punchapp-86a47.firebaseio.com/merchants/${merchantKey}.json?auth=${token}`
       );
       if (!response.ok) {
         throw new Error('Something went wrong!');
@@ -70,7 +72,11 @@ export const getMerchant = (email, password) => {
       //console.log('Fetching Deal')
       //console.log(resData[key].deal);
       //console.log(merchant.deal);
-      dispatch({ type: GET_MERCHANT, merchant: merchant });
+      dispatch({ 
+        type: GET_MERCHANT,
+        merchant: merchant,
+        token:token
+      });
     };
 };
 
@@ -79,18 +85,19 @@ export const loadAllMerchants = () => {
     //this is gonna load the specific merchant with the inputed id
     //since our app is allready gonna have downloaded all the merchants
     //we will be able to pass the id as a parameter, this will not be the same for the user
-    return async dispatch => {
+    return async (dispatch, getState) => {
         // any async code you want!
+        const token = getState().user.token
         try {
           const response = await fetch(
-            'https://punchapp-86a47.firebaseio.com/merchants.json'
+            `https://punchapp-86a47.firebaseio.com/merchants.json?auth=${token}`
           );
-    
           if (!response.ok) {
             throw new Error('Something went wrong!');
           }
     
           const resData = await response.json();
+          //console.log(resData)
           const loadedMerchants = [];
     
           for (const key in resData) {
@@ -110,7 +117,7 @@ export const loadAllMerchants = () => {
             //r.deal.concat(resData[key].deal);
             loadedMerchants.push(r);
           }
-          // console.log(loadedMerchants);
+          //console.log(loadedMerchants);
 
           dispatch({ type: LOAD_ALL_MERCHANTS, merchants: loadedMerchants });
         } catch (err) {
@@ -154,13 +161,14 @@ export const createMerchant = (email, password) => {
       }
     );
     if (!authResponse.ok) {
-      throw new Error('Something went wrong!');
+      throw new Error('That username is taken.');
     }
-    //const authenticatedMerchant = await authResponse.json();
+    const authenticatedMerchant = await authResponse.json();
+    const token = authenticatedMerchant.idToken
     //console.log(authenticatedMerchant)
 
     const response = await fetch(
-      'https://punchapp-86a47.firebaseio.com/merchants.json',
+      `https://punchapp-86a47.firebaseio.com/merchants.json?auth=${token}`,
       {
         method: 'POST',
         headers: {
@@ -178,7 +186,7 @@ export const createMerchant = (email, password) => {
     //console.log(resData);
 
     const keyResponse = await fetch(
-      'https://punchapp-86a47.firebaseio.com/merchantKeys.json',
+      `https://punchapp-86a47.firebaseio.com/merchantKeys.json?auth=${token}`,
       {
         method: 'POST',
         headers: {
@@ -199,7 +207,8 @@ export const createMerchant = (email, password) => {
       merchantData: {
         id: resData.name,
         email: email
-      }
+      },
+      token:token
     });
   };
 };
@@ -207,8 +216,9 @@ export const createMerchant = (email, password) => {
 //make it so you can edit merchant profile information
 export const updateMerchant = (id, title, price, type, address, city) =>{
   console.log('~Merchant Action: updateMerchant')
-  return async dispatch =>{
-    const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json`);
+  return async (dispatch, getState) =>{
+    const token = getState().merchants.token
+    const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json?auth=${token}`);
     if(!response1.ok){
       throw new Error('response 1 was not fetched');
     };
@@ -227,7 +237,7 @@ export const updateMerchant = (id, title, price, type, address, city) =>{
     updatedMerchantData.address = address
     updatedMerchantData.city = city
 
-    const response = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json`,
+    const response = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json?auth=${token}`,
       {
         method: 'PATCH',
         headers: {
@@ -252,8 +262,9 @@ export const updateMerchant = (id, title, price, type, address, city) =>{
 
 export const updateCustomers = (id, customerID) => {
   console.log('~Merchant Action: updateCustomers')
-  return async dispatch =>{
-    const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json`);
+  return async (dispatch, getState) =>{
+    const token = getState().merchants.token
+    const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json?auth=${token}`);
     if(!response1.ok){
       throw new Error('response 1 was not fetched');
     };
@@ -277,7 +288,7 @@ export const updateCustomers = (id, customerID) => {
     }
     merchantData.customers = customers
 
-    const response = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json`,
+    const response = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json?auth=${token}`,
       {
         method: 'PATCH',
         headers: {
@@ -298,8 +309,9 @@ export const updateCustomers = (id, customerID) => {
 
 export const updateDeal = (id, ammount, reward, code) =>{
   console.log('~Merchant Action: updateDeal')
-  return async dispatch =>{
-    const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json`);
+  return async (dispatch, getState) =>{
+    const token = getState().merchants.token
+    const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json?auth=${token}`);
     if(!response1.ok){
       throw new Error('response 1 was not fetched');
     };
@@ -323,7 +335,7 @@ export const updateDeal = (id, ammount, reward, code) =>{
       deal[code] = newDeal
     }
 
-    const response = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json`,
+    const response = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json?auth=${token}`,
       {
         method: 'PATCH',
         headers: {
@@ -347,9 +359,9 @@ export const updateDeal = (id, ammount, reward, code) =>{
 
 export const removeDeal = (id, code) =>{
   console.log('~Merchant Action: removeDeal')
-  return async dispatch =>{
-
-    const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json`);
+  return async (dispatch, getState) =>{
+    const token = getState().merchants.token
+    const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json?auth=${token}`);
     if(!response1.ok){
       throw new Error('response 1 was not fetched');
     };
@@ -373,7 +385,7 @@ export const removeDeal = (id, code) =>{
     }
     //console.log(deal);
 
-    const response = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json`,
+    const response = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json?auth=${token}`,
       {
         method: 'PATCH',
         headers: {
@@ -392,5 +404,12 @@ export const removeDeal = (id, code) =>{
       type: UPDATE_DEALS,
       deal: deal
     })
+  }
+}
+
+export const logoutMerchant = () => {
+  console.log('~Merchant Action: logoutMerchant')
+  return async dispatch => {
+    await dispatch({ type: LOGOUT_MERCHANT})
   }
 }

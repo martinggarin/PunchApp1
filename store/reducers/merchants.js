@@ -4,15 +4,15 @@ import {
         CREATE_MERCHANT, 
         GET_MERCHANT, 
         UPDATE_MERCHANT,
-        LOAD_ALL_MERCHANTS} from '../actions/merchants';
+        LOAD_ALL_MERCHANTS,
+        LOGOUT_MERCHANT} from '../actions/merchants';
 import Restaurants from '../../models/Restaurants';
 
 const initialState = {
-
+    token:null,
     availableMerchants: [], 
     myMerchant: {}, 
     myDeals: []
-
 };
 //most problems have been due to my inability to spell retaurant
 export default (state = initialState, action) => {
@@ -55,6 +55,8 @@ export default (state = initialState, action) => {
                 myMerchant: updatedMerchant,
                 myDeals: updatedMerchant.deal
             }
+        case LOGOUT_MERCHANT:
+            return initialState
         case LOAD_ALL_MERCHANTS:
             return {
                 ...state,

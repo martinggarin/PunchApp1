@@ -4,12 +4,14 @@ import {
     GET_USER,
     CREATE_USER,
     TOGGLE_FAV,
-    FETCH_MERCHANTS} from '../actions/user';
+    FETCH_MERCHANTS,
+    LOGOUT_USER} from '../actions/user';
 import Customer from '../../models/Customer';
 import RewardsStatus from '../../models/RewardsStatus';
 import { ActionSheetIOS } from 'react-native';
 
 const initialState = {
+    token: null,
     user: {}, 
     userMerchants: [], 
     userRewards: []
@@ -22,14 +24,17 @@ export default (state = initialState, action) => {
             const newUser = new Customer(action.userData.id, action.userData.email);
             newUser.RD = [];
             newUser.favorites = [];
-            return {...state, user: newUser};
-
+            return {...state,
+                user:newUser,
+                token:action.token,
+            };
         case GET_USER:
             return {...state,
                 user: action.user, 
                 userMerchants: action.user.favorites,
-                userRewards: action.user.RS};
-                
+                userRewards: action.user.RS,
+                token:action.token, 
+            };
         case REFRESH_USER: 
             const refreshUser = new Customer(
                 action.user.id,
@@ -46,7 +51,7 @@ export default (state = initialState, action) => {
                         );
                 };
             }//if rs
-            console.log(refreshUser.RS);
+            //console.log(refreshUser.RS);
             if(!(action.user.favorites === undefined)){
                 for(const key in action.user.favorites){
                     refreshUser.favorites.push(
@@ -55,17 +60,12 @@ export default (state = initialState, action) => {
                 }
             }//if favorites
             
-            return {
+            return {...state,
                 user: refreshUser, 
                 userMerchants: refreshUser.favorites,
-                userRewards: refreshUser.RS};
-                
-        case FETCH_MERCHANTS:
-            return {
-                ...state, 
-                userMerchants: action.merchants.filter(m => m.id === state.user.favorites)
-            };
-
+                userRewards: refreshUser.RS};   
+        case LOGOUT_USER:
+            return initialState
         case TOGGLE_FAV:
             // const updatedUserMerchants = [...];
             // for(const key in action.favorites){
@@ -79,12 +79,10 @@ export default (state = initialState, action) => {
         case UPDATE_RS:
             //console.log('______updated RS_______');
             //console.log(action.RS)
-            
             return{
                 ...state,
                 userRewards: action.RS
             }
-            
         default:
             return state;
     };

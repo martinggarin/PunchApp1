@@ -1,13 +1,12 @@
 import React from 'react';
 import { Ionicons, AntDesign } from '@expo/vector-icons';
-import {Platform} from 'react-native';
+import {Platform, SafeAreaView, Button, View} from 'react-native';
 import {createStackNavigator} from 'react-navigation-stack'; 
 import {createAppContainer} from 'react-navigation';
-import {createDrawerNavigator} from 'react-navigation-drawer';
+import {createDrawerNavigator, DrawerNavigatorItems} from 'react-navigation-drawer';
 import {createMaterialBottomTabNavigator} from 'react-navigation-material-bottom-tabs';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import HeaderButton from '../components/HeaderButton';
+import {useSelector, useDispatch} from 'react-redux'
 
 import UserHomeScreen from '../screens/user/UserHomeScreen';
 import PunchScreen from '../screens/user/PunchScreen';
@@ -20,6 +19,9 @@ import Colors from '../constants/Colors';
 import EditScreen from '../screens/merchant/EditScreen';
 import UpdateDealScreen from '../screens/merchant/UpdateDealScreen';
 import ScanScreen from '../screens/merchant/ScanScreen';
+import * as MerchantActions from '../store/actions/merchants';
+import * as UserActions from '../store/actions/user';
+
 
 
 const defaultOptions = {
@@ -161,7 +163,7 @@ const UserTabNavigator = Platform.OS ==='android'
 
 
 const MerchantNavigator = createStackNavigator({
-    Login: MerchantLoginScreen,
+    MerchantLogin: MerchantLoginScreen,
     MerchantHome: {
         screen: MerchantTabNavigator,
         navigationOptions: {headerShown:false}
@@ -169,6 +171,15 @@ const MerchantNavigator = createStackNavigator({
     Edit:EditScreen,
     UpdateDeal:UpdateDealScreen
 }, {
+    navigationOptions: {
+        drawerIcon: drawerConfig => (
+            <Ionicons
+                name={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'}
+                size={23}
+                color={drawerConfig.tintColor}
+            />
+        )
+    },
     defaultNavigationOptions: defaultOptions
 });
 
@@ -180,6 +191,15 @@ const UserNavigator = createStackNavigator({
     },
     Punch: PunchScreen,
 }, {
+    navigationOptions: {
+        drawerIcon: drawerConfig => (
+            <Ionicons
+                name={Platform.OS === 'android' ? 'md-person' : 'ios-person'}
+                size={23}
+                color={drawerConfig.tintColor}
+            />
+        )
+    },
     defaultNavigationOptions: defaultOptions
 });
 
@@ -200,6 +220,39 @@ const MainNavigator = createDrawerNavigator({
 }, {
     contentOptions:{
         activeTintColor:Colors.header,
+    },
+    contentComponent: props => {
+        const user = useSelector(state => state.user.user)
+        const merchant = useSelector(state => state.merchants.myMerchant);
+        if (user.id || merchant.id) {
+            var showLogout = true
+        }else{
+            var showLogout = false
+        }
+
+        const dispatch = useDispatch()
+        return (
+            <View style={{flex:1, marginTop:20}}>
+                <SafeAreaView forceInset={{top:'always', horizontal:'never'}}>
+                    <DrawerNavigatorItems style={{}} {...props}/>
+                    <View style={{alignItems:'center', marginTop:5}}>
+                        <View style={{width:'50%'}}>
+                            {showLogout && <Button 
+                                title='Logout'
+                                color={Colors.darkLines}
+                                onPress={() => {
+                                    props.navigation.navigate('MerchantLogin')
+                                    dispatch(MerchantActions.logoutMerchant())
+                                    props.navigation.navigate('UserLogin')
+                                    dispatch(UserActions.logoutUser())
+                                }}
+                            />}
+                        </View>
+                    </View>
+                    
+                </SafeAreaView>
+            </View>
+        )
     }
 });
 

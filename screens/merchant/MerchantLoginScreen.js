@@ -6,7 +6,8 @@ import { useDispatch } from 'react-redux';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import HeaderButton from '../../components/HeaderButton';
 import * as merchantActions from '../../store/actions/merchants';
-import { Colors } from 'react-native-paper';
+import { ActivityIndicator } from 'react-native-paper';
+import Colors from '../../constants/Colors';
 
 const INPUT_UPDATE = 'INPUT_UPDATE';
 const RE_PASSWORD_UPDATE = 'RE_PASSWORD_UPDATE'
@@ -41,6 +42,7 @@ const MerchantLoginScreen = props => {
     console.log('Merchant Login')
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
+    const [isNewUser, setIsNewUser] = useState(true);
     const [promptVisability, setPromptVisability] = useState(false)
     //const merchants = useSelector(state => state.merchants.availableMerchants);
     const dispatch = useDispatch();
@@ -68,10 +70,12 @@ const MerchantLoginScreen = props => {
                 formState.inputValues.password
             ));
             props.navigation.navigate('MerchantHome');
+            setIsNewUser(false)
         } catch(err){
             setError(err.message);
         }
-        setIsLoading(false);
+        setIsLoading(false)
+        setIsNewUser(true)
 
     }, [formState]);
 
@@ -81,7 +85,7 @@ const MerchantLoginScreen = props => {
         if(!(formState.inputValues.password === formState.rePassword)){
             Alert.alert(
                 'Passwords do not match!',
-                'Please check your passwords', 
+                'Please check password inputs', 
                 [{text: 'Okay'}]);
             return;
         }
@@ -93,11 +97,13 @@ const MerchantLoginScreen = props => {
                 formState.inputValues.password,
             ));
             props.navigation.navigate('Edit',{newMerchant:true});
+            setIsNewUser(false)
         }
         catch(err){
             setError(err.message);
         }
         setIsLoading(false);
+        setIsNewUser(true)
     }, [formState]);
 
     const inputChangeHandler = useCallback((inputValues, inputValidities) => {
@@ -111,13 +117,13 @@ const MerchantLoginScreen = props => {
 
     useEffect(() => {
         if (error) {
-          Alert.alert('An error occurred!', error, [{ text: 'Okay' }]);
+          Alert.alert('Problem signing in!', error, [{ text: 'Okay' }]);
         }
     }, [error]);
 
     return(
         <View style={styles.screen}>
-            <LoginInput
+             {isNewUser && <LoginInput
                 onInputChange={inputChangeHandler}
                 onLogin={() => {
                     if (formState.formIsValid){
@@ -125,7 +131,7 @@ const MerchantLoginScreen = props => {
                     }else{
                         Alert.alert(
                             'Invalid Input!',
-                            'Please check that your inputs...', 
+                            'Please check your inputs...', 
                             [{text: 'Okay'}]
                         );
                     }
@@ -136,12 +142,13 @@ const MerchantLoginScreen = props => {
                     }else{
                         Alert.alert(
                             'Invalid Input!',
-                            'Please check that your inputs...', 
+                            'Please check your inputs...', 
                             [{text: 'Okay'}]
                     );
                 }
                 }}
-            />
+            />}
+            {isLoading && <ActivityIndicator color={Colors.darkLines} size='large' style={{marginTop:20}}/>}
             <Dialog.Container visible={promptVisability}>
                 <Dialog.Title style={{fontWeight:'bold'}}>Confirmation Required!</Dialog.Title>
                 <Dialog.Description>
