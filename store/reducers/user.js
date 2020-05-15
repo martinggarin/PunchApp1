@@ -1,14 +1,12 @@
 import {
+    CREATE_USER,
+    GET_USER,
+    LOGOUT_USER,
     REFRESH_USER,
     UPDATE_RS,
-    GET_USER,
-    CREATE_USER,
-    TOGGLE_FAV,
-    FETCH_MERCHANTS,
-    LOGOUT_USER} from '../actions/user';
+    TOGGLE_FAV} from '../actions/user';
 import Customer from '../../models/Customer';
 import RewardsStatus from '../../models/RewardsStatus';
-import { ActionSheetIOS } from 'react-native';
 
 const initialState = {
     token: null,
@@ -18,8 +16,8 @@ const initialState = {
 };
 
 export default (state = initialState, action) => {
-
     switch(action.type){
+
         case CREATE_USER:
             const newUser = new Customer(action.userData.id, action.userData.email);
             newUser.RD = [];
@@ -28,6 +26,7 @@ export default (state = initialState, action) => {
                 user:newUser,
                 token:action.token,
             };
+
         case GET_USER:
             return {...state,
                 user: action.user, 
@@ -35,6 +34,10 @@ export default (state = initialState, action) => {
                 userRewards: action.user.RS,
                 token:action.token, 
             };
+
+        case LOGOUT_USER:
+            return initialState
+
         case REFRESH_USER: 
             const refreshUser = new Customer(
                 action.user.id,
@@ -43,7 +46,6 @@ export default (state = initialState, action) => {
             refreshUser.favorites = [];
             refreshUser.RS = [];
             //console.log('_______RS______');
-
             if(!(action.user.RS === undefined)){
                 for (const key in action.user.RS){
                     refreshUser.RS.push(
@@ -59,13 +61,11 @@ export default (state = initialState, action) => {
                     );
                 }
             }//if favorites
-            
             return {...state,
                 user: refreshUser, 
                 userMerchants: refreshUser.favorites,
                 userRewards: refreshUser.RS};   
-        case LOGOUT_USER:
-            return initialState
+
         case TOGGLE_FAV:
             // const updatedUserMerchants = [...];
             // for(const key in action.favorites){
@@ -76,15 +76,15 @@ export default (state = initialState, action) => {
                 ...state,
                 userMerchants: action.favorites
             };
+
         case UPDATE_RS:
             //console.log('______updated RS_______');
             //console.log(action.RS)
-            return{
-                ...state,
+            return{...state,
                 userRewards: action.RS
             }
+
         default:
             return state;
     };
-    return state;
 };
