@@ -28,7 +28,7 @@ const MerchantProfileScreen = props => {
     const dealTapHandler = useCallback((dealCode) => {
         Alert.alert(
             deals[dealCode].reward+" Deal Selected",
-            deals[dealCode].ammount+" points will be deducted from the customer's loyalty point balance",
+            deals[dealCode].ammount+" point(s) will be deducted from the customer's loyalty point balance",
             [
                 { 
                     text: "Cancel",
