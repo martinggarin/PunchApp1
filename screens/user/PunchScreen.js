@@ -18,6 +18,11 @@ const PunchScreen = props => {
     const u_id = useSelector(state=> state.user.user.id);
     const rs = useSelector(state => state.user.userRewards);
     
+    if (r_item === undefined){
+        var deals = []
+    }else{
+        var deals = r_item.deal
+    }
     if (faves === undefined){
         var isFav = false
     }else{
@@ -62,7 +67,7 @@ const PunchScreen = props => {
             <View style={{height:'67.5%', width:'100%', justifyContent:'center'}}>
                 <DealList 
                     merchantSide={false}
-                    dealData={r_item.deal}
+                    dealData={deals}
                     onTap={() => props.navigation.navigate('Reward')}
                 />
             </View>
