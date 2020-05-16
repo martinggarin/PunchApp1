@@ -36,6 +36,9 @@ export default (state = initialState, action) => {
                 token:action.token
             };
 
+        case LOGOUT_MERCHANT:
+            return initialState
+
         case UPDATE_MERCHANT:
             var updatedMerchant = action.merchantData
             return {
