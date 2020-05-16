@@ -53,6 +53,7 @@ const SearchMerchantScreen = props => {
                 routeName={'Punch'}
                 style={styles.merchantList}
                 color={Colors.background}
+                showDeals={true}
             />
         </SafeAreaView>
     );

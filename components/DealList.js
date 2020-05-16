@@ -33,8 +33,9 @@ const DealList = props => {
                     color={Colors.background}
                 >
                     <View>
-                        <RewardBalance 
-                            balance={itemData.item.ammount}
+                        <RewardBalance
+                            text={['Loyalty', 'Points']}
+                            number={itemData.item.ammount}
                             size={10}
                         />
                     </View>

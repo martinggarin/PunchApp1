@@ -8,9 +8,10 @@ import RewardBalance from '../components/RewardBalance';
 const MerchantList = props => {
     const faves = useSelector(state => state.user.userMerchants);
     const rs = useSelector(state => state.user.userRewards);
-    // console.log(faves)
+    //console.log(faves)
     //console.log(rs);
     const renderItems = (itemData) => {
+        //console.log(itemData)
         //const prog = itemData.item.punches/itemData.item.getDeal().ammount;
         if (faves === undefined){
             var isFav = false
@@ -22,13 +23,23 @@ const MerchantList = props => {
         }else{
             var hasRS = rs.some(r => r.r_id === itemData.item.id);
         }
-            
-        let loyaltyPoints = 0;
-        if(hasRS){
-            // console.log('________hasRS________');
-            loyaltyPoints = rs.find(r=>r.r_id === itemData.item.id).ammount;
-            // console.log(loyaltyPoints);
+        if (props.showDeals){
+            var text = ['Available', 'Deals']
+            if (itemData.item.deal === undefined){
+                var number = 0
+            }else{
+                var number = itemData.item.deal.length
+            }
+        }else{
+            var text = ['Loyalty', 'Points']
+            var number = 0;
+            if(hasRS){
+                // console.log('________hasRS________');
+                number = rs.find(r=>r.r_id === itemData.item.id).ammount;
+                // console.log(number);
+            }
         }
+            
         return (
             <ListItem 
                 style={props.style}
@@ -51,9 +62,9 @@ const MerchantList = props => {
                 //prog={prog}    
             >
                 <RewardBalance 
-                    balance={loyaltyPoints}
+                    text={text}
+                    number={number}
                     size={12}
-                    
                 />
             </ListItem>
         );

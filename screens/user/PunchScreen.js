@@ -51,11 +51,12 @@ const PunchScreen = props => {
         <View style={styles.screen}>
             <PunchCard style={{height:'30%', width: '95%', margin:'2.5%', backgroundColor:Colors.backgrounddark}}>
                 <View style={styles.textContainer}>
-                   <RewardBalance 
-                        balance={loyaltyPoints}
+                    <RewardBalance
+                        text={['Loyalty', 'Points']}
+                        number={loyaltyPoints}
                         size={20}
-                   />
-                   <Ionicons name={'md-add-circle'} size={75}/>
+                    />
+                    <Ionicons name={'md-add-circle'} size={75}/>
                 </View>
             </PunchCard>
             <View style={{height:'67.5%', width:'100%', justifyContent:'center'}}>

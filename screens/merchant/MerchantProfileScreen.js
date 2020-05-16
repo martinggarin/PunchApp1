@@ -111,7 +111,6 @@ MerchantProfileScreen.navigationOptions = navigationData => {
                                 Alert.alert(
                                     'Merchant Help',
                                     'Thank you for using PunchApp! We hope you are enjoying your experience.\n\n'
-                                    +'Useful Information:\n\n'
                                     +'• Deals can be created on both the home and edit screens\n\n'
                                     +'• To edit or remove a deal, select it on the edit screen\n\n'
                                     +'• To credit loyalty points to a customer account, scan their reward code using the scanning tab\n\n'
