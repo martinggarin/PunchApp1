@@ -1,5 +1,6 @@
 import React, {useCallback, useReducer, useEffect, useState} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, Button } from 'react-native';
+import { useBackHandler } from '@react-native-community/hooks'
 import {useDispatch, useSelector} from 'react-redux';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import ProfileInput from '../../components/ProfileInput';
@@ -25,6 +26,7 @@ const formReducer = (state, action) =>{
             formIsValid = false
         }
     }
+    console.log(formIsValid)
     return {...state,
         inputValues:updatedValues,
         inputValidities:updatedValidities,
@@ -36,10 +38,12 @@ const EditScreen = props => {
     console.log('Edit Screen');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
+    const [displayHelp, setDisplayHelp] = useState(true)
     const r_item = useSelector(state => state.merchants.myMerchant);
     const deals = useSelector(state => state.merchants.myDeals);
     const newMerchant = props.navigation.getParam('newMerchant');
     const dispatch = useDispatch();
+
     if (deals === undefined){
         var totalDeals = 0
     }
@@ -64,14 +68,23 @@ const EditScreen = props => {
         },
         formIsValid:true
     }
-    if (newMerchant){
+    if (newMerchant && displayHelp){
         initialValues.inputValidities = {
-            price: true,
-            type: true,
-            address: true,
-            city: true
+            title: false,
+            price: false,
+            type: false,
+            address: false,
+            city: false
         }
         initialValues.formIsValid = false
+        Alert.alert(
+            'Welcome to PunchApp!',
+            'Your merchant account has been successfully created.\n\n'
+            +'Please complete your profile!\n\n'
+            +'When you finish, use the button in the top right corner to save your information.',
+            [{text: 'Okay'}]
+        )
+        setDisplayHelp(false)
     }
 
     //different initial values depending on entry
@@ -82,8 +95,9 @@ const EditScreen = props => {
         if (!formState.formIsValid){
             Alert.alert(
                 'Invalid Input!',
-                'Please check that your inputs...', 
-                [{text: 'Okay'}]);
+                'Please check your inputs...', 
+                [{text: 'Okay'}]
+            );
             return;
         };
         setError(null);
@@ -143,6 +157,15 @@ const EditScreen = props => {
         ); 
     })
 
+    useBackHandler(() => {
+        if (newMerchant) {
+          // handle it
+          return true
+        }
+        // let the default thing happen
+        return false
+    })
+
     useEffect(() => {
         if (error) {
             Alert.alert('An error occurred!', error, [{ text: 'Okay' }]);
@@ -172,7 +195,8 @@ const EditScreen = props => {
         <View style={styles.screen}>
             <View style={styles.upperContainer}>
                 <ProfileInput
-                    merchant={r_item}
+                    values={formState.inputValues}
+                    validities={formState.inputValidities}
                     onInputChange={inputChangeHandler}
                 />
             </View>

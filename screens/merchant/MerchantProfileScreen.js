@@ -101,16 +101,39 @@ MerchantProfileScreen.navigationOptions = navigationData => {
     return{
         headerRight: () => {
             return (
-                <Feather 
-                    name='edit'
-                    size={25}
-                    color={Colors.lightLines}
-                    style={{marginRight:10}}
-                    onPress={()=>{
-                        console.log('-Edit Profile Handler')
-                        navigationData.navigation.navigate('Edit')
-                    }}
-                />
+                <View style={{flex:1, flexDirection:'row', width:100}}>
+                    <View style={{height:'100%', width:'50%', alignItems:'center', justifyContent:'center'}}>
+                        <Feather
+                            name='help-circle'
+                            size={25}
+                            color={Colors.lightLines}
+                            onPress={()=>{
+                                Alert.alert(
+                                    'Merchant Help',
+                                    'Thank you for using PunchApp! We hope you are enjoying your experience.\n\n'
+                                    +'Useful Information:\n\n'
+                                    +'• Deals can be created on both the home and edit screens\n\n'
+                                    +'• To edit or remove a deal, select it on the edit screen\n\n'
+                                    +'• To credit loyalty points to a customer account, scan their reward code using the scanning tab\n\n'
+                                    +'• To redeem a deal for a customer, select it on the home screen and scan their reward code\n\n'
+                                    +'• Profile information can be updated on the edit screen at any time',
+                                    [{text: 'Okay'}]
+                                )
+                            }}
+                        />
+                    </View>
+                    <View style={{height:'100%', width:'50%', alignItems:'center', justifyContent:'center'}}>
+                        <Feather 
+                            name='edit'
+                            size={25}
+                            color={Colors.lightLines}
+                            onPress={()=>{
+                                console.log('-Edit Profile Handler')
+                                navigationData.navigation.navigate('Edit')
+                            }}
+                        />
+                    </View>
+                </View>
             )
         }
     }

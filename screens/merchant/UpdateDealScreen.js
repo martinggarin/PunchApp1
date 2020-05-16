@@ -144,12 +144,12 @@ const UpdateDealScreen = props => {
         <View style={styles.screen}>
             <View style={styles.container}>
                 <View style={styles.rowContainer}>
-                    <Text style={styles.text}>Ender a Name for this Reward</Text>
+                    <Text style={styles.text}>Ender a Name for this Deal</Text>
                     <View style={styles.inputView}>
                         <TextInput 
                             style = {styles.input}
                             underlineColorAndroid = "transparent"
-                            placeholder = "Reward"
+                            placeholder = "Deal"
                             placeholderTextColor = {Colors.darkLines}
                             defaultValue = {initialValues.inputValues.reward}
                             autoCapitalize = "none"
@@ -158,7 +158,7 @@ const UpdateDealScreen = props => {
                     </View>
                 </View>
                 <View style={styles.rowContainer}>
-                    <Text style={styles.text}>Enter a Point Cost for this Reward</Text>
+                    <Text style={styles.text}>Enter a Point Cost for this Deal</Text>
                     <View style={styles.inputView}>
                         <TextInput 
                             style = {styles.input}

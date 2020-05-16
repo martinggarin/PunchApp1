@@ -95,7 +95,7 @@ const MerchantLoginScreen = props => {
                 formState.inputValues.email,
                 formState.inputValues.password,
             ));
-            props.navigation.navigate('Edit',{newMerchant:true});
+            props.navigation.replace('Edit',{newMerchant:true});
             setIsNewUser(false)
         }
         catch(err){

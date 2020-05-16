@@ -46,20 +46,8 @@ const profileInputReducer = (state, action) => {
 ProfileInput = props => {
 
     const initialValues = {
-        inputValues:{
-            title: props.merchant.title,
-            type: props.merchant.type,
-            price: props.merchant.price,
-            address: props.merchant.address,
-            city: props.merchant.city
-        },
-        inputValidities:{
-            title: true,
-            type: true,
-            price: true,
-            address: true,
-            city: true
-        },
+        inputValues:props.values,
+        inputValidities:props.validities,
         touched:false
     }
     const [inputState, dispatch] = useReducer(profileInputReducer, initialValues);

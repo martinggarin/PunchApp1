@@ -1,5 +1,5 @@
 import React from 'react';
-import { Ionicons, AntDesign } from '@expo/vector-icons';
+import { Ionicons, AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 import {Platform, SafeAreaView, Button, View} from 'react-native';
 import {createStackNavigator} from 'react-navigation-stack'; 
 import {createAppContainer} from 'react-navigation';
@@ -89,7 +89,7 @@ const MerchantTabScreen = {
         screen: MerchantHomeNavigator, 
         navigationOptions:{
             tabBarIcon: (tabInfo) => {
-                return (<Ionicons name='ios-restaurant' size={25} color={tabInfo.tintColor} />);
+                return (<MaterialCommunityIcons name='home-analytics' size={25} color={tabInfo.tintColor} />);
             },
             tabBarColor: Colors.header,
         }
@@ -111,7 +111,7 @@ const tabScreen = {
         screen: UserHomeNavigator, 
         navigationOptions:{
             tabBarIcon: (tabInfo) => {
-                return (<Ionicons name='ios-restaurant' size={25} color={tabInfo.tintColor} />);
+                return (<MaterialCommunityIcons name='home-account' size={25} color={tabInfo.tintColor} />);
             },
             tabBarColor: Colors.header,
         }
@@ -129,7 +129,7 @@ const tabScreen = {
         screen:ExploreNavigator,
         navigationOptions:{
             tabBarIcon: (tabInfo) => {
-                return (<Ionicons name='ios-star' size={25} color={tabInfo.tintColor} />);
+                return (<Ionicons name='ios-search' size={25} color={tabInfo.tintColor} />);
             },
             tabBarColor: Colors.header,
             activeColor:Colors.fontLight,
