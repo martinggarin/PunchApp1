@@ -8,136 +8,95 @@ export const UPDATE_RS = 'UPDATE_RS';
 import Customer from '../../models/Customer';
 import RewardStatus from '../../models/RewardsStatus';
 
+import * as Google from 'expo-google-app-auth';
+import firebase from 'firebase'
+import { userConfig } from '../../config'
+
+import merchantApp from './merchants'
+firebase.initializeApp(userConfig, 'user')
+const userApp = firebase.app('user')
+
+
 export const createUser = (email, password) => {
   console.log('~User Action: createUser')
   return async dispatch => {
     // any async code you want!
-    const authResponse = await fetch(
-      'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCvSHOaKLtLtXsdln3K_GtNfRMQ_kONSZw',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-          returnSecureToken: true
-        })
+    let credential = await firebase.auth(userApp).createUserWithEmailAndPassword(email, password)
+    .catch(error => {
+      if (error.code === 'auth/email-already-in-use') {
+        throw new Error('That email address is already in use!');
       }
-    );
-    if (!authResponse.ok) {
-      throw new Error('That username is taken.');
-    }
-    const authenticatedUser = await authResponse.json();
-    const token = authenticatedUser.idToken
-    //console.log(authenticatedUser)
-
-    const response = await fetch(
-      `https://punchapp-86a47.firebaseio.com/users.json?auth=${token}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email:email,
-        })
+  
+      if (error.code === 'auth/invalid-email') {
+        throw new Error('That email address is invalid!');
       }
-    );
-    if (!response.ok) {
-      throw new Error('Something went wrong!');
-    }
-    const resData = await response.json();
+    });
+    
+    const u_id = credential.user.uid
+    await firebase.database(userApp).ref(`/users/${u_id}`).set({email:email})
     //console.log(resData);
-
-    const keyResponse = await fetch(
-      `https://punchapp-86a47.firebaseio.com/userKeys.json?auth=${token}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email:email,
-          key:resData.name,
-        })
-      }
-    );
-    if (!keyResponse.ok) {
-      throw new Error('Something went wrong!');
-    }
 
     dispatch({
       type: CREATE_USER,
       userData: {
-        id: resData.name,
+        id: u_id,
         email: email,
-      },
-      token:token,
+      }
     });
   };
 };
 
-export const getUser = (email, password) => {
+export const getUser = (email, password, useGoogle) => {
   console.log('~User Action: getUser')
   return async dispatch => {
     // any async code you want!
-    const authResponse = await fetch(
-      'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCvSHOaKLtLtXsdln3K_GtNfRMQ_kONSZw',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-          returnSecureToken: true
+    let credential = null
+    let googleUser = null
+    if (useGoogle){
+      googleUser = await Google.logInAsync({
+        androidClientId:'685510681673-falsomf7g38i1d2v957dksi672oa75pa.apps.googleusercontent.com',
+      });
+      if (googleUser.type === 'success'){
+        var authenticatedUser = firebase.auth.GoogleAuthProvider.credential(googleUser.idToken, googleUser.accessToken)
+        credential = await firebase.auth(userApp).signInWithCredential(authenticatedUser)
+        .catch(error => {
+          if (errorCode === 'auth/account-exists-with-different-credential') {
+            throw new Error('Email already associated with another account.');
+          } else {
+            throw new Error('Something went wrong!')
+          }
         })
+        console.log(credential)
+      }else{
+        throw new Error('Something went wrong 1!');
       }
-    );
-    if (!authResponse.ok) {
-      throw new Error('Wrong password. Try again.');
+    }else{
+      credential = await firebase.auth(userApp).signInWithEmailAndPassword(email, password)
+      .catch(error => {
+        if (error.code === 'auth/invalid-email' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+          throw new Error('Wrong password. Try again.');
+        }else{
+          throw new Error('Something went wrong!')
+        }
+      });
     }
-    const authenticatedUser = await authResponse.json();
-    const token = authenticatedUser.idToken
-      
-    const keyResponse = await fetch(
-      `https://punchapp-86a47.firebaseio.com/userKeys.json?auth=${token}`
-    );
-    if (!keyResponse.ok) {
-      throw new Error('Something went wrong!');
-    }
-    const keyData = await keyResponse.json();
-    
-    let userKey = 0
-    for (const index in keyData){
-      if (keyData[index].email === email){
-        userKey = keyData[index].key
-        break
+    const u_id = credential.user.uid
+    let resData = (await firebase.database(userApp).ref(`/users/${u_id}`).once('value')).val()
+    if (resData === null){
+      resData = {
+        email:googleUser.user.email,
       }
+      await firebase.database(userApp).ref(`users/${u_id}`).set(resData)
     }
-    if (userKey === 0){
-      throw new Error('Wrong password. Try again.');
-    }
-    const response = await fetch(
-      `https://punchapp-86a47.firebaseio.com/users/${userKey}.json?auth=${token}`
-    );
-    if (!response.ok) {
-      throw new Error('Something went wrong!');
-    }
-    const resData = await response.json()
-    //console.log(resData)
-    const user = new Customer(userKey, email);
+    const user = new Customer(u_id, email);
     user.RS = resData.RS;
     user.favorites = resData.favorites;
+    //console.log(resData)
     //console.log(user);
     
     dispatch({
       type: GET_USER,
-      user: user,
-      token: token
+      user: user
     });
   };
 };
@@ -145,6 +104,7 @@ export const getUser = (email, password) => {
 export const logoutUser = () => {
   console.log('~User Action: logoutUser')
   return async dispatch => {
+    await firebase.auth(userApp).signOut()
     dispatch({ type: LOGOUT_USER})
   }
 }
@@ -152,29 +112,12 @@ export const logoutUser = () => {
 export const refreshUser = (id) => {
   console.log('~User Action: refreshUser')
   return async (dispatch, getState) => {
-    const token = getState().user.token
     // any async code you want!
     try {
-      const response = await fetch(
-        `https://punchapp-86a47.firebaseio.com/users/${id}.json?auth=${token}`
-      );
-
-      if (!response.ok) {
-        throw new Error('Something went wrong!');
-      }
-
-      const resData = await response.json();
-      //console.log("_________Refreshing User________");
+      const resData = (await firebase.database(userApp).ref(`/users/${id}`).once('value')).val()
       const user = new Customer(id, resData.email);
-
       user.RS = resData.RS;
       user.favorites = resData.favorites;
-      
-      // if(!(resData.favorites === undefined)){
-      //   for(const key in resData.favorites){
-      //     user.favorites.push(resData.favorites[key]);
-      //   }
-      // }
       
       dispatch({ type: REFRESH_USER, user: user });
     } catch (err) {
@@ -188,18 +131,11 @@ export const toggleFav = (r_id, u_id, merchantSide) => {
   console.log('~User Action: toggleFav')
   return async (dispatch, getState) => {
     if (merchantSide) {
-      var token = getState().merchants.token
+      resData = (await firebase.database(merchantApp).ref(`/users/${u_id}`).once('value')).val
     }else{
-      var token = getState().user.token
+      resData = (await firebase.database(userApp).ref(`/users/${u_id}`).once('value')).val
     }
-    const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/users/${u_id}.json?auth=${token}`);
-    if(!response1.ok){
-      throw new Error('response 1 was not fetched');
-    };
-
-    const resData = await response1.json();
     let favorites = [];
-
     //console.log('resData.favorites')
     //console.log(resData.favorites);
     if(resData.favorites === undefined)
@@ -219,22 +155,10 @@ export const toggleFav = (r_id, u_id, merchantSide) => {
         }
     }
     //console.log(favorites);
-
-    const response = await fetch(
-      `https://punchapp-86a47.firebaseio.com/users/${u_id}.json?auth=${token}`,
-      {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          favorites
-        })
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error('Something went wrong!');
+    if (merchantSide) {
+      await firebase.database(merchantApp).ref(`/users/${u_id}/favorites`).set(favorites)
+    }else{
+      await firebase.database(userApp).ref(`/users/${u_id}/favorites`).set(favorites)
     }
 
     dispatch({
@@ -249,12 +173,7 @@ export const updateRewards = (r_id, u_id, ammount) => {
   //update the value of user rewards status... TODO
   //console.log(u_id)
   return async (dispatch, getState) =>{
-    const token = getState().merchants.token
-    const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/users/${u_id}.json?auth=${token}`);
-    if(!response1.ok){
-      throw new Error('Something Went Wrong!');
-    };
-    const resData1 = await response1.json();
+    resData1 = (await firebase.database(userApp).ref(`/users/${u_id}`).once('value')).val
     //console.log(resData1)
     if(resData1 === null){
       throw new Error('User does not exist!')
@@ -305,20 +224,8 @@ export const updateRewards = (r_id, u_id, ammount) => {
     //console.log(RS);
     //const d = new Deal(ammount, reward, '|.||..|.||..|');
 
-    const response = await fetch(`https://punchapp-86a47.firebaseio.com/users/${u_id}.json?auth=${token}`,
-      {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          RS
-        })
-      }
-    );
-    if(!response.ok){
-        throw new Error('error updating RS');
-    };
+    await firebase.database(userApp).ref(`/users/${u_id}/RS`).set(RS)
+
     dispatch({
       type: UPDATE_RS,
       merchant:r_id,

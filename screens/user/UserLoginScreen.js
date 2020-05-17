@@ -59,7 +59,7 @@ const UserLoginScreen = props => {
         rePassword:''
     });
 
-    const submitHandler = useCallback( async () => {
+    const submitHandler = useCallback( async (useGoogle) => {
         console.log('-Login Handler')
         setError(null);
         setIsLoading(true);
@@ -67,6 +67,7 @@ const UserLoginScreen = props => {
             await dispatch(userActions.getUser(
                 formState.inputValues.email,
                 formState.inputValues.password,
+                useGoogle
             ));
             props.navigation.navigate('Home');
             setIsNewUser(false)
@@ -145,6 +146,7 @@ const UserLoginScreen = props => {
                     }
                 }}
             />}
+            <Button title={'Sign in with Google'} onPress={() => submitHandler({useGoogle:true})}/>
             <View style={{marginBottom:10}}>
                 {isLoading && <ActivityIndicator color={Colors.darkLines} size='large'/>}
             </View>

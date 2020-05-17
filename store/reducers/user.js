@@ -9,7 +9,6 @@ import Customer from '../../models/Customer';
 import RewardsStatus from '../../models/RewardsStatus';
 
 const initialState = {
-    token: null,
     user: {}, 
     userMerchants: [], 
     userRewards: []
@@ -24,15 +23,13 @@ export default (state = initialState, action) => {
             newUser.favorites = [];
             return {...state,
                 user:newUser,
-                token:action.token,
             };
 
         case GET_USER:
             return {...state,
                 user: action.user, 
                 userMerchants: action.user.favorites,
-                userRewards: action.user.RS,
-                token:action.token, 
+                userRewards: action.user.RS, 
             };
 
         case LOGOUT_USER:
