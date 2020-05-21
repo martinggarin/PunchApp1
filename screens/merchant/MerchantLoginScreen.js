@@ -161,8 +161,8 @@ const MerchantLoginScreen = props => {
                         <Image
                             style={styles.googleLogo}
                             source={{
-                            uri: 'https://pluspng.com/img-png/google-logo-png-open-2000.png'
-                        }}
+                                uri: 'https://pluspng.com/img-png/google-logo-png-open-2000.png'
+                            }}
                         />
                         <Text  font='Roboto'>SIGN IN WITH GOOGLE</Text>
                     </View>
