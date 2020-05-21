@@ -40,12 +40,13 @@ const EditScreen = props => {
     const [error, setError] = useState();
     const [displayHelp, setDisplayHelp] = useState(true)
     const r_item = useSelector(state => state.merchants.myMerchant);
-    const deals = useSelector(state => state.merchants.myDeals);
     const newMerchant = props.navigation.getParam('newMerchant');
     const dispatch = useDispatch();
 
-    if (deals === undefined){
+    let deals = useSelector(state => state.merchants.myDeals);
+    if (deals === undefined || deals === null){
         var totalDeals = 0
+        deals = []
     }
     else{
         var totalDeals = deals.length

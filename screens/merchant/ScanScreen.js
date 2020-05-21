@@ -32,7 +32,7 @@ const ScanScreen = props => {
 
     const handleBarCodeScanned = async ({ type, data })  => {
         setScanned(true)
-        if (data.length === 20 && data[0] === '-'){
+        if (data.length === 28){
             if(!(ammount === undefined)){
                 try{
                     // console.log('_________Updating Rewards__________');

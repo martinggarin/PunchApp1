@@ -8,7 +8,6 @@ import {
 import Restaurants from '../../models/Restaurants';
 
 const initialState = {
-    token:null,
     availableMerchants: [], 
     myMerchant: {}, 
     myDeals: []
@@ -25,7 +24,6 @@ export default (state = initialState, action) => {
                 myMerchant: newMerchant, 
                 myDeals: newMerchant.deal,
                 availableMerchants: state.availableMerchants.concat(newMerchant),
-                token:action.token
             };
 
         case GET_MERCHANT:
@@ -33,18 +31,16 @@ export default (state = initialState, action) => {
                 ...state,
                 myMerchant: action.merchant,
                 myDeals: action.merchant.deal,
-                token:action.token
             };
 
         case LOGOUT_MERCHANT:
             return initialState
 
         case UPDATE_MERCHANT:
-            var updatedMerchant = action.merchantData
             return {
                 ...state,
-                myMerchant: updatedMerchant,
-                myDeals: updatedMerchant.deal
+                myMerchant: action.merchantData,
+                myDeals: action.merchantData.deal
             }
 
         case UPDATE_DEALS:

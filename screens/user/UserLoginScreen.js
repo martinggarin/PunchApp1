@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useReducer, useState} from 'react';
-import { View, Text, StyleSheet, Button , Alert} from 'react-native';
+import { View, Text, StyleSheet, Image , Alert} from 'react-native';
 import Dialog from 'react-native-dialog'
 import LoginInput from '../../components/LoginInput';
 import { useDispatch } from 'react-redux';
@@ -8,6 +8,7 @@ import HeaderButton from '../../components/HeaderButton';
 import * as userActions from '../../store/actions/user';
 import { ActivityIndicator } from 'react-native-paper';
 import Colors from '../../constants/Colors';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const INPUT_UPDATE = 'INPUT_UPDATE';
 const RE_PASSWORD_UPDATE = 'RE_PASSWORD_UPDATE'
@@ -59,15 +60,14 @@ const UserLoginScreen = props => {
         rePassword:''
     });
 
-    const submitHandler = useCallback( async (useGoogle) => {
+    const submitHandler = useCallback(async () => {
         console.log('-Login Handler')
         setError(null);
         setIsLoading(true);
         try{
             await dispatch(userActions.getUser(
                 formState.inputValues.email,
-                formState.inputValues.password,
-                useGoogle
+                formState.inputValues.password
             ));
             props.navigation.navigate('Home');
             setIsNewUser(false)
@@ -79,9 +79,9 @@ const UserLoginScreen = props => {
     
     }, [formState]);
 
-    const signUpHandler = useCallback(async () => {
+    const signUpHandler = useCallback(async (useGoogle) => {
         console.log('-Sign Up Handler')
-        if(!(formState.inputValues.password === formState.rePassword)){
+        if(!(formState.inputValues.password === formState.rePassword) && !useGoogle){
             Alert.alert(
                 'Passwords do not match!',
                 'Please check password inputs', 
@@ -91,11 +91,16 @@ const UserLoginScreen = props => {
         setError(null);
         setIsLoading(true);
         try{
-            await dispatch(userActions.createUser(
+            let newUser = await dispatch(userActions.createUser(
                 formState.inputValues.email,
                 formState.inputValues.password,
+                useGoogle
             ));
-            props.navigation.navigate('Explore');
+            if (newUser){
+                props.navigation.navigate('Explore');
+            }else{
+                props.navigation.navigate('Home');
+            }
         }
         catch(err){
             setError(err.message);
@@ -121,35 +126,47 @@ const UserLoginScreen = props => {
 
     return(
         <View style={styles.screen}>
-            {isNewUser && <LoginInput
-                onInputChange={inputChangeHandler}
-                onLogin={() => {
-                    if (formState.formIsValid){
-                        submitHandler()
-                    }else{
-                        Alert.alert(
-                            'Invalid Input!',
-                            'Please check your inputs...', 
-                            [{text: 'Okay'}]
-                        );
-                    }
-                }}
-                onSignUp={() => {
-                    if (formState.formIsValid){
-                        setPromptVisability(true)
-                    }else{
-                        Alert.alert(
-                            'Invalid Input!',
-                            'Please check your inputs...', 
-                            [{text: 'Okay'}]
-                        );
-                    }
-                }}
-            />}
-            <Button title={'Sign in with Google'} onPress={() => submitHandler({useGoogle:true})}/>
-            <View style={{marginBottom:10}}>
-                {isLoading && <ActivityIndicator color={Colors.darkLines} size='large'/>}
+            <View style={styles.inputContainer}>
+                {isNewUser && <LoginInput
+                    onInputChange={inputChangeHandler}
+                    onLogin={() => {
+                        if (formState.formIsValid){
+                            submitHandler()
+                        }else{
+                            Alert.alert(
+                                'Invalid Input!',
+                                'Please check your inputs...', 
+                                [{text: 'Okay'}]
+                            );
+                        }
+                    }}
+                    onSignUp={() => {
+                        if (formState.formIsValid){
+                            setPromptVisability(true)
+                        }else{
+                            Alert.alert(
+                                'Invalid Input!',
+                                'Please check your inputs...', 
+                                [{text: 'Okay'}]
+                            );
+                        }
+                    }}
+                />}
             </View>
+            <View style={{width:'100%', alignItems:'center'}}>
+                <TouchableOpacity onPress={() => signUpHandler(true)}>
+                    <View style={styles.googleButton}>
+                        <Image
+                            style={styles.googleLogo}
+                            source={{
+                            uri: 'https://pluspng.com/img-png/google-logo-png-open-2000.png'
+                        }}
+                        />
+                        <Text  font='Roboto'>SIGN IN WITH GOOGLE</Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
+            {isLoading && <ActivityIndicator color={Colors.darkLines} size='large'/>}
             <Dialog.Container visible={promptVisability}>
                 <Dialog.Title style={{fontWeight:'bold'}}>Confirmation Required!</Dialog.Title>
                 <Dialog.Description>
@@ -162,7 +179,7 @@ const UserLoginScreen = props => {
                     autoCapitalize = "none"
                 />
                 <Dialog.Button label="Cancel" onPress={() => setPromptVisability(false)}/>
-                <Dialog.Button label="Confirm" onPress={signUpHandler}/>
+                <Dialog.Button label="Confirm" onPress={() => signUpHandler(false)}/>
             </Dialog.Container>
         </View>
     );
@@ -182,10 +199,27 @@ UserLoginScreen.navigationOptions = navData => {
 
 const styles = StyleSheet.create({
     screen:{
+        width:'100%',
         flex:1,
-        flexDirection:'column',
+        flexDirection:'column'
+    },
+    inputContainer:{
+        height:245
+    },
+    googleButton:{
+        flexDirection:'row',
         alignItems:'center',
-        height:'100%'
+        width:240,
+        height:40,
+        borderColor:'black',
+        borderWidth:1,
+        borderRadius:3,
+    },
+    googleLogo:{
+        height:20,
+        width:20,
+        marginLeft:8,
+        marginRight:24
     }
 });
 

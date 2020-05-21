@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useReducer, useState} from 'react';
-import { View, Text, StyleSheet, Button , Alert} from 'react-native';
+import { View, Text, StyleSheet, Image , Alert} from 'react-native';
 import Dialog from 'react-native-dialog'
 import LoginInput from '../../components/LoginInput';
 import { useDispatch } from 'react-redux';
@@ -8,6 +8,7 @@ import HeaderButton from '../../components/HeaderButton';
 import * as merchantActions from '../../store/actions/merchants';
 import { ActivityIndicator } from 'react-native-paper';
 import Colors from '../../constants/Colors';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const INPUT_UPDATE = 'INPUT_UPDATE';
 const RE_PASSWORD_UPDATE = 'RE_PASSWORD_UPDATE'
@@ -44,7 +45,6 @@ const MerchantLoginScreen = props => {
     const [error, setError] = useState();
     const [isNewUser, setIsNewUser] = useState(true);
     const [promptVisability, setPromptVisability] = useState(false)
-    //const merchants = useSelector(state => state.merchants.availableMerchants);
     const dispatch = useDispatch();
 
     const [formState, dispatchFormState] = useReducer(formReducer, {
@@ -60,14 +60,14 @@ const MerchantLoginScreen = props => {
         rePassword:''
     });
 
-    const submitHandler = useCallback(async ()  => {
+    const submitHandler = useCallback(async () => {
         console.log('-Login Handler')
         setError(null);
         setIsLoading(true);
         try{
             await dispatch(merchantActions.getMerchant(
                 formState.inputValues.email,
-                formState.inputValues.password
+                formState.inputValues.password,
             ));
             props.navigation.navigate('MerchantHome');
             setIsNewUser(false)
@@ -79,9 +79,9 @@ const MerchantLoginScreen = props => {
 
     }, [formState]);
 
-    const signUpHandler = useCallback(async () => {
+    const signUpHandler = useCallback(async (useGoogle) => {
         console.log('-Sign Up Handler')
-        if(!(formState.inputValues.password === formState.rePassword)){
+        if(!(formState.inputValues.password === formState.rePassword) && !useGoogle){
             Alert.alert(
                 'Passwords do not match!',
                 'Please check password inputs', 
@@ -91,11 +91,16 @@ const MerchantLoginScreen = props => {
         setError(null);
         setIsLoading(true);
         try{
-            await dispatch(merchantActions.createMerchant(
+            let newMerchant = await dispatch(merchantActions.createMerchant(
                 formState.inputValues.email,
                 formState.inputValues.password,
+                useGoogle
             ));
-            props.navigation.replace('Edit',{newMerchant:true});
+            if (newMerchant) {
+                props.navigation.replace('Edit',{newMerchant:true});
+            }else{
+                props.navigation.navigate('MerchantHome');
+            };
             setIsNewUser(false)
         }
         catch(err){
@@ -123,32 +128,47 @@ const MerchantLoginScreen = props => {
 
     return(
         <View style={styles.screen}>
-             {isNewUser && <LoginInput
-                onInputChange={inputChangeHandler}
-                onLogin={() => {
-                    if (formState.formIsValid){
-                        submitHandler()
-                    }else{
-                        Alert.alert(
-                            'Invalid Input!',
-                            'Please check your inputs...', 
-                            [{text: 'Okay'}]
-                        );
-                    }
-                }}
-                onSignUp={() => {
-                    if (formState.formIsValid){
-                        setPromptVisability(true)
-                    }else{
-                        Alert.alert(
-                            'Invalid Input!',
-                            'Please check your inputs...', 
-                            [{text: 'Okay'}]
-                    );
-                }
-                }}
-            />}
-            {isLoading && <ActivityIndicator color={Colors.darkLines} size='large' style={{marginTop:20}}/>}
+            <View style={styles.inputContainer}>
+                {isNewUser && <LoginInput
+                    onInputChange={inputChangeHandler}
+                    onLogin={() => {
+                        if (formState.formIsValid){
+                            submitHandler()
+                        }else{
+                            Alert.alert(
+                                'Invalid Input!',
+                                'Please check your inputs...', 
+                                [{text: 'Okay'}]
+                            );
+                        }
+                    }}
+                    onSignUp={() => {
+                        if (formState.formIsValid){
+                            setPromptVisability(true)
+                        }else{
+                            Alert.alert(
+                                'Invalid Input!',
+                                'Please check your inputs...', 
+                                [{text: 'Okay'}]
+                            );
+                        }
+                    }}
+                />}
+            </View>
+            <View style={{width:'100%', alignItems:'center', marginBottom:10}}>
+                <TouchableOpacity onPress={() => signUpHandler(true)}>
+                    <View style={styles.googleButton}>
+                        <Image
+                            style={styles.googleLogo}
+                            source={{
+                            uri: 'https://pluspng.com/img-png/google-logo-png-open-2000.png'
+                        }}
+                        />
+                        <Text  font='Roboto'>SIGN IN WITH GOOGLE</Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
+            {isLoading && <ActivityIndicator color={Colors.darkLines} size='large'/>}
             <Dialog.Container visible={promptVisability}>
                 <Dialog.Title style={{fontWeight:'bold'}}>Confirmation Required!</Dialog.Title>
                 <Dialog.Description>
@@ -161,7 +181,7 @@ const MerchantLoginScreen = props => {
                     autoCapitalize = "none"
                 />
                 <Dialog.Button label="Cancel" onPress={() => setPromptVisability(false)}/>
-                <Dialog.Button label="Confirm" onPress={signUpHandler}/>
+                <Dialog.Button label="Confirm" onPress={() => signUpHandler(false)}/>
             </Dialog.Container>
         </View>
     );
@@ -181,10 +201,28 @@ MerchantLoginScreen.navigationOptions = navData => {
 
 const styles = StyleSheet.create({
     screen:{
+        width:'100%',
         flex:1,
-        alignItems:'center',
-        height:'100%'
+        flexDirection:'column'
     },
+    inputContainer:{
+        height:245
+    },
+    googleButton:{
+        flexDirection:'row',
+        alignItems:'center',
+        width:240,
+        height:40,
+        borderColor:'black',
+        borderWidth:1,
+        borderRadius:3,
+    },
+    googleLogo:{
+        height:20,
+        width:20,
+        marginLeft:8,
+        marginRight:24
+    }
 });
 
 export default MerchantLoginScreen;

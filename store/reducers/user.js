@@ -2,11 +2,8 @@ import {
     CREATE_USER,
     GET_USER,
     LOGOUT_USER,
-    REFRESH_USER,
-    UPDATE_RS,
-    TOGGLE_FAV} from '../actions/user';
+    UPDATE_RS} from '../actions/user';
 import Customer from '../../models/Customer';
-import RewardsStatus from '../../models/RewardsStatus';
 
 const initialState = {
     user: {}, 
@@ -34,23 +31,6 @@ export default (state = initialState, action) => {
 
         case LOGOUT_USER:
             return initialState
-
-        case REFRESH_USER: 
-            return {...state,
-                user: action.user, 
-                userMerchants: action.user.favorites,
-                userRewards: action.user.RS};   
-
-        case TOGGLE_FAV:
-            // const updatedUserMerchants = [...];
-            // for(const key in action.favorites){
-            //      updatedUserMerchants.push(state.merchants.find(m => m.id === key));
-            // }
-            // console.log(updatedUserMerchants);
-            return{
-                ...state,
-                userMerchants: action.favorites
-            };
 
         case UPDATE_RS:
             //console.log('______updated RS_______');

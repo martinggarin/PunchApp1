@@ -1,57 +1,25 @@
 export const CREATE_USER = 'CREATE_USER';
 export const GET_USER = 'GET_USER';
 export const LOGOUT_USER = 'LOGOUT_USER'
-export const REFRESH_USER = 'REFRESH_USER';
-export const TOGGLE_FAV = 'TOGGLE_FAV';
 export const UPDATE_RS = 'UPDATE_RS';
 
 import Customer from '../../models/Customer';
 import RewardStatus from '../../models/RewardsStatus';
 
 import * as Google from 'expo-google-app-auth';
-import firebase from 'firebase'
-import { userConfig } from '../../config'
+import firebase from 'firebase';
+import Apps from '../../firebaseApp';
 
-import merchantApp from './merchants'
-firebase.initializeApp(userConfig, 'user')
-const userApp = firebase.app('user')
+const userApp = Apps.firebaseApp.user
+const merchantApp = Apps.firebaseApp.merchant
 
-
-export const createUser = (email, password) => {
+export const createUser = (email, password, useGoogle) => {
   console.log('~User Action: createUser')
   return async dispatch => {
-    // any async code you want!
-    let credential = await firebase.auth(userApp).createUserWithEmailAndPassword(email, password)
-    .catch(error => {
-      if (error.code === 'auth/email-already-in-use') {
-        throw new Error('That email address is already in use!');
-      }
-  
-      if (error.code === 'auth/invalid-email') {
-        throw new Error('That email address is invalid!');
-      }
-    });
-    
-    const u_id = credential.user.uid
-    await firebase.database(userApp).ref(`/users/${u_id}`).set({email:email})
-    //console.log(resData);
-
-    dispatch({
-      type: CREATE_USER,
-      userData: {
-        id: u_id,
-        email: email,
-      }
-    });
-  };
-};
-
-export const getUser = (email, password, useGoogle) => {
-  console.log('~User Action: getUser')
-  return async dispatch => {
-    // any async code you want!
     let credential = null
     let googleUser = null
+    let accountExists = false
+
     if (useGoogle){
       googleUser = await Google.logInAsync({
         androidClientId:'685510681673-falsomf7g38i1d2v957dksi672oa75pa.apps.googleusercontent.com',
@@ -60,38 +28,96 @@ export const getUser = (email, password, useGoogle) => {
         var authenticatedUser = firebase.auth.GoogleAuthProvider.credential(googleUser.idToken, googleUser.accessToken)
         credential = await firebase.auth(userApp).signInWithCredential(authenticatedUser)
         .catch(error => {
-          if (errorCode === 'auth/account-exists-with-different-credential') {
-            throw new Error('Email already associated with another account.');
+          if (error.code === 'auth/account-exists-with-different-credential') {
+            throw new Error('Email associated with another account.');
           } else {
             throw new Error('Something went wrong!')
           }
         })
-        console.log(credential)
+        //console.log(credential)
       }else{
-        throw new Error('Something went wrong 1!');
+        throw new Error('Google sign in cancelled!');
       }
     }else{
+      credential = await firebase.auth(userApp).createUserWithEmailAndPassword(email, password)
+      .catch(async (error) => {
+        if (error.code === 'auth/email-already-in-use') {
+          accountExists = true
+        }
+        if (error.code === 'auth/invalid-email') {
+          throw new Error('That email address is invalid!');
+        }
+      });
+    }
+    if (accountExists){
       credential = await firebase.auth(userApp).signInWithEmailAndPassword(email, password)
       .catch(error => {
-        if (error.code === 'auth/invalid-email' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-          throw new Error('Wrong password. Try again.');
+        if (error.code === 'auth/wrong-password') {
+          throw new Error('Email associated with another account.');
         }else{
           throw new Error('Something went wrong!')
         }
       });
     }
     const u_id = credential.user.uid
-    let resData = (await firebase.database(userApp).ref(`/users/${u_id}`).once('value')).val()
-    if (resData === null){
-      resData = {
-        email:googleUser.user.email,
+
+    let userData = (await firebase.database(userApp).ref(`/users/${u_id}`).once('value')).val()
+    if (userData === null){
+      //handle case: new user account creation
+      let userData = {id: u_id}
+      if (useGoogle){
+        userData.email = googleUser.user.email
+      }else{
+        userData.email = email
       }
-      await firebase.database(userApp).ref(`users/${u_id}`).set(resData)
+      await firebase.database(userApp).ref(`/users/${u_id}`).set({email:userData.email})
+      dispatch({
+        type: CREATE_USER,
+        userData: {
+          id: u_id,
+          email: email,
+        }
+      });
+      return true
+    }else if (accountExists){
+      //handle case: user account already exists
+      throw new Error('Email associated with another account.');
+    }else{
+      //handle case: google sign in
+      const user = new Customer(u_id, email);
+      user.RS = userData.RS;
+      user.favorites = userData.favorites;
+      dispatch({
+        type: GET_USER,
+        user: user
+      });
+      return false
+    }
+  };
+};
+
+export const getUser = (email, password) => {
+  console.log('~User Action: getUser')
+  return async dispatch => {
+    // any async code you want!
+    let credential = null
+    credential = await firebase.auth(userApp).signInWithEmailAndPassword(email, password)
+    .catch(error => {
+      if (error.code === 'auth/invalid-email' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+        throw new Error('Wrong password. Try again.');
+      }else{
+        throw new Error('Something went wrong!')
+      }
+    });
+    const u_id = credential.user.uid
+    let userData = (await firebase.database(userApp).ref(`/users/${u_id}`).once('value')).val()
+    if (userData === null){
+      throw new Error('Wrong password. Try again.');
     }
     const user = new Customer(u_id, email);
-    user.RS = resData.RS;
-    user.favorites = resData.favorites;
-    //console.log(resData)
+    user.RS = userData.RS;
+    user.favorites = userData.favorites;
+    console.log(userData)
     //console.log(user);
     
     dispatch({
@@ -111,15 +137,18 @@ export const logoutUser = () => {
 
 export const refreshUser = (id) => {
   console.log('~User Action: refreshUser')
-  return async (dispatch, getState) => {
+  return async dispatch => {
     // any async code you want!
     try {
-      const resData = (await firebase.database(userApp).ref(`/users/${id}`).once('value')).val()
-      const user = new Customer(id, resData.email);
-      user.RS = resData.RS;
-      user.favorites = resData.favorites;
+      const userData = (await firebase.database(userApp).ref(`/users/${u_id}`).once('value')).val()
+      const user = new Customer(id, userData.email);
+      user.RS = userData.RS;
+      user.favorites = userData.favorites;
       
-      dispatch({ type: REFRESH_USER, user: user });
+      dispatch({ 
+        type: GET_USER,
+        user: user 
+      });
     } catch (err) {
       // send to custom analytics server
       throw err;
@@ -128,24 +157,26 @@ export const refreshUser = (id) => {
 }
 
 export const toggleFav = (r_id, u_id, merchantSide) => {
+  
   console.log('~User Action: toggleFav')
-  return async (dispatch, getState) => {
+  return async dispatch => {
+    let userData = null
     if (merchantSide) {
-      resData = (await firebase.database(merchantApp).ref(`/users/${u_id}`).once('value')).val
+      userData = (await firebase.database(merchantApp).ref(`/users/${u_id}`).once('value')).val()
     }else{
-      resData = (await firebase.database(userApp).ref(`/users/${u_id}`).once('value')).val
+      userData = (await firebase.database(userApp).ref(`/users/${u_id}`).once('value')).val()
     }
     let favorites = [];
-    //console.log('resData.favorites')
-    //console.log(resData.favorites);
-    if(resData.favorites === undefined)
+    //console.log('userData.favorites')
+    //console.log(userData.favorites);
+    if(userData.favorites === undefined)
     {
       //console.log('if')
       favorites.push(r_id);
     }
     else{
       //console.log('else')
-      favorites = resData.favorites;
+      favorites = userData.favorites;
       //console.log(favorites);
       const existingIndex = favorites.findIndex(m => m === r_id);
         if(existingIndex >= 0 ){
@@ -160,10 +191,12 @@ export const toggleFav = (r_id, u_id, merchantSide) => {
     }else{
       await firebase.database(userApp).ref(`/users/${u_id}/favorites`).set(favorites)
     }
-
+    const user = new Customer(u_id, userData.email);
+    user.RS = userData.RS;
+    user.favorites = favorites;
     dispatch({
-      type: TOGGLE_FAV,
-      favorites: favorites
+      type: GET_USER,
+      user: user
     });
   };
 };
@@ -172,13 +205,12 @@ export const updateRewards = (r_id, u_id, ammount) => {
   console.log('~User Action: updateRewards')
   //update the value of user rewards status... TODO
   //console.log(u_id)
-  return async (dispatch, getState) =>{
-    resData1 = (await firebase.database(userApp).ref(`/users/${u_id}`).once('value')).val
-    //console.log(resData1)
-    if(resData1 === null){
+  return async dispatch =>{
+    const userData = (await firebase.database(merchantApp).ref(`/users/${u_id}`).once('value')).val()
+    if(userData === null){
       throw new Error('User does not exist!')
     }
-    const rs = resData1.RS; 
+    const rs = userData.RS; 
 
     //console.log('-----Updating RS-----');
     //console.log(rs);

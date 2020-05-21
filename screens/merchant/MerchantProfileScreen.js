@@ -11,15 +11,18 @@ const MerchantProfileScreen = props => {
     console.log('Merchant Profile');
     const r_item = useSelector(state => state.merchants.myMerchant);
     //console.log(r_item)
-    const deals = useSelector(state => state.merchants.myDeals);
-    if (deals === undefined){
+
+    let deals = useSelector(state => state.merchants.myDeals);
+    if (deals === undefined || deals === null){
         var totalDeals = 0
+        deals = []
     }
     else{
         var totalDeals = deals.length
     }
-    if (r_item.customers === undefined){
+    if (r_item.customers === undefined || r_item.customers === null){
         var totalCustomers = 0
+        r_item.customers = []
     }
     else{
         var totalCustomers = r_item.customers.length

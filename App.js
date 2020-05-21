@@ -7,8 +7,7 @@ import UserReducer from './store/reducers/user';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 
-import {enableScreens} from 'react-native-screens';
-import { createStackNavigator } from 'react-navigation-stack';
+import { enableScreens } from 'react-native-screens';
 import ReduxThunk from 'redux-thunk';
 
 const rootReducer = combineReducers({

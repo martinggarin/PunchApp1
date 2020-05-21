@@ -8,194 +8,165 @@ export const LOAD_ALL_MERCHANTS = 'LOAD_ALL_MERCHANTS';
 import Restaurants from '../../models/Restaurants';
 import Deal from '../../models/Deal';
 
+import * as Google from 'expo-google-app-auth';
+import firebase from 'firebase';
+import Apps from '../../firebaseApp';
 
-export const createMerchant = (email, password) => {
+const userApp = Apps.firebaseApp.user
+const merchantApp = Apps.firebaseApp.merchant
+
+export const createMerchant = (email, password, useGoogle) => {
   console.log('~Merchant Action: createMerchant')
   return async dispatch => {
     // any async code you want!
-    const authResponse = await fetch(
-      'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCvSHOaKLtLtXsdln3K_GtNfRMQ_kONSZw',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-          returnSecureToken: true
+    let credential = null
+    let googleUser = null
+    let accountExists = false
+    if (useGoogle){
+      googleUser = await Google.logInAsync({
+        androidClientId:'685510681673-falsomf7g38i1d2v957dksi672oa75pa.apps.googleusercontent.com',
+      });
+      if (googleUser.type === 'success'){
+        var authenticatedMerchant = firebase.auth.GoogleAuthProvider.credential(googleUser.idToken, googleUser.accessToken)
+        credential = await firebase.auth(merchantApp).signInWithCredential(authenticatedMerchant)
+        .catch(error => {
+          if (error.code === 'auth/account-exists-with-different-credential') {
+            throw new Error('Email associated with another account.');
+          }else {
+            throw new Error('Something went wrong!')
+          }
         })
+      }else{
+        throw new Error('Google sign in cancelled!');
       }
-    );
-    if (!authResponse.ok) {
-      throw new Error('That username is taken.');
+    }else{
+      credential = await firebase.auth(merchantApp).createUserWithEmailAndPassword(email, password)
+      .catch(error => {
+        if (error.code === 'auth/email-already-in-use') {
+           accountExists = true
+        }
+        if (error.code === 'auth/invalid-email') {
+          throw new Error('That email address is invalid!');
+        }
+      });
     }
-    const authenticatedMerchant = await authResponse.json();
-    const token = authenticatedMerchant.idToken
-    //console.log(authenticatedMerchant)
+    if (accountExists){
+      credential = await firebase.auth(merchantApp).signInWithEmailAndPassword(email, password)
+      .catch(error => {
+        if (error.code === 'auth/wrong-password') {
+          throw new Error('Email associated with another account.');
+        }else{
+          throw new Error('Something went wrong!')
+        }
+      });
+    }
+    const m_id = credential.user.uid
 
-    const response = await fetch(
-      `https://punchapp-86a47.firebaseio.com/merchants.json?auth=${token}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email:email,
-        })
+    let merchantData = (await firebase.database(merchantApp).ref(`/merchants/${m_id}`).once('value')).val()
+    if (merchantData === null){
+      //handle case: new merchant account creation
+      let merchantData = {id: m_id}
+      if (useGoogle){
+        merchantData.email = googleUser.user.email
+      }else{
+        merchantData.email = email
       }
-    );
-    if (!response.ok) {
-      throw new Error('Something went wrong!');
+      await firebase.database(merchantApp).ref(`/merchants/${m_id}`).set({email:merchantData.email})
+      dispatch({
+        type: CREATE_MERCHANT,
+        merchantData: merchantData
+      });
+      return true
+    }else if (accountExists){
+      //handle case: merchant account already exists
+      throw new Error('Email associated with another account.');
+    }else{
+      //handle case: google sign in
+      const merchant = new Restaurants(m_id, googleUser.user.email);
+      merchant.title = merchantData.title
+      merchant.price = merchantData.price
+      merchant.type = merchantData.type
+      merchant.address = merchantData.address
+      merchant.city = merchantData.city
+      merchant.deal = merchantData.deal
+      merchant.customers = merchantData.customers
+      dispatch({
+        type: GET_MERCHANT,
+        merchant: merchant
+      })
+      return false
     }
-    const resData = await response.json();
-    //console.log(resData);
-
-    const keyResponse = await fetch(
-      `https://punchapp-86a47.firebaseio.com/merchantKeys.json?auth=${token}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email:email,
-          key:resData.name,
-        })
-      }
-    );
-    if (!keyResponse.ok) {
-      throw new Error('Something went wrong!');
-    }
-
-    dispatch({
-      type: CREATE_MERCHANT,
-      merchantData: {
-        id: resData.name,
-        email: email
-      },
-      token:token
-    });
   };
 };
 
 export const getMerchant = (email, password) => {
-    console.log('~Merchant Action: getMerchant')
-    return async dispatch => {
-      // any async code you want!
-      const authResponse = await fetch(
-        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCvSHOaKLtLtXsdln3K_GtNfRMQ_kONSZw',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            email: email,
-            password: password,
-            returnSecureToken: true
-          })
-        }
-      );
-      if (!authResponse.ok) {
+  console.log('~Merchant Action: getMerchant')
+  return async dispatch => {
+    
+    credential = await firebase.auth(merchantApp).signInWithEmailAndPassword(email, password)
+    .catch(error => {
+      if (error.code === 'auth/invalid-email' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
         throw new Error('Wrong password. Try again.');
+      }else{
+        throw new Error('Something went wrong!')
       }
-      const authenticatedMerchant = await authResponse.json();
-      const token = authenticatedMerchant.idToken
-        
-      const keyResponse = await fetch(
-        `https://punchapp-86a47.firebaseio.com/merchantKeys.json?auth=${token}`
-      );
-      if (!keyResponse.ok) {
-        throw new Error('Something went wrong!');
-      }
-      const keyData = await keyResponse.json();
-      
-      let merchantKey = 0
-      for (const index in keyData){
-        if (keyData[index].email === authenticatedMerchant.email ){
-          merchantKey = keyData[index].key
-          break
-        }
-      }
-      if (merchantKey === 0){
-        throw new Error('Wrong password. Try again.');
-      }
-      const response = await fetch(
-        `https://punchapp-86a47.firebaseio.com/merchants/${merchantKey}.json?auth=${token}`
-      );
-      if (!response.ok) {
-        throw new Error('Something went wrong!');
-      }
-      const resData = await response.json()
+    });
+    const m_id = credential.user.uid
+    let merchantData = (await firebase.database(merchantApp).ref(`/merchants/${m_id}`).once('value')).val()
+    if (merchantData === null){
+      throw new Error('Wrong password. Try again.');
+    }
+    const merchant = new Restaurants(m_id, email);
+    merchant.title = merchantData.title
+    merchant.price = merchantData.price
+    merchant.type = merchantData.type
+    merchant.address = merchantData.address
+    merchant.city = merchantData.city
+    merchant.deal = merchantData.deal
+    merchant.customers = merchantData.customers
+    //console.log('Fetching Deal')
+    //console.log(merchantData[key].deal);
+    //console.log(merchant.deal);
 
-      const merchant = new Restaurants(merchantKey, email);
-      merchant.title = resData.title
-      merchant.price = resData.price
-      merchant.type = resData.type
-      merchant.address = resData.address
-      merchant.city = resData.city
-      merchant.deal = resData.deal
-      merchant.customers = resData.customers
-
-      //console.log('Fetching Deal')
-      //console.log(resData[key].deal);
-      //console.log(merchant.deal);
-      dispatch({ 
-        type: GET_MERCHANT,
-        merchant: merchant,
-        token:token
-      });
-    };
+    dispatch({ 
+      type: GET_MERCHANT,
+      merchant: merchant,
+    });
+  };
 };
 
 export const logoutMerchant = () => {
   console.log('~Merchant Action: logoutMerchant')
   return async dispatch => {
+    await firebase.auth(merchantApp).signOut()
     await dispatch({ type: LOGOUT_MERCHANT})
   }
 };
 
 export const updateMerchant = (id, title, price, type, address, city) => {
   console.log('~Merchant Action: updateMerchant')
-  return async (dispatch, getState) =>{
-    const token = getState().merchants.token
-    const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json?auth=${token}`);
-    if(!response1.ok){
-      throw new Error('response 1 was not fetched');
-    };
-    const merchantData = await response1.json();
-
+  return async dispatch =>{
+    const merchantData = (await firebase.database(merchantApp).ref(`/merchants/${id}`).once('value')).val()
+    
+    if (merchantData.deal === undefined){
+      merchantData.deal = null
+    }
+    if (merchantData.customers === undefined){
+      merchantData.customers = null
+    }
     const updatedMerchantData = {
       email:merchantData.email,
-      password:merchantData.password,
       deal:merchantData.deal,
       customers:merchantData.customers
     }
-    updatedMerchantData.id = id
     updatedMerchantData.title = title
     updatedMerchantData.price = price
     updatedMerchantData.type = type
     updatedMerchantData.address = address
     updatedMerchantData.city = city
-
-    const response = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json?auth=${token}`,
-      {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          title,
-          price,
-          type,
-          address,
-          city
-        })
-      }
-    );
-
+    await firebase.database(merchantApp).ref(`/merchants/${id}`).set(updatedMerchantData)
+    updatedMerchantData.id = id
+    
     dispatch({
       type: UPDATE_MERCHANT,
       merchantData: updatedMerchantData 
@@ -205,13 +176,8 @@ export const updateMerchant = (id, title, price, type, address, city) => {
 
 export const updateCustomers = (id, customerID) => {
   console.log('~Merchant Action: updateCustomers')
-  return async (dispatch, getState) =>{
-    const token = getState().merchants.token
-    const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json?auth=${token}`);
-    if(!response1.ok){
-      throw new Error('response 1 was not fetched');
-    };
-    const merchantData = await response1.json();
+  return async dispatch =>{
+    const merchantData = (await firebase.database(merchantApp).ref(`/merchants/${id}`).once('value')).val()
     merchantData.id = id
     if (merchantData.customers === undefined){
       var customers = [customerID]
@@ -231,17 +197,7 @@ export const updateCustomers = (id, customerID) => {
     }
     merchantData.customers = customers
 
-    const response = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json?auth=${token}`,
-      {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          customers:customers
-        })
-      }
-    );
+    await firebase.database(merchantApp).ref(`/merchants/${id}/customers`).set(customers)
 
     dispatch({
       type:UPDATE_MERCHANT,
@@ -253,20 +209,13 @@ export const updateCustomers = (id, customerID) => {
 export const updateDeal = (id, ammount, reward, code) => {
   console.log('~Merchant Action: updateDeal')
   return async (dispatch, getState) =>{
-    const token = getState().merchants.token
-    const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json?auth=${token}`);
-    if(!response1.ok){
-      throw new Error('response 1 was not fetched');
-    };
-    const resData1 = await response1.json();
+    const merchantData = (await firebase.database(merchantApp).ref(`/merchants/${id}`).once('value')).val()
     //console.log(id)
-    if (resData1.deal === undefined){
+    if (merchantData.deal === undefined){
       var deal = []
+    }else{
+      var deal = merchantData.deal
     }
-    else{
-      var deal = resData1.deal
-    }
-
     //console.log('-----deals-----');
     //console.log(deal);
     
@@ -278,20 +227,7 @@ export const updateDeal = (id, ammount, reward, code) => {
       deal[code] = newDeal
     }
 
-    const response = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json?auth=${token}`,
-      {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          deal
-        })
-      }
-    );
-    if(!response.ok){
-        throw new Error('error updating deal');
-    };
+    await firebase.database(merchantApp).ref(`/merchants/${id}/deal`).set(deal)
 
     dispatch({
       type: UPDATE_DEALS,
@@ -302,14 +238,9 @@ export const updateDeal = (id, ammount, reward, code) => {
 
 export const removeDeal = (id, code) => {
   console.log('~Merchant Action: removeDeal')
-  return async (dispatch, getState) =>{
-    const token = getState().merchants.token
-    const response1 = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json?auth=${token}`);
-    if(!response1.ok){
-      throw new Error('response 1 was not fetched');
-    };
-    const resData1 = await response1.json();
-    const deals = resData1.deal; 
+  return async dispatch =>{
+    const merchantData = (await firebase.database(merchantApp).ref(`/merchants/${id}`).once('value')).val()
+    const deals = merchantData.deal; 
 
     //console.log('-----deals-----');
     //console.log(deals);
@@ -328,20 +259,7 @@ export const removeDeal = (id, code) => {
     }
     //console.log(deal);
 
-    const response = await fetch(`https://punchapp-86a47.firebaseio.com/merchants/${id}.json?auth=${token}`,
-      {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          deal
-        })
-      }
-    );
-    if(!response.ok){
-        throw new Error('error updating deal');
-    };
+    await firebase.database(merchantApp).ref(`/merchants/${id}/deal`).set(deal)
 
     dispatch({
       type: UPDATE_DEALS,
@@ -355,44 +273,30 @@ export const loadAllMerchants = () => {
     //this is gonna load the specific merchant with the inputed id
     //since our app is allready gonna have downloaded all the merchants
     //we will be able to pass the id as a parameter, this will not be the same for the user
-    return async (dispatch, getState) => {
+    return async dispatch => {
         // any async code you want!
-        const token = getState().user.token
-        try {
-          const response = await fetch(
-            `https://punchapp-86a47.firebaseio.com/merchants.json?auth=${token}`
+        const merchantData = (await firebase.database(userApp).ref(`/merchants`).once('value')).val()
+        //console.log(merchantData)
+        const loadedMerchants = [];
+        for (const key in merchantData) {
+          
+          const r = new Restaurants(
+              key,
+              merchantData[key].email,
           );
-          if (!response.ok) {
-            throw new Error('Something went wrong!');
-          }
-    
-          const resData = await response.json();
-          //console.log(resData)
-          const loadedMerchants = [];
-    
-          for (const key in resData) {
-            
-            const r = new Restaurants(
-                key,
-                resData[key].email,
-            );
-            r.title = resData[key].title
-            r.price = resData[key].price
-            r.type = resData[key].type
-            r.address = resData[key].address
-            r.city = resData[key].city
-            r.deal = resData[key].deal
-            r.customers = resData[key].customers
-    
-            //r.deal.concat(resData[key].deal);
-            loadedMerchants.push(r);
-          }
-          //console.log(loadedMerchants);
-
-          dispatch({ type: LOAD_ALL_MERCHANTS, merchants: loadedMerchants });
-        } catch (err) {
-          // send to custom analytics server
-          throw err;
+          r.title = merchantData[key].title
+          r.price = merchantData[key].price
+          r.type = merchantData[key].type
+          r.address = merchantData[key].address
+          r.city = merchantData[key].city
+          r.deal = merchantData[key].deal
+          r.customers = merchantData[key].customers
+  
+          //r.deal.concat(merchantData[key].deal);
+          loadedMerchants.push(r);
         }
+        //console.log(loadedMerchants);
+
+        dispatch({ type: LOAD_ALL_MERCHANTS, merchants: loadedMerchants });
       };
 };
