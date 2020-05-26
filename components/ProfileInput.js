@@ -1,5 +1,5 @@
 import React, {useReducer, useEffect} from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native'
+import { View, Text, TextInput, StyleSheet, Platform } from 'react-native'
 
 import Colors from '../constants/Colors';
 
@@ -186,14 +186,15 @@ const styles = StyleSheet.create({
         height:'90%'
     },
     rowView: {
+        paddingTop: Platform.OS == 'ios' ? 10 : 0,
         flex: 1, 
         flexDirection: 'row',
         height:'33%',
         width:'100%',
         justifyContent: 'center',
-        alignItems:'center',
-        //borderColor: 'black',
-        //borderWidth: 1,
+        alignItems:  'center',
+        // borderColor: 'black',
+        // borderWidth: 1,
     },
     singleFieldView: {
         width:'100%',
@@ -208,10 +209,13 @@ const styles = StyleSheet.create({
         width:'37.5%'
     },
     inputView:{
+        marginVertical: Platform.OS == 'ios' ? 2 : 0 ,
         marginLeft:2,
         marginRight:2,
         borderColor: 'black',
-        borderWidth: 1,
+        borderBottomWidth: 1,
+        height:"65%",
+        justifyContent:'center'
     },
     input: {
         color:'black',

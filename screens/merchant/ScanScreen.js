@@ -120,7 +120,7 @@ const ScanScreen = props => {
                         style = {styles.input}
                         underlineColorAndroid = "transparent"
                         keyboardType = 'decimal-pad'
-                        placeholder = "Loyalty Points"
+                        //placeholder = "Loyalty Points"
                         placeholderTextColor = {Colors.darkLines}
                         defaultValue = {input.toString()}
                         autoCapitalize = "none"
@@ -137,6 +137,7 @@ const styles = StyleSheet.create({
     screen:{
         flex:1,
         alignItems:'center',
+        backgroundColor: 'black'
         //justifyContent:'center'
     },
     scanner:{
@@ -159,6 +160,7 @@ const styles = StyleSheet.create({
         borderColor: Colors.lightLines,
         borderWidth: 1,
         height:30,
+        width:50,
         justifyContent:'center',
         alignItems:'center',
         marginBottom:5

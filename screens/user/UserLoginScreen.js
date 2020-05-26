@@ -153,7 +153,7 @@ const UserLoginScreen = props => {
                     }}
                 />}
             </View>
-            <View style={{width:'100%', alignItems:'center'}}>
+            {(Platform.OS == 'android') && <View style={{width:'100%', alignItems:'center'}}>
                 <TouchableOpacity onPress={() => signUpHandler(true)}>
                     <View style={styles.googleButton}>
                         <Image
@@ -165,18 +165,21 @@ const UserLoginScreen = props => {
                         <Text  font='Roboto'>SIGN IN WITH GOOGLE</Text>
                     </View>
                 </TouchableOpacity>
-            </View>
+            </View>}
             {isLoading && <ActivityIndicator color={Colors.darkLines} size='large'/>}
             <Dialog.Container visible={promptVisability}>
                 <Dialog.Title style={{fontWeight:'bold'}}>Confirmation Required!</Dialog.Title>
                 <Dialog.Description>
                     Please re-enter your password to create an account...
+                    Text is invisible for some cases!
                 </Dialog.Description>
                 <Dialog.Input 
-                    style={{borderBottomWidth:1}}
-                    secureTextEntry
+                    style={{borderBottomWidth: Platform.OS == 'android' ? 1: 0}}
+                    autoCorrect={false}
+                    autoCompleteType='off'
                     onChangeText={(text) => {dispatchFormState({type:RE_PASSWORD_UPDATE, text:text})}}
                     autoCapitalize = "none"
+                    secureTextEntry
                 />
                 <Dialog.Button label="Cancel" onPress={() => setPromptVisability(false)}/>
                 <Dialog.Button label="Confirm" onPress={() => signUpHandler(false)}/>
@@ -204,7 +207,7 @@ const styles = StyleSheet.create({
         flexDirection:'column'
     },
     inputContainer:{
-        height:245
+        height:245,
     },
     googleButton:{
         flexDirection:'row',

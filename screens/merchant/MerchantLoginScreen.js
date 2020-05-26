@@ -155,7 +155,7 @@ const MerchantLoginScreen = props => {
                     }}
                 />}
             </View>
-            <View style={{width:'100%', alignItems:'center', marginBottom:10}}>
+           {(Platform.OS == 'android') && <View style={{width:'100%', alignItems:'center', marginBottom:10}}>
                 <TouchableOpacity onPress={() => signUpHandler(true)}>
                     <View style={styles.googleButton}>
                         <Image
@@ -167,7 +167,7 @@ const MerchantLoginScreen = props => {
                         <Text  font='Roboto'>SIGN IN WITH GOOGLE</Text>
                     </View>
                 </TouchableOpacity>
-            </View>
+            </View>}
             {isLoading && <ActivityIndicator color={Colors.darkLines} size='large'/>}
             <Dialog.Container visible={promptVisability}>
                 <Dialog.Title style={{fontWeight:'bold'}}>Confirmation Required!</Dialog.Title>
@@ -175,10 +175,12 @@ const MerchantLoginScreen = props => {
                     Please re-enter your password to create a merchant account...
                 </Dialog.Description>
                 <Dialog.Input 
-                    style={{borderBottomWidth:1}}
-                    secureTextEntry
+                    style={{borderBottomWidth: Platform.OS == 'android' ? 1: 0}}
+                    autoCorrect={false}
+                    autoCompleteType='off'
                     onChangeText={(text) => {dispatchFormState({type:RE_PASSWORD_UPDATE, text:text})}}
                     autoCapitalize = "none"
+                    secureTextEntry
                 />
                 <Dialog.Button label="Cancel" onPress={() => setPromptVisability(false)}/>
                 <Dialog.Button label="Confirm" onPress={() => signUpHandler(false)}/>

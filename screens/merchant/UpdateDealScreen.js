@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     },
     container:{
         width:'95%',
-        height:130,
+        height:150,
         justifyContent:'center',
         alignItems:'center',
         backgroundColor:Colors.backgrounddark,
@@ -205,10 +205,13 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     },
     inputView:{
+        marginBottom: Platform.OS == 'ios' ? 5 : 0 ,
         marginLeft:2,
         marginRight:2,
         borderColor: 'black',
-        borderWidth: 1,
+        borderBottomWidth: 1,
+        height:"65%",
+        justifyContent:'center'
     },
     input: {
         color:'black',
