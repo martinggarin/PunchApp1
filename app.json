@@ -1,11 +1,10 @@
 {
   "expo": {
-    "name": "PunchCard",
-    "slug": "PunchCard",
+    "name": "PunchApp",
+    "slug": "Punch-App",
     "platforms": [
       "ios",
-      "android",
-      "web"
+      "android"
     ],
     "version": "1.0.0",
     "orientation": "portrait",
@@ -13,7 +12,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#F26419"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -22,7 +21,7 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false
     }
   }
 }
