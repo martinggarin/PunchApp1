@@ -1,5 +1,5 @@
 import React, {useReducer, useEffect} from 'react';
-import { View, Text, TextInput, StyleSheet, Platform } from 'react-native'
+import { View, Text, TextInput, StyleSheet, Platform, Picker } from 'react-native'
 
 import Colors from '../constants/Colors';
 
@@ -133,7 +133,15 @@ ProfileInput = props => {
                 <View style={styles.rightFieldView}>
                     <Text style={styles.text}>Price</Text>
                     <View style={styles.inputView}>
-                        <TextInput 
+                        <Picker
+                            selectedValue={initialValues.inputValues.price}
+                            onValueChange={handlePrice}
+                        >
+                            <Picker.Item label="$" value="$" />
+                            <Picker.Item label="$$" value="$$" />
+                            <Picker.Item label="$$$" value="$$$" />
+                        </Picker>
+                        {/* <TextInput 
                             style = {styles.input}
                             underlineColorAndroid = "transparent"
                             placeholder = "Price ($)"
@@ -141,7 +149,7 @@ ProfileInput = props => {
                             defaultValue = {initialValues.inputValues.price}
                             autoCapitalize = "none"
                             onChangeText = {handlePrice}
-                        />
+                        /> */}
                     </View>
                 </View>
             </View>
