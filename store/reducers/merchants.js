@@ -5,7 +5,7 @@ import {
     UPDATE_MERCHANT,
     UPDATE_DEALS,
     LOAD_ALL_MERCHANTS} from '../actions/merchants';
-import Restaurants from '../../models/Restaurants';
+import Merchant from '../../models/Merchant';
 
 const initialState = {
     availableMerchants: [], 
@@ -13,12 +13,12 @@ const initialState = {
     myDeals: []
 };
 
-//most problems have been due to my inability to spell retaurant
+// most problems have been due to my inability to spell retaurant
 export default (state = initialState, action) => {
     switch(action.type){
 
         case CREATE_MERCHANT:
-            const newMerchant = new Restaurants(action.merchantData.id, action.merchantData.email);
+            const newMerchant = new Merchant(action.merchantData.id, action.merchantData.email);
             return {
                 ...state,
                 myMerchant: newMerchant, 

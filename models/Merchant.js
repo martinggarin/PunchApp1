@@ -1,6 +1,6 @@
 import Deal from './Deal';
 
-class Restaurants {
+class Merchant {
     constructor(id, email){
         this.id = id
         this.email = email;
@@ -13,4 +13,4 @@ class Restaurants {
         this.customers = []
     }
 }
-export default Restaurants;
+export default Merchant;
