@@ -271,9 +271,6 @@ export const removeDeal = (id, code) => {
 
 export const loadAllMerchants = () => {
     console.log('~Merchant Action: loadAllMerchants')
-    //this is gonna load the specific merchant with the inputed id
-    //since our app is allready gonna have downloaded all the merchants
-    //we will be able to pass the id as a parameter, this will not be the same for the user
     return async dispatch => {
         // any async code you want!
         const merchantData = (await firebase.database(userApp).ref(`/merchants`).once('value')).val()
@@ -281,23 +278,25 @@ export const loadAllMerchants = () => {
         const loadedMerchants = [];
         for (const key in merchantData) {
           
-          const r = new Merchant(
+          const merchant = new Merchant(
               key,
               merchantData[key].email,
           );
-          r.title = merchantData[key].title
-          r.price = merchantData[key].price
-          r.type = merchantData[key].type
-          r.address = merchantData[key].address
-          r.city = merchantData[key].city
-          r.deal = merchantData[key].deal
-          r.customers = merchantData[key].customers
-  
-          //r.deal.concat(merchantData[key].deal);
-          loadedMerchants.push(r);
+          merchant.title = merchantData[key].title
+          merchant.price = merchantData[key].price
+          merchant.type = merchantData[key].type
+          merchant.address = merchantData[key].address
+          merchant.city = merchantData[key].city
+          merchant.deal = merchantData[key].deal
+          merchant.customers = merchantData[key].customers
+          console.log(merchant.deal)
+          loadedMerchants.push(merchant)
         }
         //console.log(loadedMerchants);
-
-        dispatch({ type: LOAD_ALL_MERCHANTS, merchants: loadedMerchants });
+        var filteredMerchants = loadedMerchants.filter(function(m){
+          return !(m.deal === undefined)
+        })
+        //console.log(filteredMerchants);
+        dispatch({ type: LOAD_ALL_MERCHANTS, merchants: filteredMerchants });
       };
 };

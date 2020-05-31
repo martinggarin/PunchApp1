@@ -115,6 +115,7 @@ MerchantProfileScreen.navigationOptions = navigationData => {
                                     'Merchant Help',
                                     'Thank you for using PunchApp! We hope you are enjoying your experience.\n\n'
                                     +'• Deals can be created on both the home and edit screens\n\n'
+                                    +'• Maintain at least one deal to ensure your profile remains public\n\n'
                                     +'• To edit or remove a deal, select it on the edit screen\n\n'
                                     +'• To credit loyalty points to a customer account, scan their reward code using the scanning tab\n\n'
                                     +'• To redeem a deal for a customer, select it on the home screen and scan their reward code\n\n'

@@ -1,5 +1,3 @@
-import Deal from './Deal';
-
 class Merchant {
     constructor(id, email){
         this.id = id
