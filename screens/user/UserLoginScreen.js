@@ -171,10 +171,9 @@ const UserLoginScreen = props => {
                 <Dialog.Title style={{fontWeight:'bold'}}>Confirmation Required!</Dialog.Title>
                 <Dialog.Description>
                     Please re-enter your password to create an account...
-                    Text is invisible for some cases!
                 </Dialog.Description>
                 <Dialog.Input 
-                    style={{borderBottomWidth: Platform.OS == 'android' ? 1: 0}}
+                    style={{borderBottomWidth: Platform.OS == 'android' ? 1: 0, color:'black'}}
                     autoCorrect={false}
                     autoCompleteType='off'
                     onChangeText={(text) => {dispatchFormState({type:RE_PASSWORD_UPDATE, text:text})}}
