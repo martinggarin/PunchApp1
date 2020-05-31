@@ -5,7 +5,7 @@ export const UPDATE_MERCHANT = 'UPDATE_MERCHANT';
 export const UPDATE_DEALS = 'UPDATE_DEALS';
 export const LOAD_ALL_MERCHANTS = 'LOAD_ALL_MERCHANTS';
 
-import Restaurants from '../../models/Restaurants';
+import Merchant from '../../models/Merchant';
 import Deal from '../../models/Deal';
 
 import * as Google from 'expo-google-app-auth';
@@ -83,7 +83,7 @@ export const createMerchant = (email, password, useGoogle) => {
       throw new Error('Email associated with another account.');
     }else{
       //handle case: google sign in
-      const merchant = new Restaurants(m_id, googleUser.user.email);
+      const merchant = new Merchant(m_id, googleUser.user.email);
       merchant.title = merchantData.title
       merchant.price = merchantData.price
       merchant.type = merchantData.type
@@ -117,7 +117,7 @@ export const getMerchant = (email, password) => {
     if (merchantData === null){
       throw new Error('Wrong password. Try again.');
     }
-    const merchant = new Restaurants(m_id, email);
+    const merchant = new Merchant(m_id, email);
     merchant.title = merchantData.title
     merchant.price = merchantData.price
     merchant.type = merchantData.type
@@ -281,7 +281,7 @@ export const loadAllMerchants = () => {
         const loadedMerchants = [];
         for (const key in merchantData) {
           
-          const r = new Restaurants(
+          const r = new Merchant(
               key,
               merchantData[key].email,
           );
