@@ -144,7 +144,7 @@ const MerchantTabNavigator = Platform.OS ==='android'
 }) 
 : createBottomTabNavigator(MerchantTabScreen, {
     tabBarOptions:{
-        activeTintColor:Colors.lightLines,
+        activeTintColor:Colors.backgrounddark,
     }
 });
 
@@ -155,7 +155,7 @@ const UserTabNavigator = Platform.OS ==='android'
 }) 
 : createBottomTabNavigator(tabScreen, {
     tabBarOptions:{
-        activeTintColor:Colors.lightLines,
+        activeTintColor:Colors.backgrounddark,
     }
 });
 
