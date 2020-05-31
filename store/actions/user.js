@@ -23,6 +23,7 @@ export const createUser = (email, password, useGoogle) => {
     if (useGoogle){
       googleUser = await Google.logInAsync({
         androidClientId:'685510681673-falsomf7g38i1d2v957dksi672oa75pa.apps.googleusercontent.com',
+        iosClientId:'685510681673-223e0ep20l00k03mf5fes84ojhdkjhr1.apps.googleusercontent.com'
       });
       if (googleUser.type === 'success'){
         var authenticatedUser = firebase.auth.GoogleAuthProvider.credential(googleUser.idToken, googleUser.accessToken)

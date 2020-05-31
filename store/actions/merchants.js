@@ -25,6 +25,7 @@ export const createMerchant = (email, password, useGoogle) => {
     if (useGoogle){
       googleUser = await Google.logInAsync({
         androidClientId:'685510681673-falsomf7g38i1d2v957dksi672oa75pa.apps.googleusercontent.com',
+        iosClientId:'685510681673-223e0ep20l00k03mf5fes84ojhdkjhr1.apps.googleusercontent.com'
       });
       if (googleUser.type === 'success'){
         var authenticatedMerchant = firebase.auth.GoogleAuthProvider.credential(googleUser.idToken, googleUser.accessToken)
@@ -166,7 +167,7 @@ export const updateMerchant = (id, title, price, type, address, city) => {
     updatedMerchantData.city = city
     await firebase.database(merchantApp).ref(`/merchants/${id}`).set(updatedMerchantData)
     updatedMerchantData.id = id
-    
+
     dispatch({
       type: UPDATE_MERCHANT,
       merchantData: updatedMerchantData 

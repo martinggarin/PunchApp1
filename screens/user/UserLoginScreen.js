@@ -153,7 +153,7 @@ const UserLoginScreen = props => {
                     }}
                 />}
             </View>
-            {(Platform.OS == 'android') && <View style={{width:'100%', alignItems:'center'}}>
+            <View style={{width:'100%', alignItems:'center'}}>
                 <TouchableOpacity onPress={() => signUpHandler(true)}>
                     <View style={styles.googleButton}>
                         <Image
@@ -165,7 +165,7 @@ const UserLoginScreen = props => {
                         <Text  font='Roboto'>SIGN IN WITH GOOGLE</Text>
                     </View>
                 </TouchableOpacity>
-            </View>}
+            </View>
             {isLoading && <ActivityIndicator color={Colors.darkLines} size='large'/>}
             <Dialog.Container visible={promptVisability}>
                 <Dialog.Title style={{fontWeight:'bold'}}>Confirmation Required!</Dialog.Title>
