@@ -176,7 +176,8 @@ const MerchantNavigator = createStackNavigator({
                 size={23}
                 color={drawerConfig.tintColor}
             />
-        )
+        ),
+        gesturesEnabled: false
     },
     defaultNavigationOptions: defaultOptions
 });
@@ -196,7 +197,8 @@ const UserNavigator = createStackNavigator({
                 size={23}
                 color={drawerConfig.tintColor}
             />
-        )
+        ),
+        gesturesEnabled: false
     },
     defaultNavigationOptions: defaultOptions
 });

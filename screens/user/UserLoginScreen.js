@@ -97,9 +97,9 @@ const UserLoginScreen = props => {
                 useGoogle
             ));
             if (newUser){
-                props.navigation.navigate('Explore');
+                props.navigation.replace('Explore');
             }else{
-                props.navigation.navigate('Home');
+                props.navigation.replace('Home');
             }
         }
         catch(err){
