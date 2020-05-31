@@ -161,10 +161,16 @@ const UserTabNavigator = Platform.OS ==='android'
 
 
 const MerchantNavigator = createStackNavigator({
-    MerchantLogin: MerchantLoginScreen,
+    MerchantLogin: {
+        screen: MerchantLoginScreen,
+        navigationOptions:{gestureEnabled:false}
+    },
     MerchantHome: {
         screen: MerchantTabNavigator,
-        navigationOptions: {headerShown:false}
+        navigationOptions: {
+            headerShown:false,
+            gestureEnabled:false
+        }
     },
     Edit:EditScreen,
     UpdateDeal:UpdateDealScreen
@@ -177,16 +183,21 @@ const MerchantNavigator = createStackNavigator({
                 color={drawerConfig.tintColor}
             />
         ),
-        gesturesEnabled: false
     },
     defaultNavigationOptions: defaultOptions
 });
 
 const UserNavigator = createStackNavigator({
-    UserLogin: UserLoginScreen,
+    UserLogin: {
+        screen: UserLoginScreen,
+        navigationOptions: {gestureEnabled:false}
+    },
     Home: {
         screen: UserTabNavigator,
-        navigationOptions: {headerShown:false}
+        navigationOptions: {
+            headerShown:false,
+            gestureEnabled: false
+        }
     },
     Punch: PunchScreen,
 }, {
@@ -198,7 +209,6 @@ const UserNavigator = createStackNavigator({
                 color={drawerConfig.tintColor}
             />
         ),
-        gesturesEnabled: false
     },
     defaultNavigationOptions: defaultOptions
 });

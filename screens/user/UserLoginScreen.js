@@ -69,7 +69,7 @@ const UserLoginScreen = props => {
                 formState.inputValues.email,
                 formState.inputValues.password
             ));
-            props.navigation.navigate('Home');
+            props.navigation.replace('Home');
             setIsNewUser(false)
         } catch(err){
             setError(err.message);

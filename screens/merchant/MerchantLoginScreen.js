@@ -69,7 +69,7 @@ const MerchantLoginScreen = props => {
                 formState.inputValues.email,
                 formState.inputValues.password,
             ));
-            props.navigation.navigate('MerchantHome');
+            props.navigation.replace('MerchantHome');
             setIsNewUser(false)
         } catch(err){
             setError(err.message);
@@ -99,7 +99,7 @@ const MerchantLoginScreen = props => {
             if (newMerchant) {
                 props.navigation.replace('Edit',{newMerchant:true});
             }else{
-                props.navigation.navigate('MerchantHome');
+                props.navigation.replace('MerchantHome');
             };
             setIsNewUser(false)
         }
