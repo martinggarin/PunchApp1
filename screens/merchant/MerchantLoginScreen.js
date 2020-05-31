@@ -155,7 +155,7 @@ const MerchantLoginScreen = props => {
                     }}
                 />}
             </View>
-            <View style={{width:'100%', alignItems:'center', marginBottom:10}}>
+            <View style={styles.googleContainer}>
                 <TouchableOpacity onPress={() => signUpHandler(true)}>
                     <View style={styles.googleButton}>
                         <Image
@@ -209,6 +209,11 @@ const styles = StyleSheet.create({
     },
     inputContainer:{
         height:245
+    },
+    googleContainer:{
+        width:'100%', 
+        alignItems:'center',
+        marginBottom:10
     },
     googleButton:{
         flexDirection:'row',
