@@ -140,6 +140,7 @@ ProfileInput = props => {
                             <Picker.Item label="$" value="$" />
                             <Picker.Item label="$$" value="$$" />
                             <Picker.Item label="$$$" value="$$$" />
+                            <Picker.Item label="$$$$" value="$$$$" />
                         </Picker>
                         {/* <TextInput 
                             style = {styles.input}
