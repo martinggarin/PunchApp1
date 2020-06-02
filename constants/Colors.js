@@ -16,5 +16,4 @@ export default {
     iconDark:'black',
     input:'black',
     placeholderText: '#7A8586'
-
 };
