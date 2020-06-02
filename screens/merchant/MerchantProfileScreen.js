@@ -1,11 +1,9 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import { Alert, View, Text, StyleSheet, Button, TouchableOpacity} from 'react-native';
 import {useSelector} from 'react-redux';
-import { Feather, Ionicons} from '@expo/vector-icons';
+import { Feather, Ionicons, AntDesign} from '@expo/vector-icons';
 import DealList from '../../components/DealList';
 import Colors from '../../constants/Colors';
-import {HeaderButtons, Item} from 'react-navigation-header-buttons';
-import HeaderButton from '../../components/HeaderButton';
 
 const MerchantProfileScreen = props => {
     console.log('Merchant Profile');
@@ -13,19 +11,21 @@ const MerchantProfileScreen = props => {
     //console.log(r_item)
 
     let deals = useSelector(state => state.merchants.myDeals);
+    let totalDeals = null
+    let totalCustomers = null
     if (deals === undefined || deals === null){
-        var totalDeals = 0
+        totalDeals = 0
         deals = []
     }
     else{
-        var totalDeals = deals.length
+        totalDeals = deals.length
     }
     if (r_item.customers === undefined || r_item.customers === null){
-        var totalCustomers = 0
+        totalCustomers = 0
         r_item.customers = []
     }
     else{
-        var totalCustomers = r_item.customers.length
+        totalCustomers = r_item.customers.length
     }
 
     const dealTapHandler = useCallback((dealCode) => {
@@ -65,6 +65,10 @@ const MerchantProfileScreen = props => {
         </TouchableOpacity>
     )
 
+    useEffect(()=>{
+        props.navigation.setParams({deals:totalDeals});
+    },[totalDeals]);
+
     return(
         <View style={styles.screen}>
             <View style={styles.upperContainer}>
@@ -101,11 +105,35 @@ const MerchantProfileScreen = props => {
 };
 
 MerchantProfileScreen.navigationOptions = navigationData => {
+    const deals = navigationData.navigation.getParam('deals');
+    if (deals > 0){
+        var published = true
+        var iconName = 'checkcircle'
+    }else{
+        var published = false
+        var iconName = 'checkcircleo'
+    }
     return{
         headerRight: () => {
             return (
-                <View style={{flex:1, flexDirection:'row', width:100}}>
-                    <View style={{height:'100%', width:'50%', alignItems:'center', justifyContent:'center'}}>
+                <View style={{flex:1, flexDirection:'row', width:150}}>
+                    <View style={{height:'100%', width:'33%', alignItems:'center', justifyContent:'center'}}>
+                        <AntDesign
+                            name={iconName}
+                            size={25}
+                            color={Colors.lightLines}
+                            onPress={()=>{
+                                Alert.alert(
+                                    'Profile Status',
+                                    (published)
+                                    ? 'Your profile is currently LIVE! Users can find you on their explore pages.'
+                                    : 'Your profile is currently HIDDEN! Add a deal to publish your profile.',
+                                    [{text: 'Okay'}]
+                                )
+                            }}
+                        />
+                    </View>
+                    <View style={{height:'100%', width:'33%', alignItems:'center', justifyContent:'center'}}>
                         <Feather
                             name='help-circle'
                             size={25}
@@ -125,7 +153,7 @@ MerchantProfileScreen.navigationOptions = navigationData => {
                             }}
                         />
                     </View>
-                    <View style={{height:'100%', width:'50%', alignItems:'center', justifyContent:'center'}}>
+                    <View style={{height:'100%', width:'33%', alignItems:'center', justifyContent:'center'}}>
                         <Feather 
                             name='edit'
                             size={25}
