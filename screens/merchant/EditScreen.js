@@ -186,7 +186,7 @@ const EditScreen = props => {
             style={styles.addContainer}
         >
             <View style={styles.addContainer}>
-                <Ionicons name={'md-add-circle'} size={30} color={'black'} />
+                <Ionicons name={'md-add-circle'} size={30} color={Colors.fontDark} />
                 <Text>Add Deal</Text>
             </View>
         </TouchableOpacity>
@@ -222,7 +222,7 @@ EditScreen.navigationOptions = navigationData => {
                 <Feather 
                     name='save'
                     size={25}
-                    color={Colors.lightLines}
+                    color={Colors.lines}
                     style={{marginRight:10}}
                     onPress={submit}
                 />

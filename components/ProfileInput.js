@@ -161,7 +161,7 @@ ProfileInput = props => {
                             style = {styles.input}
                             underlineColorAndroid = "transparent"
                             placeholder = "Address"
-                            placeholderTextColor = {Colors.darkLines}
+                            placeholderTextColor = {Colors.placeholderText}
                             defaultValue = {initialValues.inputValues.address}
                             autoCapitalize = "none"
                             onChangeText = {handleAddress}
@@ -175,7 +175,7 @@ ProfileInput = props => {
                             style = {styles.input}
                             underlineColorAndroid = "transparent"
                             placeholder = "City"
-                            placeholderTextColor = {Colors.darkLines}
+                            placeholderTextColor = {Colors.placeholderText}
                             defaultValue = {initialValues.inputValues.city}
                             autoCapitalize = "none"
                             onChangeText = {handleCity}
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
         width:'100%',
         justifyContent: 'center',
         alignItems:  'center',
-        // borderColor: 'black',
+        // borderColor: Colors.borderDark,
         // borderWidth: 1,
     },
     singleFieldView: {
@@ -220,13 +220,13 @@ const styles = StyleSheet.create({
         marginVertical: Platform.OS == 'ios' ? 2 : 0 ,
         marginLeft:2,
         marginRight:2,
-        borderColor: 'black',
+        borderColor: Colors.borderDark,
         borderBottomWidth: 1,
         height:"65%",
         justifyContent:'center'
     },
     input: {
-        color:'black',
+        color:Colors.fontDark,
         marginLeft: 5,
     },   
     text: {

@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     },
     textContainer:{
         width:'70%',
-        borderColor:'black',
+        borderColor:Colors.borderDark,
         //borderWidth:1,
         flexDirection:'column',
     },

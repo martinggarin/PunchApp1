@@ -173,7 +173,7 @@ const UserLoginScreen = props => {
                     Please re-enter your password to create an account...
                 </Dialog.Description>
                 <Dialog.Input 
-                    style={{borderBottomWidth: Platform.OS == 'android' ? 1: 0, color:'black'}}
+                    style={{borderBottomWidth: Platform.OS == 'android' ? 1: 0, color: Colors.borderDark}}
                     autoCorrect={false}
                     autoCompleteType='off'
                     onChangeText={(text) => {dispatchFormState({type:RE_PASSWORD_UPDATE, text:text})}}
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
         alignItems:'center',
         width:240,
         height:40,
-        borderColor:'black',
+        borderColor:Colors.borderDark,
         borderWidth:1,
         borderRadius:3,
     },

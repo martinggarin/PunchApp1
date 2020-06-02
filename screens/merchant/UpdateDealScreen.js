@@ -150,7 +150,7 @@ const UpdateDealScreen = props => {
                             style = {styles.input}
                             underlineColorAndroid = "transparent"
                             placeholder = "Deal"
-                            placeholderTextColor = {Colors.darkLines}
+                            placeholderTextColor = {Colors.placeholderText}
                             defaultValue = {initialValues.inputValues.reward}
                             autoCapitalize = "none"
                             onChangeText = {handleReward}
@@ -165,7 +165,7 @@ const UpdateDealScreen = props => {
                             keyboardType='decimal-pad'
                             underlineColorAndroid = "transparent"
                             placeholder = "Cost"
-                            placeholderTextColor = {Colors.darkLines}
+                            placeholderTextColor = {Colors.placeholderText}
                             defaultValue = {initialValues.inputValues.ammount}
                             autoCapitalize = "none"
                             onChangeText = {handleAmmount}
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
         height:'45%',
         width:'95%',
         justifyContent: 'center',
-        //borderColor: 'black',
+        //borderColor: Colors.borderDark,
         //borderWidth: 1,
     },
     text: {
@@ -208,13 +208,13 @@ const styles = StyleSheet.create({
         marginBottom: Platform.OS == 'ios' ? 5 : 0 ,
         marginLeft:2,
         marginRight:2,
-        borderColor: 'black',
+        borderColor: Colors.borderDark,
         borderBottomWidth: 1,
         height:"65%",
         justifyContent:'center'
     },
     input: {
-        color:'black',
+        color:Colors.input,
         marginLeft: 5,
     },  
     button: {
