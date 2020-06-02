@@ -103,7 +103,7 @@ const LoginInput = props => {
             </View>
             <View style={styles.lowerContainer}>
                 <View style={styles.buttonContainer}>
-                    <Button title='Login' color={Colors.backgrounddark} onPress={props.onLogin}/>
+                    <Button title='Login' color={Colors.primary} onPress={props.onLogin}/>
                 </View>
                 <View style={styles.buttonContainer}>
                     <Button title='Sign Up' color={Colors.darkLines} onPress={props.onSignUp} />
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
         height:180,
         alignItems:'center',
         justifyContent:'center',
-        backgroundColor:Colors.backgrounddark,
+        backgroundColor:Colors.primary,
         borderRadius:3,
         margin:'2.5%'
     },

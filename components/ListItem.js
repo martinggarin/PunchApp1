@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
         //borderColor:Colors.darkLines,
         //borderWidth:1,
     
-        //borderColor:Colors.backgrounddark
+        //borderColor:Colors.primary
     },
     containerRight:{
         //borderWidth:1,

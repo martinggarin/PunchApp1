@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     upperContainer:{
         width:'95%',
         height:'25%',
-        backgroundColor:Colors.backgrounddark,
+        backgroundColor:Colors.primary,
         borderRadius:3,
         margin:'2.5%'
     },

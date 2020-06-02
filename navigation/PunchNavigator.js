@@ -24,7 +24,7 @@ import * as UserActions from '../store/actions/user';
 
 const defaultOptions = {
     headerStyle:{
-        backgroundColor:Colors.backgrounddark
+        backgroundColor:Colors.primary
     },
     headerTintColor: Colors.lines,
 };
@@ -144,7 +144,7 @@ const MerchantTabNavigator = Platform.OS ==='android'
 }) 
 : createBottomTabNavigator(MerchantTabScreen, {
     tabBarOptions:{
-        activeTintColor:Colors.backgrounddark,
+        activeTintColor:Colors.primary,
     }
 });
 
@@ -155,7 +155,7 @@ const UserTabNavigator = Platform.OS ==='android'
 }) 
 : createBottomTabNavigator(tabScreen, {
     tabBarOptions:{
-        activeTintColor:Colors.backgrounddark,
+        activeTintColor:Colors.primary,
     }
 });
 

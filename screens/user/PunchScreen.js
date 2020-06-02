@@ -55,7 +55,7 @@ const PunchScreen = props => {
 
     return(
         <View style={styles.screen}>
-            <PunchCard style={{height:'30%', width: '95%', margin:'2.5%', backgroundColor:Colors.backgrounddark}}>
+            <PunchCard style={{height:'30%', width: '95%', margin:'2.5%', backgroundColor:Colors.primary}}>
                 <View style={styles.textContainer}>
                     <RewardBalance
                         text={['Loyalty', 'Points']}
