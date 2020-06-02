@@ -11,6 +11,7 @@ import RewardBalance from '../../components/RewardBalance';
 import { Ionicons } from '@expo/vector-icons';
 
 const PunchScreen = props => {
+    console.log('Punch');
     const r_id = props.navigation.getParam('merchant_id');
     //console.log(r_id);
     const r_item = useSelector(state => state.merchants.availableMerchants).find(r=> r.id === r_id);

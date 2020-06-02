@@ -35,7 +35,7 @@ const formReducer = (state, action) =>{
 };
 
 const EditScreen = props => {
-    console.log('Edit Screen');
+    console.log('Edit');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
     const [displayHelp, setDisplayHelp] = useState(true)
