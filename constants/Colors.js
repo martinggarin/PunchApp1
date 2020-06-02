@@ -8,6 +8,13 @@ export default {
     darkLines:'#7A8586', 
     containers: '#F3FFC6',
     fontLight:'white',
-    fontDark:'black'
+    fontDark:'black',
+    shadow:"black",
+    borderDark: 'black',
+    scanBackground:'black',
+    borderLight:'white',
+    iconDark:'black',
+    input:'black',
+    placeholderText: '#7A8586'
 
 };

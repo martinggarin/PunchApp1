@@ -78,7 +78,7 @@ const LoginInput = props => {
                             keyboardType = "email-address"
                             underlineColorAndroid = "transparent"
                             placeholder = "Enter Your Email Address"
-                            placeholderTextColor = {Colors.darkLines}
+                            placeholderTextColor = {Colors.placeholderText}
                             defaultValue = {initialValues.inputValues.email}
                             autoCapitalize = "none"
                             onChangeText = {handleEmail}
@@ -93,7 +93,7 @@ const LoginInput = props => {
                             secureTextEntry
                             underlineColorAndroid = "transparent"
                             placeholder = "Enter Your Password"
-                            placeholderTextColor = {Colors.darkLines}
+                            placeholderTextColor = {Colors.placeholderText}
                             defaultValue = {initialValues.inputValues.password}
                             autoCapitalize = "none"
                             onChangeText = {handlePassword}
@@ -146,11 +146,11 @@ const styles = StyleSheet.create({
         height:30,
         marginLeft:2,
         marginRight:2,
-        borderColor: 'black',
+        borderColor: Colors.borderDark,
         borderBottomWidth: 1,
     },
     input: {
-        color:'black',
+        color:Colors.input,
         marginLeft: 5,
     },   
     text: {

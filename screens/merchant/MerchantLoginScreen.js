@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
         alignItems:'center',
         width:240,
         height:40,
-        borderColor:'black',
+        borderColor:Colors.borderDark,
         borderWidth:1,
         borderRadius:3,
     },

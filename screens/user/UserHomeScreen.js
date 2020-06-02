@@ -85,7 +85,7 @@ const UserHomeScreen = props => {
             style={styles.addContainer}
         >
             <View style={styles.addContainer}>
-                <Ionicons name={'md-add-circle'} size={30} color={'black'} />
+                <Ionicons name={'md-add-circle'} size={30} color={Colors.iconDark} />
                 <Text>Add Favorites</Text>
             </View>
         </TouchableOpacity>

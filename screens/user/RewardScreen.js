@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
         resizeMode:'contain'
     },
     text:{
-        color:'white'
+        color:Colors.fontLight
     }
 });
 
