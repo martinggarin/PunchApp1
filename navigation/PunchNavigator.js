@@ -26,7 +26,7 @@ const defaultOptions = {
     headerStyle:{
         backgroundColor:Colors.backgrounddark
     },
-    headerTintColor: Colors.lightLines,
+    headerTintColor: Colors.lines,
 };
 
 const MerchantHomeNavigator = createStackNavigator({
@@ -139,7 +139,7 @@ const tabScreen = {
 
 const MerchantTabNavigator = Platform.OS ==='android' 
 ? createMaterialBottomTabNavigator(MerchantTabScreen, {
-    activeColor:Colors.lightLines,
+    activeColor:Colors.lines,
     shifting:true
 }) 
 : createBottomTabNavigator(MerchantTabScreen, {
@@ -150,7 +150,7 @@ const MerchantTabNavigator = Platform.OS ==='android'
 
 const UserTabNavigator = Platform.OS ==='android' 
 ? createMaterialBottomTabNavigator(tabScreen, {
-    activeColor:Colors.lightLines,
+    activeColor:Colors.lines,
     shifting:true
 }) 
 : createBottomTabNavigator(tabScreen, {
