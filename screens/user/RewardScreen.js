@@ -5,6 +5,7 @@ import QRCode from 'react-native-qrcode-generator';
 import Colors from '../../constants/Colors';
 
 const RewardScreen = props => {
+    console.log('Reward');
     const u_id = useSelector(state => state.user.user.id);
     //console.log('------ID--------');
     //console.log(u_id);

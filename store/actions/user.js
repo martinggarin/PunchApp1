@@ -118,7 +118,7 @@ export const getUser = (email, password) => {
     const user = new Customer(u_id, email);
     user.RS = userData.RS;
     user.favorites = userData.favorites;
-    console.log(userData)
+    //console.log(userData)
     //console.log(user);
     
     dispatch({

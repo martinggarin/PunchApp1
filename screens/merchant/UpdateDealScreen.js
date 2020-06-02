@@ -100,7 +100,7 @@ const UpdateDealScreen = props => {
     const handleAmmount = useCallback((text) => {
         console.log('-Input Change Handler')
         var isValid = true
-        if (text.length === 0){
+        if ((text.length === 0) || (text.length > 10) || isNaN(text)){
             isValid = false
         }
         dispatchFormState({
@@ -113,7 +113,11 @@ const UpdateDealScreen = props => {
     const handleSubmit = useCallback( async () => {
         console.log('-Submit Deal Handler')
         if(!formState.formIsValid){
-            Alert.alert('Invalid Inputs!' , 'Please check your inputs...', [{text: 'Okay'}]);
+            Alert.alert('Invalid Inputs!' , 
+                        'Please check your inputs...\n\n'
+                        +'Deal Names must be at least 1 character\n\n'
+                        +'Deal Costs must be numeric and are limited to 10 digits', 
+                        [{text: 'Okay'}]);
             return;
         };
         setError(null);
