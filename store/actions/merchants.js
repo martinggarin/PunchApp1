@@ -289,7 +289,7 @@ export const loadAllMerchants = () => {
           merchant.city = merchantData[key].city
           merchant.deal = merchantData[key].deal
           merchant.customers = merchantData[key].customers
-          console.log(merchant.deal)
+          //console.log(merchant.deal)
           loadedMerchants.push(merchant)
         }
         //console.log(loadedMerchants);
