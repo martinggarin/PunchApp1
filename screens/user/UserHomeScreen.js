@@ -18,7 +18,6 @@ const UserHomeScreen = props => {
     const allMerchants = useSelector(state => state.merchants.availableMerchants);
     const display = useSelector(state => state.user.userMerchants);
     const u_id = useSelector(state => state.user.user).id;
-    let updatedUserMerchants = [];
     const dispatch = useDispatch();
 
     // console.log('------allMerchants--------');
@@ -26,11 +25,15 @@ const UserHomeScreen = props => {
     // console.log('------display-------------');
     // console.log(display)
 
+    let updatedUserMerchants = [];
     if(display && allMerchants.length > 0){
         for(const key in display){
             const merch = allMerchants.find(m=>m.id === display[key]);
             // console.log('....merch....');
             // console.log(merch);
+            if (merch === undefined){
+                continue
+            }
             updatedUserMerchants.push(merch);
         }
     }
