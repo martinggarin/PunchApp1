@@ -116,8 +116,8 @@ MerchantProfileScreen.navigationOptions = navigationData => {
     return{
         headerRight: () => {
             return (
-                <View style={{flex:1, flexDirection:'row', width:150}}>
-                    <View style={{height:'100%', width:'33%', alignItems:'center', justifyContent:'center'}}>
+                <View style={styles.headerRight}>
+                    <View style={styles.headerButton}>
                         <AntDesign
                             name={iconName}
                             size={25}
@@ -126,17 +126,17 @@ MerchantProfileScreen.navigationOptions = navigationData => {
                                 Alert.alert(
                                     'Profile Status',
                                     (published)
-                                    ? 'Your profile is currently LIVE! Users can find you on their explore pages.'
+                                    ? 'Your profile is currently LIVE! Users can find you on the explore page and in their favorites.'
                                     : 'Your profile is currently HIDDEN! Add a deal to publish your profile.',
                                     [{text: 'Okay'}]
                                 )
                             }}
                         />
                     </View>
-                    <View style={{height:'100%', width:'33%', alignItems:'center', justifyContent:'center'}}>
+                    <View style={{...styles.headerButton, height:55, width:55}}>
                         <Feather
                             name='help-circle'
-                            size={25}
+                            size={27.5}
                             color={Colors.lightLines}
                             onPress={()=>{
                                 Alert.alert(
@@ -153,7 +153,7 @@ MerchantProfileScreen.navigationOptions = navigationData => {
                             }}
                         />
                     </View>
-                    <View style={{height:'100%', width:'33%', alignItems:'center', justifyContent:'center'}}>
+                    <View style={styles.headerButton}>
                         <Feather 
                             name='edit'
                             size={25}
@@ -207,6 +207,19 @@ const styles = StyleSheet.create({
         alignItems:'center',
         height:150,
         margin:10,
+    },
+    headerRight:{
+        flex:1,
+        flexDirection:'row',
+        width:155,
+        alignItems:'center',
+        justifyContent:'center'
+    },
+    headerButton:{
+        height:50,
+        width:50,
+        alignItems:'center',
+        justifyContent:'center'
     }
 });
 
