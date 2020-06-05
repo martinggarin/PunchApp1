@@ -24,7 +24,10 @@
     "ios": {
       "bundleIdentifier":"com.punch-app.punchapp",
       "buildNumber":"1.0.0",
-      "supportsTablet": false
+      "supportsTablet": false,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Punch-App uses the camera to scan user QR-codes and process rewards."
+      }
     },
     "android": {
       "package": "com.punch_app.punchapp",
