@@ -1,6 +1,7 @@
 export default {
     background:'white',
     //background: "#0F4C5C",
+    primary:'#F26419',
     backgrounddark: '#F26419',
     header: '#F26419',
     lines: 'white',
