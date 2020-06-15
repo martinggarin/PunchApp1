@@ -36,8 +36,8 @@
         "foregroundImage":"./assets/icon.png",
         "backgroundColor":"#F26419"
       },
-      "permissions":[
-        "CAMERA", 
+      "permissions": [
+        "CAMERA",
         "WRITE_EXTERNAL_STORAGE",
         "READ_EXTERNAL_STORAGE"
       ]

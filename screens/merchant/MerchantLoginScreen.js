@@ -155,7 +155,7 @@ const MerchantLoginScreen = props => {
                     }}
                 />}
             </View>
-            <View style={styles.googleContainer}>
+            {/* <View style={styles.googleContainer}>
                 <TouchableOpacity onPress={() => signUpHandler(true)}>
                     <View style={styles.googleButton}>
                         <Image
@@ -167,7 +167,7 @@ const MerchantLoginScreen = props => {
                         <Text  font='Roboto'>SIGN IN WITH GOOGLE</Text>
                     </View>
                 </TouchableOpacity>
-            </View>
+            </View> */}
             {isLoading && <ActivityIndicator color={Colors.darkLines} size='large'/>}
             <Dialog.Container visible={promptVisability}>
                 <Dialog.Title style={{fontWeight:'bold'}}>Confirmation Required!</Dialog.Title>
