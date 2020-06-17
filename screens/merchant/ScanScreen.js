@@ -111,7 +111,7 @@ const ScanScreen = props => {
                 barCodeTypes={[BarCodeScanner.Constants.BarCodeType.qr]}
             />
             {scanned && <View style={styles.button}> 
-                <Button title={'Scan Again?'} titleColor={Colors.fontDark} color={Colors.backgrounddark} onPress={() => setScanned(false)} />
+                <Button title={'Scan Again?'} titleColor={Colors.fontDark} color={Colors.primary} onPress={() => setScanned(false)} />
             </View>}
             {(ammount === undefined) && <View style={styles.inputContainer}>
                 <Text style={styles.text}>Points to Credit Customer</Text>
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
         height:60,
         alignItems:'center',
         justifyContent:'space-between',
-        backgroundColor:Colors.backgrounddark,
+        backgroundColor:Colors.primary,
         borderRadius:3,
         top:'2.5%',
         

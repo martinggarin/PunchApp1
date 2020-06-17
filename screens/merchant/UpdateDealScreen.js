@@ -178,7 +178,7 @@ const UpdateDealScreen = props => {
                 </View>
             </View>
             <View style={styles.button}>
-                <Button title='Submit' color={Colors.backgrounddark} onPress={handleSubmit} />
+                <Button title='Submit' color={Colors.primary} onPress={handleSubmit} />
             </View>
         </View>
     );
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
         height:150,
         justifyContent:'center',
         alignItems:'center',
-        backgroundColor:Colors.backgrounddark,
+        backgroundColor:Colors.primary,
         borderRadius:3,
         margin:'2.5%'
     },
