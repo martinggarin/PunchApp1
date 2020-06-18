@@ -44,7 +44,7 @@ const MerchantLoginScreen = props => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
     const [isNewUser, setIsNewUser] = useState(true);
-    const [promptVisability, setPromptVisability] = useState(false)
+    const [promptVisibility, setPromptVisibility] = useState(false)
     const dispatch = useDispatch();
 
     const [formState, dispatchFormState] = useReducer(formReducer, {
@@ -85,7 +85,8 @@ const MerchantLoginScreen = props => {
             Alert.alert(
                 'Passwords do not match!',
                 'Please check password inputs', 
-                [{text: 'Okay'}]);
+                [{text: 'Okay'}]
+            );
             return;
         }
         setError(null);
@@ -108,7 +109,7 @@ const MerchantLoginScreen = props => {
         }
         setIsLoading(false);
         setIsNewUser(true);
-        setPromptVisability(false);
+        setPromptVisibility(false);
     }, [formState]);
 
     const inputChangeHandler = useCallback((inputValues, inputValidities) => {
@@ -144,7 +145,7 @@ const MerchantLoginScreen = props => {
                     }}
                     onSignUp={() => {
                         if (formState.formIsValid){
-                            setPromptVisability(true)
+                            setPromptVisibility(true)
                         }else{
                             Alert.alert(
                                 'Invalid Input!',
@@ -169,7 +170,7 @@ const MerchantLoginScreen = props => {
                 </TouchableOpacity>
             </View> */}
             {isLoading && <ActivityIndicator color={Colors.darkLines} size='large'/>}
-            <Dialog.Container visible={promptVisability}>
+            <Dialog.Container visible={promptVisibility}>
                 <Dialog.Title style={{fontWeight:'bold'}}>Confirmation Required!</Dialog.Title>
                 <Dialog.Description>
                     Please re-enter your password to create a merchant account...
@@ -182,7 +183,7 @@ const MerchantLoginScreen = props => {
                     autoCapitalize = "none"
                     secureTextEntry
                 />
-                <Dialog.Button label="Cancel" onPress={() => setPromptVisability(false)}/>
+                <Dialog.Button label="Cancel" onPress={() => setPromptVisibility(false)}/>
                 <Dialog.Button label="Confirm" onPress={() => signUpHandler(false)}/>
             </Dialog.Container>
         </View>
