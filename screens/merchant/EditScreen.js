@@ -233,9 +233,9 @@ const EditScreen = props => {
                 />
             </View>
             <Dialog.Container visible={promptVisibility}>
-                <Dialog.Title style={{fontWeight:'bold'}}>Set Admin Password!</Dialog.Title>
+                <Dialog.Title style={{fontWeight:'bold'}}>Reset Admin Password!</Dialog.Title>
                 <Dialog.Description>
-                    Please create a unique password to use for administrator access...
+                    Please enter a unique password to use for administrator access...
                 </Dialog.Description>
                 <Dialog.Input 
                     style={{borderBottomWidth: Platform.OS == 'android' ? 1: 0}}
@@ -303,7 +303,7 @@ EditScreen.navigationOptions = navigationData => {
                     <View style={styles.headerButton}>
                         <MaterialIcons 
                             name='supervisor-account'
-                            size={25}
+                            size={30}
                             color={Colors.lines}
                             style={{marginRight:10}}
                             onPress={setPromptVisibility}

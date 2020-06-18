@@ -153,10 +153,10 @@ MerchantProfileScreen.navigationOptions = navigationData => {
                             }}
                         />
                     </View>
-                    <View style={{...styles.headerButton, height:55, width:55}}>
-                        <Feather
-                            name='help-circle'
-                            size={27.5}
+                    <View style={styles.headerButton}>
+                        <AntDesign
+                            name='questioncircleo'
+                            size={25}
                             color={Colors.lightLines}
                             onPress={()=>{
                                 Alert.alert(
@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
     headerRight:{
         flex:1,
         flexDirection:'row',
-        width:155,
+        width:150,
         alignItems:'center',
         justifyContent:'center'
     },
