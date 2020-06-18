@@ -2,7 +2,8 @@ import React, {useCallback, useReducer, useEffect, useState} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, Button } from 'react-native';
 import { useBackHandler } from '@react-native-community/hooks'
 import {useDispatch, useSelector} from 'react-redux';
-import { Feather, Ionicons } from '@expo/vector-icons';
+import { Feather, Ionicons, MaterialIcons } from '@expo/vector-icons';
+import Dialog from 'react-native-dialog'
 import ProfileInput from '../../components/ProfileInput';
 import DealList from '../../components/DealList';
 import Colors from '../../constants/Colors';
@@ -10,6 +11,7 @@ import * as MerchantActions from '../../store/actions/merchants';
 import { setLightEstimationEnabled } from 'expo/build/AR';
 
 const INPUT_UPDATE = 'UPDATE';
+const PASSWORD_UPDATE = 'PASSWORD_UPDATE';
 
 const formReducer = (state, action) =>{
     switch (action.type) {
@@ -17,6 +19,10 @@ const formReducer = (state, action) =>{
             var updatedValues = action.values
             var updatedValidities = action.validities
             break
+        case PASSWORD_UPDATE:
+            return{...state,
+                adminPassword:action.newValue
+            }
         default:
             return state;
     }
@@ -26,7 +32,7 @@ const formReducer = (state, action) =>{
             formIsValid = false
         }
     }
-    console.log(formIsValid)
+    //console.log(formIsValid)
     return {...state,
         inputValues:updatedValues,
         inputValidities:updatedValidities,
@@ -39,8 +45,13 @@ const EditScreen = props => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
     const [displayHelp, setDisplayHelp] = useState(true)
+    const [submitted, setSubmitted] = useState(false)
+    const [promptVisibility, setPromptVisibility] = useState(false)
     const r_item = useSelector(state => state.merchants.myMerchant);
     const newMerchant = props.navigation.getParam('newMerchant');
+    const [passwordInput, setPasswordInput] = useState(null)
+    const [rePasswordInput, setRePasswordInput] = useState(null)
+    
     const dispatch = useDispatch();
 
     let deals = useSelector(state => state.merchants.myDeals);
@@ -67,22 +78,25 @@ const EditScreen = props => {
             address: true,
             city: true
         },
-        formIsValid:true
+        formIsValid:true,
+        adminPassword: r_item.adminPassword
     }
     if (newMerchant && displayHelp){
+        initialValues.inputValues.price = "$"
         initialValues.inputValidities = {
             title: false,
-            price: false,
+            price: true,
             type: false,
             address: false,
             city: false
         }
         initialValues.formIsValid = false
+        initialValues.adminPassword = null
         Alert.alert(
             'Welcome to PunchApp!',
-            'Your merchant account has been successfully created.\n\n'
-            +'Please complete your profile!\n\n'
-            +'When you finish, use the button in the top right corner to save your information.',
+            'Your merchant account has been successfully created!\n\n'
+            +'When you complete your profile, use the button in the top right corner to save your information.\n\n'
+            +'You will then be prompted to enter an administrator password for managing your account.',
             [{text: 'Okay'}]
         )
         setDisplayHelp(false)
@@ -90,7 +104,6 @@ const EditScreen = props => {
 
     //different initial values depending on entry
     const [formState, dispatchFormState] = useReducer(formReducer, initialValues);
-
     const submitHandler = useCallback( async () => {
         console.log('-Submit Profile Handler')
         if (!formState.formIsValid){
@@ -111,6 +124,7 @@ const EditScreen = props => {
                 formState.inputValues.type,
                 formState.inputValues.address,
                 formState.inputValues.city,
+                formState.adminPassword,
             ));
             if (newMerchant){
                 props.navigation.navigate('MerchantHome')
@@ -133,37 +147,32 @@ const EditScreen = props => {
             validities: inputValidities,
         })
     },[dispatchFormState]);
-    
+
     const dealTapHandler = useCallback((dealCode) => {
         Alert.alert(
             deals[dealCode].reward+" Deal Selected",
             "What would you like to do with it?",
-            [
-                {   
-                    text: "Edit", 
-                    onPress: () => {
-                        console.log('-Deal Edit Handler')
-                        props.navigation.navigate('UpdateDeal', {id:r_item.id, deals:deals, dealCode:dealCode})
-                    }
-                },
-                { 
-                    text: "Remove",
-                    onPress:  () => {
-                        console.log('-Deal Remove Handler')
-                        dispatch(MerchantActions.removeDeal(r_item.id, dealCode))
-                    }
+            [{   
+                text: "Edit", 
+                onPress: () => {
+                    console.log('-Deal Edit Handler')
+                    props.navigation.navigate('UpdateDeal', {id:r_item.id, deals:deals, dealCode:dealCode})
                 }
-            ],
+            },{ 
+                text: "Remove",
+                onPress:  () => {
+                    console.log('-Deal Remove Handler')
+                    dispatch(MerchantActions.removeDeal(r_item.id, dealCode))
+                }
+            }],
             { cancelable: true }
         ); 
     })
 
     useBackHandler(() => {
         if (newMerchant) {
-          // handle it
           return true
         }
-        // let the default thing happen
         return false
     })
 
@@ -173,8 +182,22 @@ const EditScreen = props => {
         }
     }, [error]);
 
+    useEffect(() => {
+        if(newMerchant && !(formState.adminPassword === null) && !submitted){
+            submitHandler()
+            setSubmitted(true)
+        }
+    })
     useEffect(()=>{
-        props.navigation.setParams({submit:submitHandler});
+        if (newMerchant){
+            var handlerToUse = () => setPromptVisibility(true)
+        }else{
+            var handlerToUse = submitHandler
+        }
+        props.navigation.setParams({
+            submit:handlerToUse,
+            setPromptVisibility: () => setPromptVisibility(true)
+        });
     }, [submitHandler]);
 
     const footer = (
@@ -209,23 +232,93 @@ const EditScreen = props => {
                     merchantSide={true}
                 />
             </View>
+            <Dialog.Container visible={promptVisibility}>
+                <Dialog.Title style={{fontWeight:'bold'}}>Set Admin Password!</Dialog.Title>
+                <Dialog.Description>
+                    Please create a unique password to use for administrator access...
+                </Dialog.Description>
+                <Dialog.Input 
+                    style={{borderBottomWidth: Platform.OS == 'android' ? 1: 0}}
+                    autoCorrect={false}
+                    autoCompleteType='off'
+                    placeholder="Enter Your Password"
+                    onChangeText={(text) => {
+                        console.log("-Input Change Handler")
+                        setPasswordInput(text)
+                    }}
+                    autoCapitalize = "none"
+                    secureTextEntry
+                />
+                <Dialog.Input 
+                    style={{borderBottomWidth: Platform.OS == 'android' ? 1: 0}}
+                    autoCorrect={false}
+                    autoCompleteType='off'
+                    placeholder="Re-enter Your Password"
+                    onChangeText={(text) => {
+                        console.log("-Input Change Handler")
+                        setRePasswordInput(text)
+                    }}
+                    autoCapitalize = "none"
+                    secureTextEntry
+                />
+                <Dialog.Button label="Cancel" onPress={() => {
+                    setPasswordInput(r_item.adminPassword)
+                    setPromptVisibility(false)
+                }}/>
+                <Dialog.Button label="Confirm" onPress={async () => {
+                    if(passwordInput.length < 5){
+                        Alert.alert(
+                            'Invalid Input!',
+                            'Admin password must be at least 5 characters', 
+                            [{text: 'Okay'}]
+                        );
+                    }else if(passwordInput === rePasswordInput){
+                        console.log("-Password Change Handler")
+                        await dispatchFormState({
+                            type: PASSWORD_UPDATE,
+                            newValue: passwordInput
+                        })
+                        setPromptVisibility(false)
+                    }else{
+                        Alert.alert(
+                            'Passwords do not match!',
+                            'Please check password inputs', 
+                            [{text: 'Okay'}]
+                        );
+                    };
+                }}/>
+            </Dialog.Container>
         </View>
     );
 };
 
 EditScreen.navigationOptions = navigationData => {
     const submit = navigationData.navigation.getParam('submit');
+    const setPromptVisibility = navigationData.navigation.getParam('setPromptVisibility')
     return{
         title:'Edit Profile',
         headerRight: () => {
             return (
-                <Feather 
-                    name='save'
-                    size={25}
-                    color={Colors.lines}
-                    style={{marginRight:10}}
-                    onPress={submit}
-                />
+                <View style={styles.headerRight}>
+                    <View style={styles.headerButton}>
+                        <MaterialIcons 
+                            name='supervisor-account'
+                            size={25}
+                            color={Colors.lines}
+                            style={{marginRight:10}}
+                            onPress={setPromptVisibility}
+                        />
+                    </View>
+                    <View style={styles.headerButton}>
+                        <Feather 
+                            name='save'
+                            size={25}
+                            color={Colors.lines}
+                            style={{marginRight:10}}
+                            onPress={submit}
+                        />
+                    </View>
+                </View>
             )
         }
     }
@@ -253,6 +346,19 @@ const styles = StyleSheet.create({
         alignItems:'center',
         height:150, 
         margin:10,
+    },
+    headerRight:{
+        flex:1,
+        flexDirection:'row',
+        width:100,
+        alignItems:'center',
+        justifyContent:'center'
+    },
+    headerButton:{
+        height:50,
+        width:50,
+        alignItems:'center',
+        justifyContent:'center'
     }
 });
 

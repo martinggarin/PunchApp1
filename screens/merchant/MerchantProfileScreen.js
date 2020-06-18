@@ -1,6 +1,7 @@
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import { Alert, View, Text, StyleSheet, Button, TouchableOpacity} from 'react-native';
 import {useSelector} from 'react-redux';
+import Dialog from 'react-native-dialog'
 import { Feather, Ionicons, AntDesign} from '@expo/vector-icons';
 import DealList from '../../components/DealList';
 import Colors from '../../constants/Colors';
@@ -9,8 +10,9 @@ const MerchantProfileScreen = props => {
     console.log('Merchant Profile');
     const r_item = useSelector(state => state.merchants.myMerchant);
     //console.log(r_item)
-
     let deals = useSelector(state => state.merchants.myDeals);
+    const [promptVisibility, setPromptVisibility] = useState(false)
+    const [adminPasswordInput, setAdminPasswordInput] = useState('')
     let totalDeals = null
     let totalCustomers = null
     if (deals === undefined || deals === null){
@@ -50,23 +52,11 @@ const MerchantProfileScreen = props => {
         ); 
     })
 
-    const footer = (
-        <TouchableOpacity
-            onPress={()=> {
-                console.log('-Add Deal Handler')
-                props.navigation.navigate('UpdateDeal', {id:r_item.id, deals:deals, dealCode:totalDeals})
-            }}
-            style={styles.addContainer}
-        >
-            <View style={styles.addContainer}>
-                <Ionicons name={'md-add-circle'} size={30} color={Colors.iconDark} />
-                <Text>Add Deal</Text>
-            </View>
-        </TouchableOpacity>
-    )
-
     useEffect(()=>{
-        props.navigation.setParams({deals:totalDeals});
+        props.navigation.setParams({
+            deals:totalDeals,
+            setPromptVisibility:setPromptVisibility
+        });
     },[totalDeals]);
 
     return(
@@ -96,16 +86,46 @@ const MerchantProfileScreen = props => {
                 <DealList
                     dealData={deals}
                     onTap={dealTapHandler}
-                    footer={footer}
                     merchantSide={true}
                 />
             </View>
+            <Dialog.Container visible={promptVisibility}>
+                <Dialog.Title style={{fontWeight:'bold'}}>Verification Required!</Dialog.Title>
+                <Dialog.Description>
+                    Please enter your administrator password to access the edit screen...
+                </Dialog.Description>
+                <Dialog.Input 
+                    style={{borderBottomWidth: Platform.OS == 'android' ? 1: 0}}
+                    autoCorrect={false}
+                    autoCompleteType='off'
+                    onChangeText={(text) => {
+                        console.log("-Input Change Handler")
+                        setAdminPasswordInput(text)
+                    }}
+                    autoCapitalize = "none"
+                    secureTextEntry
+                />
+                <Dialog.Button label="Cancel" onPress={() => setPromptVisibility(false)}/>
+                <Dialog.Button label="Confirm" onPress={() => {
+                    if(adminPasswordInput === r_item.adminPassword){
+                        props.navigation.navigate('Edit')
+                        setPromptVisibility(false)
+                    }else{
+                        Alert.alert(
+                            'Wrong Password!',
+                            'Please try again...', 
+                            [{text: 'Okay'}]
+                        );
+                    };
+                }}/>
+            </Dialog.Container>
         </View>
     );
 };
 
 MerchantProfileScreen.navigationOptions = navigationData => {
     const deals = navigationData.navigation.getParam('deals');
+    const setPromptVisibility = navigationData.navigation.getParam('setPromptVisibility');
     if (deals > 0){
         var published = true
         var iconName = 'checkcircle'
@@ -142,12 +162,11 @@ MerchantProfileScreen.navigationOptions = navigationData => {
                                 Alert.alert(
                                     'Merchant Help',
                                     'Thank you for using PunchApp! We hope you are enjoying your experience.\n\n'
-                                    +'• Deals can be created on both the home and edit screens\n\n'
+                                    +'• Profile information and deals can only be updated on the edit screen using an administrator password\n\n'
                                     +'• Maintain at least one deal to ensure your profile remains public\n\n'
                                     +'• To edit or remove a deal, select it on the edit screen\n\n'
                                     +'• To credit loyalty points to a customer account, scan their reward code using the scanning tab\n\n'
-                                    +'• To redeem a deal for a customer, select it on the home screen and scan their reward code\n\n'
-                                    +'• Profile information can be updated on the edit screen at any time',
+                                    +'• To redeem a deal for a customer, select it on the home screen and scan their reward code\n\n',
                                     [{text: 'Okay'}]
                                 )
                             }}
@@ -160,7 +179,7 @@ MerchantProfileScreen.navigationOptions = navigationData => {
                             color={Colors.lightLines}
                             onPress={()=>{
                                 console.log('-Edit Profile Handler')
-                                navigationData.navigation.navigate('Edit')
+                                setPromptVisibility(true)
                             }}
                         />
                     </View>

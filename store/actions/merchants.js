@@ -125,6 +125,7 @@ export const getMerchant = (email, password) => {
     merchant.city = merchantData.city
     merchant.deal = merchantData.deal
     merchant.customers = merchantData.customers
+    merchant.adminPassword = merchantData.adminPassword
     //console.log('Fetching Deal')
     //console.log(merchantData[key].deal);
     //console.log(merchant.deal);
@@ -144,7 +145,7 @@ export const logoutMerchant = () => {
   }
 };
 
-export const updateMerchant = (id, title, price, type, address, city) => {
+export const updateMerchant = (id, title, price, type, address, city, adminPassword) => {
   console.log('~Merchant Action: updateMerchant')
   return async dispatch =>{
     const merchantData = (await firebase.database(merchantApp).ref(`/merchants/${id}`).once('value')).val()
@@ -165,6 +166,7 @@ export const updateMerchant = (id, title, price, type, address, city) => {
     updatedMerchantData.type = type
     updatedMerchantData.address = address
     updatedMerchantData.city = city
+    updatedMerchantData.adminPassword = adminPassword
     await firebase.database(merchantApp).ref(`/merchants/${id}`).set(updatedMerchantData)
     updatedMerchantData.id = id
 
