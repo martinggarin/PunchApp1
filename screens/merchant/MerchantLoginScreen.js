@@ -176,7 +176,7 @@ const MerchantLoginScreen = props => {
                     Please re-enter your password to create a merchant account...
                 </Dialog.Description>
                 <Dialog.Input 
-                    style={{borderBottomWidth: Platform.OS == 'android' ? 1: 0}}
+                    style={{borderBottomWidth: Platform.OS == 'android' ? 1: 0, color: Colors.borderDark}}
                     autoCorrect={false}
                     autoCompleteType='off'
                     onChangeText={(text) => {dispatchFormState({type:RE_PASSWORD_UPDATE, text:text})}}

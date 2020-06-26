@@ -238,7 +238,7 @@ const EditScreen = props => {
                     Please enter a unique password to use for administrator access...
                 </Dialog.Description>
                 <Dialog.Input 
-                    style={{borderBottomWidth: Platform.OS == 'android' ? 1: 0}}
+                    style={{borderBottomWidth: Platform.OS == 'android' ? 1: 0, color: Colors.borderDark}}
                     autoCorrect={false}
                     autoCompleteType='off'
                     placeholder="Enter Your Password"
@@ -250,7 +250,7 @@ const EditScreen = props => {
                     secureTextEntry
                 />
                 <Dialog.Input 
-                    style={{borderBottomWidth: Platform.OS == 'android' ? 1: 0}}
+                    style={{borderBottomWidth: Platform.OS == 'android' ? 1: 0, color: Colors.borderDark}}
                     autoCorrect={false}
                     autoCompleteType='off'
                     placeholder="Re-enter Your Password"

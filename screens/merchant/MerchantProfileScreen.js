@@ -95,7 +95,7 @@ const MerchantProfileScreen = props => {
                     Please enter your administrator password to access the edit screen...
                 </Dialog.Description>
                 <Dialog.Input 
-                    style={{borderBottomWidth: Platform.OS == 'android' ? 1: 0}}
+                    style={{borderBottomWidth: Platform.OS == 'android' ? 1: 0, color: Colors.borderDark}}
                     autoCorrect={false}
                     autoCompleteType='off'
                     onChangeText={(text) => {
@@ -134,25 +134,9 @@ MerchantProfileScreen.navigationOptions = navigationData => {
         var iconName = 'checkcircleo'
     }
     return{
-        headerRight: () => {
+        headerLeft: () => {
             return (
-                <View style={styles.headerRight}>
-                    <View style={styles.headerButton}>
-                        <AntDesign
-                            name={iconName}
-                            size={25}
-                            color={Colors.lightLines}
-                            onPress={()=>{
-                                Alert.alert(
-                                    'Profile Status',
-                                    (published)
-                                    ? 'Your profile is currently LIVE! Users can find you on the explore page and in their favorites.'
-                                    : 'Your profile is currently HIDDEN! Add a deal to publish your profile.',
-                                    [{text: 'Okay'}]
-                                )
-                            }}
-                        />
-                    </View>
+                <View style={styles.headerLeft}>
                     <View style={styles.headerButton}>
                         <AntDesign
                             name='questioncircleo'
@@ -167,6 +151,28 @@ MerchantProfileScreen.navigationOptions = navigationData => {
                                     +'• To edit or remove a deal, select it on the edit screen\n\n'
                                     +'• To credit loyalty points to a customer account, scan their reward code using the scanning tab\n\n'
                                     +'• To redeem a deal for a customer, select it on the home screen and scan their reward code\n\n',
+                                    [{text: 'Okay'}]
+                                )
+                            }}
+                        />
+                    </View>
+                </View>
+            )
+        },
+        headerRight: () => {
+            return (
+                <View style={styles.headerRight}>
+                    <View style={styles.headerButton}>
+                        <AntDesign
+                            name={iconName}
+                            size={25}
+                            color={Colors.lightLines}
+                            onPress={()=>{
+                                Alert.alert(
+                                    'Profile Status',
+                                    (published)
+                                    ? 'Your profile is currently LIVE! Users can find you on the explore page and in their favorites.'
+                                    : 'Your profile is currently HIDDEN! Add a deal to publish your profile.',
                                     [{text: 'Okay'}]
                                 )
                             }}
@@ -227,10 +233,17 @@ const styles = StyleSheet.create({
         height:150,
         margin:10,
     },
+    headerLeft:{
+        flex:1,
+        flexDirection:'row',
+        width:50,
+        alignItems:'center',
+        justifyContent:'center'
+    },
     headerRight:{
         flex:1,
         flexDirection:'row',
-        width:150,
+        width:100,
         alignItems:'center',
         justifyContent:'center'
     },
