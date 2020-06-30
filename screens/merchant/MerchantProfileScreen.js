@@ -33,17 +33,18 @@ const MerchantProfileScreen = props => {
     const dealTapHandler = useCallback((dealCode) => {
         Alert.alert(
             deals[dealCode].reward+" Deal Selected",
-            deals[dealCode].ammount+" point(s) will be deducted from the customer's loyalty point balance",
+            deals[dealCode].amount+" point(s) will be deducted from the customer's loyalty point balance",
             [
                 { 
                     text: "Cancel",
-                    onPress: () => {console.log('-Cancel Pressed')}, style:'cancel'
+                    onPress: () => {console.log('-Cancel Pressed')}, 
+                    style:'cancel'
                 },
                 { 
                     text: "Confirm",
                     onPress:  () => {
                         console.log('-Scan Handler')
-                        props.navigation.navigate('Scan', {ammount:deals[dealCode].ammount})
+                        props.navigation.navigate('Scan', {reward:deals[dealCode].reward, amount:deals[dealCode].amount})
                     }
                 }
                 
@@ -108,7 +109,7 @@ const MerchantProfileScreen = props => {
                 <Dialog.Button label="Cancel" onPress={() => setPromptVisibility(false)}/>
                 <Dialog.Button label="Confirm" onPress={() => {
                     if(adminPasswordInput === r_item.adminPassword){
-                        props.navigation.navigate('Edit')
+                        props.navigation.navigate('Edit', {newMerchant:false})
                         setPromptVisibility(false)
                     }else{
                         Alert.alert(

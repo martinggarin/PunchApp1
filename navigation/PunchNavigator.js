@@ -172,7 +172,10 @@ const MerchantNavigator = createStackNavigator({
             gestureEnabled:false
         }
     },
-    Edit:EditScreen,
+    Edit:{
+        screen: EditScreen,
+        navigationOptions:{headerLeft: () => null}
+    },
     UpdateDeal:UpdateDealScreen
 }, {
     navigationOptions: {
@@ -194,6 +197,13 @@ const UserNavigator = createStackNavigator({
     },
     Home: {
         screen: UserTabNavigator,
+        navigationOptions: {
+            headerShown:false,
+            gestureEnabled: false
+        }
+    },
+    Explore: {
+        screen: ExploreNavigator,
         navigationOptions: {
             headerShown:false,
             gestureEnabled: false

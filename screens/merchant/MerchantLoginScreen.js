@@ -92,16 +92,11 @@ const MerchantLoginScreen = props => {
         setError(null);
         setIsLoading(true);
         try{
-            let newMerchant = await dispatch(merchantActions.createMerchant(
+            var newMerchant = await dispatch(merchantActions.createMerchant(
                 formState.inputValues.email,
                 formState.inputValues.password,
                 useGoogle
             ));
-            if (newMerchant) {
-                props.navigation.replace('Edit',{newMerchant:true});
-            }else{
-                props.navigation.replace('MerchantHome');
-            };
             setIsNewUser(false)
         }
         catch(err){
@@ -110,6 +105,11 @@ const MerchantLoginScreen = props => {
         setIsLoading(false);
         setIsNewUser(true);
         setPromptVisibility(false);
+        if (newMerchant) {
+            props.navigation.replace('Edit',{newMerchant:true});
+        }else{
+            props.navigation.replace('MerchantHome');
+        };
     }, [formState]);
 
     const inputChangeHandler = useCallback((inputValues, inputValidities) => {
@@ -123,7 +123,12 @@ const MerchantLoginScreen = props => {
 
     useEffect(() => {
         if (error) {
-          Alert.alert('Problem signing in!', error, [{ text: 'Okay' }]);
+            setTimeout(()=>Alert.alert(
+                'Problem signing in!', 
+                error, 
+                [{ text: 'Okay' }]
+                ), 500
+            )
         }
     }, [error]);
 

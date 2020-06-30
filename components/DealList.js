@@ -9,7 +9,7 @@ const DealList = props => {
     
     if (!(props.dealData === undefined)){
         var sortedDealData = props.dealData
-        sortedDealData.sort((a, b) => parseFloat(a.ammount) - parseFloat(b.ammount));
+        sortedDealData.sort((a, b) => parseFloat(a.amount) - parseFloat(b.amount));
     }
     else{
         var sortedDealData = []
@@ -35,7 +35,7 @@ const DealList = props => {
                     <View>
                         <RewardBalance
                             text={['Loyalty', 'Points']}
-                            number={itemData.item.ammount}
+                            number={itemData.item.amount}
                             size={10}
                         />
                     </View>

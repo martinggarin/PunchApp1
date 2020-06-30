@@ -120,7 +120,12 @@ const UserLoginScreen = props => {
 
     useEffect(() => {
         if (error) {
-          Alert.alert('Problem signing in!', error, [{ text: 'Okay' }]);
+            setTimeout(()=>Alert.alert(
+                'Problem signing in!', 
+                error, 
+                [{ text: 'Okay' }]
+                ), 500
+            )
         }
     }, [error]);
 

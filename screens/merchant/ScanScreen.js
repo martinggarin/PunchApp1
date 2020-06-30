@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Text, TextInput, View, StyleSheet, Button, Alert } from 'react-native';
+import { Text, TextInput, View, StyleSheet, Button, Alert, Keyboard, TouchableWithoutFeedback} from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import {useDispatch, useSelector} from 'react-redux';
 import * as userActions from '../../store/actions/user';
 import * as merchantActions from '../../store/actions/merchants';
 import Colors from '../../constants/Colors';
-
-
 
 const ScanScreen = props => {
     console.log('Scan')
@@ -15,7 +13,8 @@ const ScanScreen = props => {
     const [input, setInput] = useState('1')
     const dispatch = useDispatch();
     const r_id = useSelector(state => state.merchants.myMerchant.id);
-    const ammount = props.navigation.getParam('ammount');
+    const reward = props.navigation.getParam('reward');
+    const amount = props.navigation.getParam('amount');
 
     
     useEffect(() => {
@@ -33,43 +32,39 @@ const ScanScreen = props => {
     const handleBarCodeScanned = async ({ type, data })  => {
         setScanned(true)
         if (data.length === 28){
-            if(!(ammount === undefined)){
+            if(!(amount === undefined)){
                 try{
                     // console.log('_________Updating Rewards__________');
                     // console.log('R_id: ' + r_id);
-                    // console.log('U_ID: ' + data); 
-
-                    await dispatch(userActions.updateRewards(r_id, data, -ammount))
-                    //setAmmount(0);
+                    // console.log('U_ID: ' + data);
+                    await dispatch(userActions.updateRewards(r_id, data, -amount))
                     
                 //need to handle error if user doesn't have enough rewards... 
                 }catch(err){
                     if (err === 'insufficient'){
                         Alert.alert(
                             "Insufficient Balance",
-                            "Unable to subtract "+ammount+" points from user: "+data,
+                            "Unable to subtract "+amount+" points from user: "+data,
                             [
                                 { text: "Ok", onPress:  async () => {await props.navigation.goBack()}},
                             ],
                             { cancelable: false }
                         ); 
-                    }
-                    else if(err === 'none'){
+                    }else if(err === 'none'){
+                        await dispatch(merchantActions.addTransaction(r_id, data, -amount, reward))
                         Alert.alert(
                             "Deal Redeemed",
-                            ammount+" point(s) subtracted from user: "+data,
+                            amount+" point(s) subtracted from user: "+data,
                             [
                                 { text: "Ok", onPress: () => props.navigation.goBack()},
                             ],
                             { cancelable: false }
                         );
-                    }
-                    else {
+                    }else{
                         Alert.alert('An error occurred!', err.message, [{ text: 'Okay' }]);
                     }
                 }
-            }
-            else{
+            }else{
                 try{
                     // console.log('_________Updating Rewards__________');
                     // console.log('R_id: ' + r_id);
@@ -77,6 +72,7 @@ const ScanScreen = props => {
                     await dispatch(userActions.updateRewards(r_id, data, Number(input)));
                 }catch(err){
                     if (err === 'none'){
+                        await dispatch(merchantActions.addTransaction(r_id, data, Number(input)))
                         await dispatch(merchantActions.updateCustomers(r_id, data))
                         await dispatch(userActions.toggleFav(r_id, data, true))
                         Alert.alert(
@@ -104,32 +100,36 @@ const ScanScreen = props => {
     }
    
     return (
-        <View style={styles.screen}>
-            <BarCodeScanner 
-                style={styles.scanner}
-                onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-                barCodeTypes={[BarCodeScanner.Constants.BarCodeType.qr]}
-            />
-            {scanned && <View style={styles.button}> 
-                <Button title={'Scan Again?'} titleColor={Colors.fontDark} color={Colors.primary} onPress={() => setScanned(false)} />
-            </View>}
-            {(ammount === undefined) && <View style={styles.inputContainer}>
-                <Text style={styles.text}>Points to Credit Customer</Text>
-                <View style={styles.inputView}>
-                    <TextInput 
-                        style = {styles.input}
-                        underlineColorAndroid = "transparent"
-                        keyboardType = 'decimal-pad'
-                        //placeholder = "Loyalty Points"
-                        placeholderTextColor = {Colors.darkLines}
-                        defaultValue = {input.toString()}
-                        autoCapitalize = "none"
-                        onChangeText = {handleInput}
-                        textAlign = "center"
-                    />  
-                </View> 
-            </View>}
-        </View>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.screen}>
+                <BarCodeScanner 
+                    style={styles.scanner}
+                    onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+                    barCodeTypes={[BarCodeScanner.Constants.BarCodeType.qr]}
+                />
+                {scanned && <View style={styles.button}> 
+                    <Button title={'Scan Again?'} titleColor={Colors.fontDark} color={Colors.primary} onPress={() => setScanned(false)} />
+                </View>}
+                {(amount === undefined) && <View style={styles.inputContainer}>
+                    <Text style={styles.text}>Points to Credit Customer</Text>
+                    <View style={styles.inputView}>
+                        <TextInput 
+                            style = {styles.input}
+                            underlineColorAndroid = "transparent"
+                            keyboardType = 'numeric'
+                            keyboardDismissMode = 'interactive'
+                            returnKeyType='done'
+                            //placeholder = "Loyalty Points"
+                            placeholderTextColor = {Colors.darkLines}
+                            defaultValue = {input.toString()}
+                            autoCapitalize = "none"
+                            onChangeText = {handleInput}
+                            textAlign = "center"
+                        />  
+                    </View> 
+                </View>}
+            </View>
+        </TouchableWithoutFeedback>
     );
 };
 
@@ -167,6 +167,8 @@ const styles = StyleSheet.create({
     },
     input: {
         color:Colors.fontLight,
+        height:30,
+        width:50
     },   
     text: {
         fontSize: 14,

@@ -11,6 +11,7 @@ import Deal from '../../models/Deal';
 import * as Google from 'expo-google-app-auth';
 import firebase from 'firebase';
 import Apps from '../../firebaseApp';
+import moment from 'moment'
 
 const userApp = Apps.firebaseApp.user
 const merchantApp = Apps.firebaseApp.merchant
@@ -209,9 +210,22 @@ export const updateCustomers = (id, customerID) => {
   }
 };
 
-export const updateDeal = (id, ammount, reward, code) => {
+export const addTransaction = (id, customerID, amount, reward) => {
+  console.log('~Merchant Action: addTransactions')
+  return async dispatch =>{
+    var date = moment()
+      .utcOffset('-04:00')
+      .format('YYYY-MM-DD hh:mm:ss a');
+      await firebase.database(merchantApp).ref(`/merchants/${id}/transactions`).push(
+        (reward) ? {date:date, customerID:customerID, reward:reward, amount:amount}
+        : {date:date, customerID:customerID , amount:amount}
+      )
+  }
+};
+
+export const updateDeal = (id, amount, reward, code) => {
   console.log('~Merchant Action: updateDeal')
-  return async (dispatch, getState) =>{
+  return async dispatch =>{
     const merchantData = (await firebase.database(merchantApp).ref(`/merchants/${id}`).once('value')).val()
     //console.log(id)
     if (merchantData.deal === undefined){
@@ -222,7 +236,7 @@ export const updateDeal = (id, ammount, reward, code) => {
     //console.log('-----deals-----');
     //console.log(deal);
     
-    var newDeal = new Deal(ammount, reward, code)
+    var newDeal = new Deal(amount, reward, code)
     if (deal.length === code){
       deal.push(newDeal)
     }
@@ -254,7 +268,7 @@ export const removeDeal = (id, code) => {
       for (const key in deals){
         if (!(deals[key].code === code)){
           deal.push(
-            new Deal(deals[key].ammount, deals[key].reward, count)
+            new Deal(deals[key].amount, deals[key].reward, count)
           )
           count += 1
         }

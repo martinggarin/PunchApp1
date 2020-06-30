@@ -81,7 +81,7 @@ const EditScreen = props => {
         formIsValid:true,
         adminPassword: r_item.adminPassword
     }
-    if (newMerchant && displayHelp){
+    if (newMerchant){
         initialValues.inputValues.price = "$"
         initialValues.inputValidities = {
             title: false,
@@ -92,18 +92,20 @@ const EditScreen = props => {
         }
         initialValues.formIsValid = false
         initialValues.adminPassword = null
-        Alert.alert(
+    }
+    const [formState, dispatchFormState] = useReducer(formReducer, initialValues);
+    
+    if (newMerchant && displayHelp){
+        setTimeout(()=>Alert.alert(
             'Welcome to PunchApp!',
             'Your merchant account has been successfully created!\n\n'
             +'When you complete your profile, use the button in the top right corner to save your information.\n\n'
             +'You will then be prompted to enter an administrator password for managing your account.',
             [{text: 'Okay'}]
-        )
+        ),500)
         setDisplayHelp(false)
     }
-
-    //different initial values depending on entry
-    const [formState, dispatchFormState] = useReducer(formReducer, initialValues);
+    
     const submitHandler = useCallback( async () => {
         console.log('-Submit Profile Handler')
         if (!formState.formIsValid){
@@ -163,7 +165,11 @@ const EditScreen = props => {
                 onPress:  () => {
                     console.log('-Deal Remove Handler')
                     dispatch(MerchantActions.removeDeal(r_item.id, dealCode))
-                }
+                },
+            },{
+                text: "Cancel",
+                    onPress: () => {console.log('-Cancel Pressed')}, 
+                    style:'cancel'
             }],
             { cancelable: true }
         ); 
@@ -188,9 +194,21 @@ const EditScreen = props => {
             setSubmitted(true)
         }
     })
+
     useEffect(()=>{
-        if (newMerchant){
-            var handlerToUse = () => setPromptVisibility(true)
+        if (newMerchant && formState.adminPassword === null){
+            var handlerToUse = () => {
+                if (!formState.formIsValid){
+                    Alert.alert(
+                        'Invalid Input!',
+                        'Please check your inputs...', 
+                        [{text: 'Okay'}]
+                    );
+                    return;
+                }else{
+                    setPromptVisibility(true)
+                }
+            }
         }else{
             var handlerToUse = submitHandler
         }
@@ -233,7 +251,7 @@ const EditScreen = props => {
                 />
             </View>
             <Dialog.Container visible={promptVisibility}>
-                <Dialog.Title style={{fontWeight:'bold'}}>Reset Admin Password!</Dialog.Title>
+                <Dialog.Title style={{fontWeight:'bold'}}>Set Admin Password!</Dialog.Title>
                 <Dialog.Description>
                     Please enter a unique password to use for administrator access...
                 </Dialog.Description>
@@ -242,6 +260,7 @@ const EditScreen = props => {
                     autoCorrect={false}
                     autoCompleteType='off'
                     placeholder="Enter Your Password"
+                    placeholderTextColor = {Colors.placeholderText}
                     onChangeText={(text) => {
                         console.log("-Input Change Handler")
                         setPasswordInput(text)
@@ -254,6 +273,7 @@ const EditScreen = props => {
                     autoCorrect={false}
                     autoCompleteType='off'
                     placeholder="Re-enter Your Password"
+                    placeholderTextColor = {Colors.placeholderText}
                     onChangeText={(text) => {
                         console.log("-Input Change Handler")
                         setRePasswordInput(text)
