@@ -256,7 +256,7 @@ export const updateRewards = (r_id, u_id, amount) => {
     //console.log(RS);
     //const d = new Deal(amount, reward, '|.||..|.||..|');
 
-    await firebase.database(userApp).ref(`/users/${u_id}/RS`).set(RS)
+    await firebase.database(merchantApp).ref(`/users/${u_id}/RS`).set(RS)
 
     dispatch({
       type: UPDATE_RS,

@@ -126,6 +126,7 @@ export const getMerchant = (email, password) => {
     merchant.city = merchantData.city
     merchant.deal = merchantData.deal
     merchant.customers = merchantData.customers
+    merchant.transactions = merchantData.transactions
     merchant.adminPassword = merchantData.adminPassword
     //console.log('Fetching Deal')
     //console.log(merchantData[key].deal);
@@ -215,11 +216,27 @@ export const addTransaction = (id, customerID, amount, reward) => {
   return async dispatch =>{
     var date = moment()
       .utcOffset('-04:00')
-      .format('YYYY-MM-DD hh:mm:ss a');
-      await firebase.database(merchantApp).ref(`/merchants/${id}/transactions`).push(
-        (reward) ? {date:date, customerID:customerID, reward:reward, amount:amount}
-        : {date:date, customerID:customerID , amount:amount}
-      )
+      .format('MM/DD hh:mm:ss a');
+    const newTransaction = (reward) ? {date:date, customerID:customerID, reward:reward, amount:amount}
+    : {date:date, customerID:customerID , amount:amount}
+    const merchantData = (await firebase.database(merchantApp).ref(`/merchants/${id}`).once('value')).val()
+    var transactions = merchantData.transactions
+    merchantData.id = id
+    
+    if (transactions === undefined){
+      transactions = [newTransaction]
+    }
+    else{
+      transactions.push(newTransaction)
+    }
+    merchantData.transactions = transactions
+
+    await firebase.database(merchantApp).ref(`/merchants/${id}/transactions`).set(transactions)
+
+    dispatch({
+      type:UPDATE_MERCHANT,
+      merchantData:merchantData
+    })
   }
 };
 

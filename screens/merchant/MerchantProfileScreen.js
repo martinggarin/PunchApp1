@@ -106,10 +106,14 @@ const MerchantProfileScreen = props => {
                     autoCapitalize = "none"
                     secureTextEntry
                 />
-                <Dialog.Button label="Cancel" onPress={() => setPromptVisibility(false)}/>
+                <Dialog.Button label="Cancel" onPress={() => {
+                    setAdminPasswordInput('')
+                    setPromptVisibility(false)
+                }}/>
                 <Dialog.Button label="Confirm" onPress={() => {
                     if(adminPasswordInput === r_item.adminPassword){
                         props.navigation.navigate('Edit', {newMerchant:false})
+                        setAdminPasswordInput('')
                         setPromptVisibility(false)
                     }else{
                         Alert.alert(
