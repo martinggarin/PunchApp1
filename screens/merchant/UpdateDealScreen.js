@@ -6,7 +6,7 @@ import * as MerchantActions from '../../store/actions/merchants';
 import Deal from '../../models/Deal';
 
 const REWARD_INPUT_CHANGE = 'REWARD_INPUT_CHANGE';
-const AMMOUNT_INPUT_CHANGE = 'AMMOUNT_INPUT_CHANGE';
+const AMOUNT_INPUT_CHANGE = 'AMOUNT_INPUT_CHANGE';
 
 const formReducer = (state, action) =>{
     const updatedValues = state.inputValues
@@ -16,9 +16,9 @@ const formReducer = (state, action) =>{
             updatedValues.reward = action.newValue
             updatedValidities.reward = action.isValid
             break
-        case AMMOUNT_INPUT_CHANGE:
-            updatedValues.ammount = action.newValue
-            updatedValidities.ammount = action.isValid
+        case AMOUNT_INPUT_CHANGE:
+            updatedValues.amount = action.newValue
+            updatedValidities.amount = action.isValid
             break
         default:
             return {state}
@@ -56,12 +56,12 @@ const UpdateDealScreen = props => {
         var initialValues = {
             inputValues:{
                 reward: '',
-                ammount: '',
+                amount: '',
                 code: dealCode
             },
             inputValidities:{
                 reward:false,
-                ammount:false
+                amount:false
             },
             formIsValid:false
         }        
@@ -71,12 +71,12 @@ const UpdateDealScreen = props => {
         var initialValues = {
             inputValues:{
                 reward: deals[dealCode].reward,
-                ammount: deals[dealCode].ammount,
+                amount: deals[dealCode].amount,
                 code: dealCode
             },
             inputValidities:{
                 reward:true,
-                ammount:true
+                amount:true
             },
             formIsValid:true
         }
@@ -97,14 +97,14 @@ const UpdateDealScreen = props => {
         })
     },[dispatchFormState]);
 
-    const handleAmmount = useCallback((text) => {
+    const handleAMOUNT = useCallback((text) => {
         console.log('-Input Change Handler')
         var isValid = true
         if ((text.length === 0) || (text.length > 10) || isNaN(text)){
             isValid = false
         }
         dispatchFormState({
-            type: AMMOUNT_INPUT_CHANGE, 
+            type: AMOUNT_INPUT_CHANGE, 
             newValue: text, 
             isValid: isValid,
         })
@@ -125,7 +125,7 @@ const UpdateDealScreen = props => {
         try{
             await dispatch(MerchantActions.updateDeal(
             r_id,
-            formState.inputValues.ammount,
+            formState.inputValues.amount,
             formState.inputValues.reward,
             formState.inputValues.code
         ));
@@ -170,9 +170,9 @@ const UpdateDealScreen = props => {
                             underlineColorAndroid = "transparent"
                             placeholder = "Cost"
                             placeholderTextColor = {Colors.placeholderText}
-                            defaultValue = {initialValues.inputValues.ammount}
+                            defaultValue = {initialValues.inputValues.amount}
                             autoCapitalize = "none"
-                            onChangeText = {handleAmmount}
+                            onChangeText = {handleAMOUNT}
                         />
                     </View>
                 </View>

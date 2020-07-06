@@ -1,6 +1,6 @@
 class Deal {
-    constructor(ammount, reward, code){
-        this.ammount = ammount;
+    constructor(amount, reward, code){
+        this.amount = amount;
         this.reward = reward;
         this.code = code;
     }

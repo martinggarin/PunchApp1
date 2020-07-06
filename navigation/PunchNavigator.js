@@ -19,6 +19,7 @@ import Colors from '../constants/Colors';
 import EditScreen from '../screens/merchant/EditScreen';
 import UpdateDealScreen from '../screens/merchant/UpdateDealScreen';
 import ScanScreen from '../screens/merchant/ScanScreen';
+import AuditScreen from '../screens/merchant/AuditScreen';
 import * as MerchantActions from '../store/actions/merchants';
 import * as UserActions from '../store/actions/user';
 
@@ -48,6 +49,15 @@ const ScanNavigator = createStackNavigator({
     Scan:{
         screen: ScanScreen,
         navigationOptions: { title: 'Scan' }
+    }
+}, {
+    defaultNavigationOptions: defaultOptions
+})
+
+const AuditNavigator = createStackNavigator({
+    Audit:{
+        screen: AuditScreen,
+        navigationOptions: { title: 'Transaction History' }
     }
 }, {
     defaultNavigationOptions: defaultOptions
@@ -92,6 +102,7 @@ const MerchantTabScreen = {
                 return (<MaterialCommunityIcons name='home-analytics' size={25} color={tabInfo.tintColor} />);
             },
             tabBarColor: Colors.header,
+            activeColor:Colors.fontLight,
         }
     },
     Scan: {
@@ -104,6 +115,16 @@ const MerchantTabScreen = {
             activeColor:Colors.fontLight,
         }
     },
+    Audit: {
+        screen:AuditNavigator,
+        navigationOptions:{
+            tabBarIcon: (tabInfo) => {
+                return (<MaterialCommunityIcons name='account-search' size={25} color={tabInfo.tintColor} />);
+            },
+            tabBarColor: Colors.header,
+            activeColor:Colors.fontLight,
+        }
+    }
 }
 
 const tabScreen = {
@@ -172,7 +193,10 @@ const MerchantNavigator = createStackNavigator({
             gestureEnabled:false
         }
     },
-    Edit:EditScreen,
+    Edit:{
+        screen: EditScreen,
+        navigationOptions:{headerLeft: () => null}
+    },
     UpdateDeal:UpdateDealScreen
 }, {
     navigationOptions: {
@@ -194,6 +218,13 @@ const UserNavigator = createStackNavigator({
     },
     Home: {
         screen: UserTabNavigator,
+        navigationOptions: {
+            headerShown:false,
+            gestureEnabled: false
+        }
+    },
+    Explore: {
+        screen: ExploreNavigator,
         navigationOptions: {
             headerShown:false,
             gestureEnabled: false

@@ -44,7 +44,7 @@ const MerchantLoginScreen = props => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
     const [isNewUser, setIsNewUser] = useState(true);
-    const [promptVisability, setPromptVisability] = useState(false)
+    const [promptVisibility, setPromptVisibility] = useState(false)
     const dispatch = useDispatch();
 
     const [formState, dispatchFormState] = useReducer(formReducer, {
@@ -85,22 +85,18 @@ const MerchantLoginScreen = props => {
             Alert.alert(
                 'Passwords do not match!',
                 'Please check password inputs', 
-                [{text: 'Okay'}]);
+                [{text: 'Okay'}]
+            );
             return;
         }
         setError(null);
         setIsLoading(true);
         try{
-            let newMerchant = await dispatch(merchantActions.createMerchant(
+            var newMerchant = await dispatch(merchantActions.createMerchant(
                 formState.inputValues.email,
                 formState.inputValues.password,
                 useGoogle
             ));
-            if (newMerchant) {
-                props.navigation.replace('Edit',{newMerchant:true});
-            }else{
-                props.navigation.replace('MerchantHome');
-            };
             setIsNewUser(false)
         }
         catch(err){
@@ -108,7 +104,12 @@ const MerchantLoginScreen = props => {
         }
         setIsLoading(false);
         setIsNewUser(true);
-        setPromptVisability(false);
+        setPromptVisibility(false);
+        if (newMerchant) {
+            props.navigation.replace('Edit',{newMerchant:true});
+        }else{
+            props.navigation.replace('MerchantHome');
+        };
     }, [formState]);
 
     const inputChangeHandler = useCallback((inputValues, inputValidities) => {
@@ -122,7 +123,12 @@ const MerchantLoginScreen = props => {
 
     useEffect(() => {
         if (error) {
-          Alert.alert('Problem signing in!', error, [{ text: 'Okay' }]);
+            setTimeout(()=>Alert.alert(
+                'Problem signing in!', 
+                error, 
+                [{ text: 'Okay' }]
+                ), 500
+            )
         }
     }, [error]);
 
@@ -144,7 +150,7 @@ const MerchantLoginScreen = props => {
                     }}
                     onSignUp={() => {
                         if (formState.formIsValid){
-                            setPromptVisability(true)
+                            setPromptVisibility(true)
                         }else{
                             Alert.alert(
                                 'Invalid Input!',
@@ -155,7 +161,7 @@ const MerchantLoginScreen = props => {
                     }}
                 />}
             </View>
-            <View style={styles.googleContainer}>
+            {/* <View style={styles.googleContainer}>
                 <TouchableOpacity onPress={() => signUpHandler(true)}>
                     <View style={styles.googleButton}>
                         <Image
@@ -167,22 +173,22 @@ const MerchantLoginScreen = props => {
                         <Text  font='Roboto'>SIGN IN WITH GOOGLE</Text>
                     </View>
                 </TouchableOpacity>
-            </View>
+            </View> */}
             {isLoading && <ActivityIndicator color={Colors.darkLines} size='large'/>}
-            <Dialog.Container visible={promptVisability}>
+            <Dialog.Container visible={promptVisibility}>
                 <Dialog.Title style={{fontWeight:'bold'}}>Confirmation Required!</Dialog.Title>
                 <Dialog.Description>
                     Please re-enter your password to create a merchant account...
                 </Dialog.Description>
                 <Dialog.Input 
-                    style={{borderBottomWidth: Platform.OS == 'android' ? 1: 0}}
+                    style={{borderBottomWidth: Platform.OS == 'android' ? 1: 0, color: Colors.borderDark}}
                     autoCorrect={false}
                     autoCompleteType='off'
                     onChangeText={(text) => {dispatchFormState({type:RE_PASSWORD_UPDATE, text:text})}}
                     autoCapitalize = "none"
                     secureTextEntry
                 />
-                <Dialog.Button label="Cancel" onPress={() => setPromptVisability(false)}/>
+                <Dialog.Button label="Cancel" onPress={() => setPromptVisibility(false)}/>
                 <Dialog.Button label="Confirm" onPress={() => signUpHandler(false)}/>
             </Dialog.Container>
         </View>

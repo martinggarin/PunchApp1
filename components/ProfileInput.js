@@ -1,5 +1,5 @@
 import React, {useReducer, useEffect} from 'react';
-import { View, Text, TextInput, StyleSheet, Platform, Picker } from 'react-native'
+import { View, Text, Button, TextInput, StyleSheet, Platform, Picker, ActionSheetIOS, TouchableOpacity } from 'react-native'
 
 import Colors from '../constants/Colors';
 
@@ -44,7 +44,7 @@ const profileInputReducer = (state, action) => {
 };
 
 ProfileInput = props => {
-
+    const prices = ['$','$$','$$$','$$$$']
     const initialValues = {
         inputValues:props.values,
         inputValidities:props.validities,
@@ -88,9 +88,6 @@ ProfileInput = props => {
         dispatch({type:CITY_INPUT_CHANGE, values:inputState.inputValues, newValue:text, isValid:isValid})
     }
 
-    //onINput change will be a function passed from parent. this will be called here every time
-    //there is a change in the inputstate, which is when the text changes. 
-    //this will allow for the parent to remain updated on the state of the child
     useEffect(()=>{
         if(inputState.touched){
             props.onInputChange(inputState.inputValues, inputState.inputValidities);
@@ -132,7 +129,7 @@ ProfileInput = props => {
                 </View>
                 <View style={styles.rightFieldView}>
                     <Text style={styles.text}>Price</Text>
-                    <View style={styles.inputView}>
+                    {Platform.OS === 'android' && <View style={styles.inputView}>
                         <Picker
                             selectedValue={initialValues.inputValues.price}
                             onValueChange={handlePrice}
@@ -142,16 +139,26 @@ ProfileInput = props => {
                             <Picker.Item label="$$$" value="$$$" />
                             <Picker.Item label="$$$$" value="$$$$" />
                         </Picker>
-                        {/* <TextInput 
-                            style = {styles.input}
-                            underlineColorAndroid = "transparent"
-                            placeholder = "Price ($)"
-                            placeholderTextColor = {Colors.darkLines}
-                            defaultValue = {initialValues.inputValues.price}
-                            autoCapitalize = "none"
-                            onChangeText = {handlePrice}
-                        /> */}
-                    </View>
+                    </View>}
+                    {Platform.OS === 'ios' && <TouchableOpacity style={styles.inputView} 
+                        onPress={()=>{
+                            ActionSheetIOS.showActionSheetWithOptions(
+                                {
+                                    options: ["Cancel", "$", "$$", "$$$", "$$$$"],
+                                    title:'Price',
+                                    cancelButtonIndex: 0
+                                },
+                                buttonIndex => {
+                                    if (buttonIndex === 0) {
+                                        // cancel action
+                                    }else{
+                                        handlePrice(prices[buttonIndex-1]);
+                                    }
+                                }
+                            )
+                        }}>
+                        <Text style={styles.input}>{inputState.inputValues.price}</Text>
+                    </TouchableOpacity>}
                 </View>
             </View>
             <View style={styles.rowView}>

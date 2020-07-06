@@ -12,7 +12,7 @@ const MerchantList = props => {
     //console.log(rs);
     const renderItems = (itemData) => {
         //console.log(itemData)
-        //const prog = itemData.item.punches/itemData.item.getDeal().ammount;
+        //const prog = itemData.item.punches/itemData.item.getDeal().amount;
         if (faves === undefined){
             var isFav = false
         }else{
@@ -35,7 +35,7 @@ const MerchantList = props => {
             var number = 0;
             if(hasRS){
                 // console.log('________hasRS________');
-                number = rs.find(r=>r.r_id === itemData.item.id).ammount;
+                number = rs.find(r=>r.r_id === itemData.item.id).amount;
                 // console.log(number);
             }
         }

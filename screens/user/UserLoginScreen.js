@@ -44,7 +44,7 @@ const UserLoginScreen = props => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
     const [isNewUser, setIsNewUser] = useState(true);
-    const [promptVisability, setPromptVisability] = useState(false)
+    const [promptVisibility, setPromptVisibility] = useState(false)
     const dispatch = useDispatch();
 
     const [formState, dispatchFormState] = useReducer(formReducer, {
@@ -106,7 +106,7 @@ const UserLoginScreen = props => {
             setError(err.message);
         }
         setIsLoading(false);
-        setPromptVisability(false)
+        setPromptVisibility(false)
     }, [formState]);
 
     const inputChangeHandler = useCallback((inputValues, inputValidities) => {
@@ -120,7 +120,12 @@ const UserLoginScreen = props => {
 
     useEffect(() => {
         if (error) {
-          Alert.alert('Problem signing in!', error, [{ text: 'Okay' }]);
+            setTimeout(()=>Alert.alert(
+                'Problem signing in!', 
+                error, 
+                [{ text: 'Okay' }]
+                ), 500
+            )
         }
     }, [error]);
 
@@ -142,7 +147,7 @@ const UserLoginScreen = props => {
                     }}
                     onSignUp={() => {
                         if (formState.formIsValid){
-                            setPromptVisability(true)
+                            setPromptVisibility(true)
                         }else{
                             Alert.alert(
                                 'Invalid Input!',
@@ -153,7 +158,7 @@ const UserLoginScreen = props => {
                     }}
                 />}
             </View>
-            <View style={styles.googleContainer}>
+            {/* <View style={styles.googleContainer}>
                 <TouchableOpacity onPress={() => signUpHandler(true)}>
                     <View style={styles.googleButton}>
                         <Image
@@ -165,9 +170,9 @@ const UserLoginScreen = props => {
                         <Text  font='Roboto'>SIGN IN WITH GOOGLE</Text>
                     </View>
                 </TouchableOpacity>
-            </View>
+            </View> */}
             {isLoading && <ActivityIndicator color={Colors.darkLines} size='large'/>}
-            <Dialog.Container visible={promptVisability}>
+            <Dialog.Container visible={promptVisibility}>
                 <Dialog.Title style={{fontWeight:'bold'}}>Confirmation Required!</Dialog.Title>
                 <Dialog.Description>
                     Please re-enter your password to create an account...
@@ -180,7 +185,7 @@ const UserLoginScreen = props => {
                     autoCapitalize = "none"
                     secureTextEntry
                 />
-                <Dialog.Button label="Cancel" onPress={() => setPromptVisability(false)}/>
+                <Dialog.Button label="Cancel" onPress={() => setPromptVisibility(false)}/>
                 <Dialog.Button label="Confirm" onPress={() => signUpHandler(false)}/>
             </Dialog.Container>
         </View>

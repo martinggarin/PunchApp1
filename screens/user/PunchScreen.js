@@ -36,7 +36,7 @@ const PunchScreen = props => {
     }
     let loyaltyPoints = 0;
     if(hasRS){
-        loyaltyPoints = rs.find(r=>r.r_id === r_id).ammount;
+        loyaltyPoints = rs.find(r=>r.r_id === r_id).amount;
     }
 
     const dispatch = useDispatch();

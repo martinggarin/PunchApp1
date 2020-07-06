@@ -158,7 +158,6 @@ export const refreshUser = (id) => {
 }
 
 export const toggleFav = (r_id, u_id, merchantSide) => {
-  
   console.log('~User Action: toggleFav')
   return async dispatch => {
     let userData = null
@@ -202,7 +201,7 @@ export const toggleFav = (r_id, u_id, merchantSide) => {
   };
 };
 
-export const updateRewards = (r_id, u_id, ammount) => {
+export const updateRewards = (r_id, u_id, amount) => {
   console.log('~User Action: updateRewards')
   //update the value of user rewards status... TODO
   //console.log(u_id)
@@ -223,41 +222,41 @@ export const updateRewards = (r_id, u_id, ammount) => {
         //if the item already exists
         if(rs[key].r_id === r_id){
           //this handles if the user doesn't have enough rewards, when redeeming
-          if((rs[key].ammount+ammount) < 0){
+          if((rs[key].amount+amount) < 0){
             throw 'insufficient';
           }
           RS.push(
             new RewardStatus(
-              rs[key].r_id, (rs[key].ammount+ammount)
+              rs[key].r_id, (rs[key].amount+amount)
             )
           );
           isPresent = true;
         }else{
           RS.push(
             new RewardStatus(
-              rs[key].r_id, rs[key].ammount
+              rs[key].r_id, rs[key].amount
             )
           );
         }
       
       }//for
       if(!isPresent){
-        if(ammount < 0){
+        if(amount < 0){
           throw 'insufficient';
         }
-        RS.push(new RewardStatus(r_id, ammount));
+        RS.push(new RewardStatus(r_id, amount));
       }
     }//if
     else{
-      if(ammount < 0){
+      if(amount < 0){
         throw 'insufficient';
       }
-      RS.push(new RewardStatus(r_id, ammount));
+      RS.push(new RewardStatus(r_id, amount));
     }
     //console.log(RS);
-    //const d = new Deal(ammount, reward, '|.||..|.||..|');
+    //const d = new Deal(amount, reward, '|.||..|.||..|');
 
-    await firebase.database(userApp).ref(`/users/${u_id}/RS`).set(RS)
+    await firebase.database(merchantApp).ref(`/users/${u_id}/RS`).set(RS)
 
     dispatch({
       type: UPDATE_RS,

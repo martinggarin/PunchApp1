@@ -9,6 +9,7 @@ class Merchant {
         this.city = ''
         this.deal = [];
         this.customers = []
+        this.transactions = []
     }
 }
 export default Merchant;
