@@ -145,7 +145,6 @@ export const refreshUser = (id) => {
       const user = new Customer(id, userData.email);
       user.RS = userData.RS;
       user.favorites = userData.favorites;
-      
       dispatch({ 
         type: GET_USER,
         user: user 
@@ -169,21 +168,21 @@ export const toggleFav = (r_id, u_id, merchantSide) => {
     let favorites = [];
     //console.log('userData.favorites')
     //console.log(userData.favorites);
-    if(userData.favorites === undefined)
-    {
+    if(userData.favorites === undefined){
       //console.log('if')
       favorites.push(r_id);
-    }
-    else{
+    }else if(!merchantSide){
       //console.log('else')
       favorites = userData.favorites;
       //console.log(favorites);
       const existingIndex = favorites.findIndex(m => m === r_id);
-        if(existingIndex >= 0 ){
-          favorites.splice(existingIndex, 1);
-        }else{
-          favorites.push(r_id);
-        }
+      if(existingIndex >= 0){
+        favorites.splice(existingIndex, 1);
+      }else{
+        favorites.push(r_id);
+      }
+    }else{
+      return
     }
     //console.log(favorites);
     if (merchantSide) {

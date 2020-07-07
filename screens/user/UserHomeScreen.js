@@ -58,13 +58,13 @@ const UserHomeScreen = props => {
 
     useEffect(() => {
         const willFocusSub = props.navigation.addListener(
-          'willFocus',
-          loadMerchants
+            'willFocus',
+            loadMerchants
         );
         //console.log('will focus');
         //console.log(allMerchants);
         return () => {
-          willFocusSub.remove();
+            willFocusSub.remove();
         };
     }, [loadMerchants]);
     
@@ -121,7 +121,6 @@ const styles = StyleSheet.create({
         alignItems:'center',
         height:150,
         margin:10,
-        
     }, 
     merchantList:{
         flex:1
