@@ -5,7 +5,7 @@ import moment from 'moment'
 const TransactionList = props => {
     if (!(props.transactions === undefined)){
         var sortedTransactions = props.transactions
-        sortedTransactions.sort((a, b) => moment(a.date, 'MM/DD hh:mm:ss a').diff(moment(b.date, 'MM/DD hh:mm:ss a'), 'seconds'));
+        sortedTransactions.sort((a, b) => moment(b.date, 'MM/DD hh:mm:ss a').diff(moment(a.date, 'MM/DD hh:mm:ss a'), 'seconds'));
     }
     else{
         var sortedTransactions = []

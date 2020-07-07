@@ -52,6 +52,7 @@ const AuditScreen = props => {
                     <Dialog.Button label="Confirm" onPress={() => {
                         if(adminPasswordInput === r_item.adminPassword){
                             setAuthenticated(true)
+                            setPromptVisibility(false)
                         }else{
                             Alert.alert(
                                 'Wrong Password!',
@@ -60,7 +61,6 @@ const AuditScreen = props => {
                             );
                         };
                         setAdminPasswordInput('')
-                        setPromptVisibility(false)
                     }}/>
                 </Dialog.Container>
             </View>
