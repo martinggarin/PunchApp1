@@ -7,9 +7,9 @@
       "android"
     ],
     "description": "PunchApp is a place where Merchants and Customers can interact. Customers can explore and receive loyalty rewards. Merchants can give out rewards and view Analytics that will help grow their Revenue!",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
-    "icon": "./assets/icon_one.png",
+    "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -33,7 +33,7 @@
       "package": "com.punch_app.punchapp",
       "versionCode": 1,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icon.png",
+        "foregroundImage": "./assets/icon_adaptive.png",
         "backgroundColor": "#F26419"
       },
       "permissions": [
