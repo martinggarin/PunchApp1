@@ -22,7 +22,7 @@
       "**/*"
     ],
     "ios": {
-      "bundleIdentifier": "com.punch-app.punchapp",
+      "bundleIdentifier": "com.punch_app.punchapp",
       "buildNumber": "1.0.0",
       "supportsTablet": false,
       "infoPlist": {
