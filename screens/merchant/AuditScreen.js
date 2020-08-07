@@ -23,11 +23,17 @@ const AuditScreen = props => {
             </View>
             <View style={styles.lowerContainer}>
                 {authenticated && <TransactionList transactions={r_item.transactions}/>}
-                {!authenticated && <View styles={{width:'95%'}}>
+                {!authenticated && <View style={styles.authenticationContainer}>
                     <Text style={styles.warningText}>You are not authorized to view transaction details. Please use the button below to authenticate administrator access.</Text>
-                    <Button title='Authenticate' color={Colors.primary} onPress={() => setPromptVisibility(true)}/>
+                    <View style={styles.buttonContainer}>
+                        <Button title='Authenticate' color={Colors.primary} onPress={() => setPromptVisibility(true)}/>
+                    </View>
                 </View>}
-                {authenticated && <Button title='Deauthenticate' color={Colors.primary} onPress={() => setAuthenticated(false)}/>}
+                {authenticated && <View style={styles.authenticationContainer}>
+                    <View style={styles.buttonContainer}>
+                        <Button title='Deauthenticate' color={Colors.primary} onPress={() => setAuthenticated(false)}/>
+                    </View>
+                </View>}
                 <Dialog.Container visible={promptVisibility}>
                     <Dialog.Title style={{fontWeight:'bold'}}>Verification Required!</Dialog.Title>
                     <Dialog.Description>
@@ -86,11 +92,19 @@ const styles = StyleSheet.create({
         top:'2.5%',
         width:'95%',
         height:'92.5%',
+        alignItems:'center'
     },
     rowContainer:{
         flex: 1,
         flexDirection: 'row',
         alignItems:'center'
+    },
+    authenticationContainer:{
+        alignItems:'center',
+    },
+    buttonContainer:{
+        width:'60%',
+        marginTop:5,
     },
     warningText:{
         textAlign:'center',
@@ -99,6 +113,6 @@ const styles = StyleSheet.create({
     smallBoldText:{
         //marginLeft:5,
         fontWeight:'bold',
-    },
+    }
 })
 export default AuditScreen;
