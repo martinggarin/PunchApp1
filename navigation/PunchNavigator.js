@@ -14,7 +14,7 @@ import UserLoginScreen from '../screens/user/UserLoginScreen';
 import RewardScreen from '../screens/user/RewardScreen';
 import SearchMerchantScreen from '../screens/user/SearchMerchantScreen';
 import MerchantLoginScreen from '../screens/merchant/MerchantLoginScreen';
-import MerchantHomeScreen from '../screens/merchant/MerchantProfileScreen';
+import MerchantHomeScreen from '../screens/merchant/MerchantHomeScreen';
 import Colors from '../constants/Colors';
 import EditScreen from '../screens/merchant/EditScreen';
 import UpdateDealScreen from '../screens/merchant/UpdateDealScreen';

@@ -6,8 +6,8 @@ import { Feather, Ionicons, AntDesign} from '@expo/vector-icons';
 import DealList from '../../components/DealList';
 import Colors from '../../constants/Colors';
 
-const MerchantProfileScreen = props => {
-    console.log('Merchant Profile');
+const MerchantHomeScreen = props => {
+    console.log('Merchant Home');
     const r_item = useSelector(state => state.merchants.myMerchant);
     //console.log(r_item)
     let deals = useSelector(state => state.merchants.myDeals);
@@ -56,6 +56,8 @@ const MerchantProfileScreen = props => {
     useEffect(()=>{
         props.navigation.setParams({
             deals:totalDeals,
+            adminPasswordExists:!(r_item.adminPassword === undefined),
+            navigateToEdit:() => props.navigation.navigate('Edit', {newMerchant:true}),
             setPromptVisibility:setPromptVisibility
         });
     },[totalDeals]);
@@ -128,8 +130,10 @@ const MerchantProfileScreen = props => {
     );
 };
 
-MerchantProfileScreen.navigationOptions = navigationData => {
+MerchantHomeScreen.navigationOptions = navigationData => {
     const deals = navigationData.navigation.getParam('deals');
+    const adminPasswordExists = navigationData.navigation.getParam('adminPasswordExists');
+    const navigateToEdit = navigationData.navigation.getParam('navigateToEdit');
     const setPromptVisibility = navigationData.navigation.getParam('setPromptVisibility');
     if (deals > 0){
         var published = true
@@ -190,7 +194,13 @@ MerchantProfileScreen.navigationOptions = navigationData => {
                             color={Colors.lightLines}
                             onPress={()=>{
                                 console.log('-Edit Profile Handler')
-                                setPromptVisibility(true)
+                                console.log(adminPasswordExists)
+                                if (adminPasswordExists){
+                                    setPromptVisibility(true)
+                                }else{
+                                    navigateToEdit()
+                                }
+                                
                             }}
                         />
                     </View>
@@ -260,4 +270,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default MerchantProfileScreen;
+export default MerchantHomeScreen;
