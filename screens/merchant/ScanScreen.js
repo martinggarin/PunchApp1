@@ -16,7 +16,6 @@ const ScanScreen = props => {
     const reward = props.navigation.getParam('reward');
     const amount = props.navigation.getParam('amount');
 
-    
     useEffect(() => {
         (async () => {
         const { status } = await BarCodeScanner.requestPermissionsAsync();
@@ -29,69 +28,92 @@ const ScanScreen = props => {
         setInput(value)
     };
 
+    const handleRewards = async (data) =>{
+        if(!(amount === undefined)){
+            try{
+                // console.log('_________Updating Rewards__________');
+                // console.log('R_id: ' + r_id);
+                // console.log('U_ID: ' + data);
+                await dispatch(userActions.updateRewards(r_id, data, -amount))
+                
+            //need to handle error if user doesn't have enough rewards... 
+            }catch(err){
+                if (err === 'insufficient'){
+                    Alert.alert(
+                        "Insufficient Balance",
+                        "Unable to subtract "+amount+" points from user: "+data,
+                        [
+                            { text: "Ok", onPress:  async () => {await props.navigation.goBack()}},
+                        ],
+                        { cancelable: false }
+                    ); 
+                }else if(err === 'none'){
+                    await dispatch(merchantActions.addTransaction(r_id, data, -amount, reward))
+                    Alert.alert(
+                        "Deal Redeemed",
+                        amount+" point(s) subtracted from user: "+data,
+                        [
+                            { text: "Ok", onPress: () => props.navigation.goBack()},
+                        ],
+                        { cancelable: false }
+                    );
+                }else{
+                    Alert.alert('An error occurred!', err.message, [{ text: 'Okay' }]);
+                }
+            }
+        }else{
+            try{
+                // console.log('_________Updating Rewards__________');
+                // console.log('R_id: ' + r_id);
+                // console.log('U_ID: ' + data); 
+                await dispatch(userActions.updateRewards(r_id, data, Number(input)));
+            }catch(err){
+                if (err === 'none'){
+                    await dispatch(merchantActions.addTransaction(r_id, data, Number(input)))
+                    await dispatch(merchantActions.updateCustomers(r_id, data))
+                    await dispatch(userActions.toggleFav(r_id, data, true))
+                    Alert.alert(
+                        "Reward Redeemed",
+                        input+" point(s) added to user: "+data,
+                        [
+                            { text: "Ok"},
+                        ],
+                        { cancelable: false }
+                    );
+                }else{
+                    Alert.alert('An error occurred!', err.message, [{ text: 'Okay' }]);
+                }
+            }
+        };
+    }
+
     const handleBarCodeScanned = async ({ type, data })  => {
         setScanned(true)
         if (data.length === 28){
-            if(!(amount === undefined)){
-                try{
-                    // console.log('_________Updating Rewards__________');
-                    // console.log('R_id: ' + r_id);
-                    // console.log('U_ID: ' + data);
-                    await dispatch(userActions.updateRewards(r_id, data, -amount))
-                    
-                //need to handle error if user doesn't have enough rewards... 
-                }catch(err){
-                    if (err === 'insufficient'){
-                        Alert.alert(
-                            "Insufficient Balance",
-                            "Unable to subtract "+amount+" points from user: "+data,
-                            [
-                                { text: "Ok", onPress:  async () => {await props.navigation.goBack()}},
-                            ],
-                            { cancelable: false }
-                        ); 
-                    }else if(err === 'none'){
-                        await dispatch(merchantActions.addTransaction(r_id, data, -amount, reward))
-                        Alert.alert(
-                            "Deal Redeemed",
-                            amount+" point(s) subtracted from user: "+data,
-                            [
-                                { text: "Ok", onPress: () => props.navigation.goBack()},
-                            ],
-                            { cancelable: false }
-                        );
-                    }else{
-                        Alert.alert('An error occurred!', err.message, [{ text: 'Okay' }]);
+            Alert.alert(
+                "Confirm to proceed!",
+                !(amount === undefined) ? "You are about to redeem a deal..." : "You are about to credit rewards...",
+                [{   
+                    text: "Confirm", 
+                    onPress: () => {
+                        console.log('-Confirm Pressed');
+                        handleRewards(data)
                     }
-                }
-            }else{
-                try{
-                    // console.log('_________Updating Rewards__________');
-                    // console.log('R_id: ' + r_id);
-                    // console.log('U_ID: ' + data); 
-                    await dispatch(userActions.updateRewards(r_id, data, Number(input)));
-                }catch(err){
-                    if (err === 'none'){
-                        await dispatch(merchantActions.addTransaction(r_id, data, Number(input)))
-                        await dispatch(merchantActions.updateCustomers(r_id, data))
-                        await dispatch(userActions.toggleFav(r_id, data, true))
-                        Alert.alert(
-                            "Reward Redeemed",
-                            input+" point(s) added to user: "+data,
-                            [
-                                { text: "Ok"},
-                            ],
-                            { cancelable: false }
-                        );
-                    }else{
-                        Alert.alert('An error occurred!', err.message, [{ text: 'Okay' }]);
-                    }
-                }
-            };
+                },{
+                    text: "Cancel",
+                    onPress: () => {
+                        console.log('-Cancel Pressed');
+                        return
+                    }, 
+                    style:'cancel'
+                }],
+                { cancelable: false }
+            );
         }else{
             Alert.alert('Invalid QR Code', 'Please try again', [{ text: 'Okay' }]);
         }
     };
+
     if (hasPermission === null) {
         return <Text>Requesting for camera permission</Text>;
     }
