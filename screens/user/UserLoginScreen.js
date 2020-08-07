@@ -96,11 +96,7 @@ const UserLoginScreen = props => {
                 formState.inputValues.password,
                 useGoogle
             ));
-            if (newUser){
-                props.navigation.replace('Explore');
-            }else{
-                props.navigation.replace('Home');
-            }
+            props.navigation.replace('Home');
         }
         catch(err){
             setError(err.message);
