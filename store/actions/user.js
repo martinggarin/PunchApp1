@@ -111,16 +111,15 @@ export const getUser = (email, password) => {
       }
     });
     const u_id = credential.user.uid
-    let userData = (await firebase.database(userApp).ref(`/users/${u_id}`).once('value')).val()
+    const userData = (await firebase.database(userApp).ref(`/users/${u_id}`).once('value')).val()
     if (userData === null){
       throw new Error('Wrong password. Try again.');
     }
-    const user = new Customer(u_id, email);
+    let user = new Customer(u_id, email);
     user.RS = userData.RS;
     user.favorites = userData.favorites;
     //console.log(userData)
     //console.log(user);
-    
     dispatch({
       type: GET_USER,
       user: user
@@ -136,23 +135,18 @@ export const logoutUser = () => {
   }
 }
 
-export const refreshUser = (id) => {
+export const refreshUser = (u_id) => {
   console.log('~User Action: refreshUser')
   return async dispatch => {
     // any async code you want!
-    try {
-      const userData = (await firebase.database(userApp).ref(`/users/${u_id}`).once('value')).val()
-      const user = new Customer(id, userData.email);
-      user.RS = userData.RS;
-      user.favorites = userData.favorites;
-      dispatch({ 
-        type: GET_USER,
-        user: user 
-      });
-    } catch (err) {
-      // send to custom analytics server
-      throw err;
-    }
+    const userData = (await firebase.database(userApp).ref(`/users/${u_id}`).once('value')).val()
+    let user = new Customer(u_id, userData.email);
+    user.RS = userData.RS;
+    user.favorites = userData.favorites;
+    dispatch({ 
+      type: GET_USER,
+      user: user 
+    });
   };
 }
 

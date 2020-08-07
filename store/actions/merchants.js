@@ -92,6 +92,8 @@ export const createMerchant = (email, password, useGoogle) => {
       merchant.city = merchantData.city
       merchant.deal = merchantData.deal
       merchant.customers = merchantData.customers
+      merchant.transactions = merchantData.transactions
+      merchant.adminPassword = merchantData.adminPassword
       dispatch({
         type: GET_MERCHANT,
         merchant: merchant
@@ -161,7 +163,8 @@ export const updateMerchant = (id, title, price, type, address, city, adminPassw
     const updatedMerchantData = {
       email:merchantData.email,
       deal:merchantData.deal,
-      customers:merchantData.customers
+      customers:merchantData.customers,
+      transactions:merchantData.transactions
     }
     updatedMerchantData.title = title
     updatedMerchantData.price = price
@@ -321,7 +324,6 @@ export const loadAllMerchants = () => {
           merchant.address = merchantData[key].address
           merchant.city = merchantData[key].city
           merchant.deal = merchantData[key].deal
-          merchant.customers = merchantData[key].customers
           //console.log(merchant.deal)
           loadedMerchants.push(merchant)
         }
