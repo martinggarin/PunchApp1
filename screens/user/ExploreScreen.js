@@ -5,7 +5,7 @@ import Colors from '../../constants/Colors';
 import MerchantList from '../../components/MerchantList';
 import * as MerchantActions from '../../store/actions/merchants';
 
-const SearchMerchantScreen = props => {
+const ExploreScreen = props => {
     console.log('Search Merchant');
     const display = useSelector(state => state.merchants.availableMerchants);
     const faves = useSelector(state => state.user.userMerchants);
@@ -66,4 +66,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default SearchMerchantScreen;
+export default ExploreScreen;

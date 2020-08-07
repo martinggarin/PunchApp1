@@ -12,7 +12,7 @@ import UserHomeScreen from '../screens/user/UserHomeScreen';
 import PunchScreen from '../screens/user/PunchScreen';
 import UserLoginScreen from '../screens/user/UserLoginScreen';
 import RewardScreen from '../screens/user/RewardScreen';
-import SearchMerchantScreen from '../screens/user/SearchMerchantScreen';
+import ExploreScreen from '../screens/user/ExploreScreen';
 import MerchantLoginScreen from '../screens/merchant/MerchantLoginScreen';
 import MerchantHomeScreen from '../screens/merchant/MerchantHomeScreen';
 import Colors from '../constants/Colors';
@@ -85,7 +85,7 @@ const RewardNavigator = createStackNavigator({
 
 const ExploreNavigator = createStackNavigator({
     Explore: {
-        screen: SearchMerchantScreen,
+        screen: ExploreScreen,
         navigationOptions: { title: 'Explore' }
     },
     Punch: PunchScreen,
