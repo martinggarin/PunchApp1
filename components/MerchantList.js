@@ -24,7 +24,7 @@ const MerchantList = props => {
             var hasRS = rs.some(r => r.r_id === itemData.item.id);
         }
         if (props.showDeals){
-            var text = ['Available', 'Deals']
+            var text = ['Deals', 'Available']
             if (itemData.item.deal === undefined){
                 var number = 0
             }else{
