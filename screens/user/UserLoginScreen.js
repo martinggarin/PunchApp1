@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useReducer, useState} from 'react';
-import { View, Text, StyleSheet, Image , Alert} from 'react-native';
+import { View, StyleSheet, Image, Alert} from 'react-native';
 import Dialog from 'react-native-dialog'
 import LoginInput from '../../components/LoginInput';
 import { useDispatch } from 'react-redux';
@@ -8,7 +8,19 @@ import HeaderButton from '../../components/HeaderButton';
 import * as userActions from '../../store/actions/user';
 import { ActivityIndicator } from 'react-native-paper';
 import Colors from '../../constants/Colors';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import firebase from 'firebase';
+import Apps from '../../firebaseApp';
+
+const userApp = Apps.firebaseApp.user
+const onAuthStateChange = (callback) => {
+    return firebase.auth(userApp).onAuthStateChanged(user => {
+        if (user) {
+            callback(true);
+        } else {
+            callback(false);
+        }
+    });
+};
 
 const INPUT_UPDATE = 'INPUT_UPDATE';
 const RE_PASSWORD_UPDATE = 'RE_PASSWORD_UPDATE'
@@ -43,6 +55,7 @@ const UserLoginScreen = props => {
     console.log('User Login')
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
+    const [loggedIn, setLoggedIn] = useState(false);
     const [isNewUser, setIsNewUser] = useState(true);
     const [promptVisibility, setPromptVisibility] = useState(false)
     const dispatch = useDispatch();
@@ -60,14 +73,15 @@ const UserLoginScreen = props => {
         rePassword:''
     });
 
-    const submitHandler = useCallback(async () => {
+    const submitHandler = useCallback(async (authenticated) => {
         console.log('-Login Handler')
         setError(null);
         setIsLoading(true);
         try{
             await dispatch(userActions.getUser(
                 formState.inputValues.email,
-                formState.inputValues.password
+                formState.inputValues.password,
+                authenticated
             ));
             props.navigation.replace('Home');
             setIsNewUser(false)
@@ -91,7 +105,7 @@ const UserLoginScreen = props => {
         setError(null);
         setIsLoading(true);
         try{
-            let newUser = await dispatch(userActions.createUser(
+            await dispatch(userActions.createUser(
                 formState.inputValues.email,
                 formState.inputValues.password,
                 useGoogle
@@ -101,8 +115,8 @@ const UserLoginScreen = props => {
         catch(err){
             setError(err.message);
         }
-        setIsLoading(false);
         setPromptVisibility(false)
+        setIsLoading(false);
     }, [formState]);
 
     const inputChangeHandler = useCallback((inputValues, inputValidities) => {
@@ -113,6 +127,19 @@ const UserLoginScreen = props => {
             validities: inputValidities,
         })
     },[dispatchFormState]);
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChange(setLoggedIn);
+        return () => {
+          unsubscribe();
+        };
+    }, []);
+
+    useEffect(() => {
+        if (loggedIn && !isLoading) {
+            submitHandler(true)
+        }
+    },[loggedIn]);
 
     useEffect(() => {
         if (error) {
@@ -132,7 +159,7 @@ const UserLoginScreen = props => {
                     onInputChange={inputChangeHandler}
                     onLogin={() => {
                         if (formState.formIsValid){
-                            submitHandler()
+                            submitHandler(false)
                         }else{
                             Alert.alert(
                                 'Invalid Input!',

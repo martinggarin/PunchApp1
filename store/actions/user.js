@@ -43,7 +43,7 @@ export const createUser = (email, password, useGoogle) => {
       credential = await firebase.auth(userApp).createUserWithEmailAndPassword(email, password)
       .catch(async (error) => {
         if (error.code === 'auth/email-already-in-use') {
-          accountExists = true
+          throw new Error('Email associated with another account.'); //accountExists = true
         }
         if (error.code === 'auth/invalid-email') {
           throw new Error('That email address is invalid!');
@@ -97,25 +97,28 @@ export const createUser = (email, password, useGoogle) => {
   };
 };
 
-export const getUser = (email, password) => {
+export const getUser = (email, password, authenticated) => {
   console.log('~User Action: getUser')
   return async dispatch => {
-    // any async code you want!
-    let credential = null
-    credential = await firebase.auth(userApp).signInWithEmailAndPassword(email, password)
-    .catch(error => {
-      if (error.code === 'auth/invalid-email' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-        throw new Error('Wrong password. Try again.');
-      }else{
-        throw new Error('Something went wrong!')
-      }
-    });
-    const u_id = credential.user.uid
+    if (authenticated){
+      var u_id = firebase.auth(userApp).currentUser.uid
+    }else{
+      let credential = null
+      credential = await firebase.auth(userApp).signInWithEmailAndPassword(email, password)
+      .catch(error => {
+        if (error.code === 'auth/invalid-email' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+          throw new Error('Wrong password. Try again.');
+        }else{
+          throw new Error('Something went wrong!')
+        }
+      });
+      var u_id = credential.user.uid
+    }
     const userData = (await firebase.database(userApp).ref(`/users/${u_id}`).once('value')).val()
     if (userData === null){
       throw new Error('Wrong password. Try again.');
     }
-    let user = new Customer(u_id, email);
+    let user = new Customer(u_id, userData.email);
     user.RS = userData.RS;
     user.favorites = userData.favorites;
     //console.log(userData)

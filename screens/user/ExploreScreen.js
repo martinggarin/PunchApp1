@@ -6,7 +6,7 @@ import MerchantList from '../../components/MerchantList';
 import * as MerchantActions from '../../store/actions/merchants';
 
 const ExploreScreen = props => {
-    console.log('Search Merchant');
+    console.log('Explore');
     const display = useSelector(state => state.merchants.availableMerchants);
     const faves = useSelector(state => state.user.userMerchants);
     const [isLoading, setIsLoading] = useState(false);

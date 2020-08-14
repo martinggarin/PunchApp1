@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useReducer, useState} from 'react';
-import { View, Text, StyleSheet, Image , Alert} from 'react-native';
+import { View, StyleSheet, Image , Alert} from 'react-native';
 import Dialog from 'react-native-dialog'
 import LoginInput from '../../components/LoginInput';
 import { useDispatch } from 'react-redux';
@@ -8,7 +8,19 @@ import HeaderButton from '../../components/HeaderButton';
 import * as merchantActions from '../../store/actions/merchants';
 import { ActivityIndicator } from 'react-native-paper';
 import Colors from '../../constants/Colors';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import firebase from 'firebase';
+import Apps from '../../firebaseApp';
+
+const merchantApp = Apps.firebaseApp.merchant
+const onAuthStateChange = (callback) => {
+    return firebase.auth(merchantApp).onAuthStateChanged(user => {
+        if (user) {
+            callback(true);
+        } else {
+            callback(false);
+        }
+    });
+};
 
 const INPUT_UPDATE = 'INPUT_UPDATE';
 const RE_PASSWORD_UPDATE = 'RE_PASSWORD_UPDATE'
@@ -43,6 +55,7 @@ const MerchantLoginScreen = props => {
     console.log('Merchant Login')
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
+    const [loggedIn, setLoggedIn] = useState(false);
     const [isNewUser, setIsNewUser] = useState(true);
     const [promptVisibility, setPromptVisibility] = useState(false)
     const dispatch = useDispatch();
@@ -60,7 +73,7 @@ const MerchantLoginScreen = props => {
         rePassword:''
     });
 
-    const submitHandler = useCallback(async () => {
+    const submitHandler = useCallback(async (authenticated) => {
         console.log('-Login Handler')
         setError(null);
         setIsLoading(true);
@@ -68,6 +81,7 @@ const MerchantLoginScreen = props => {
             await dispatch(merchantActions.getMerchant(
                 formState.inputValues.email,
                 formState.inputValues.password,
+                authenticated
             ));
             props.navigation.replace('MerchantHome');
             setIsNewUser(false)
@@ -76,7 +90,6 @@ const MerchantLoginScreen = props => {
         }
         setIsLoading(false)
         setIsNewUser(true)
-
     }, [formState]);
 
     const signUpHandler = useCallback(async (useGoogle) => {
@@ -97,19 +110,17 @@ const MerchantLoginScreen = props => {
                 formState.inputValues.password,
                 useGoogle
             ));
-            setIsNewUser(false)
+            if (newMerchant) {
+                props.navigation.replace('Edit',{newMerchant:true});
+            }else{
+                props.navigation.replace('MerchantHome');
+            };
         }
         catch(err){
             setError(err.message);
         }
-        setIsLoading(false);
-        setIsNewUser(true);
         setPromptVisibility(false);
-        if (newMerchant) {
-            props.navigation.replace('Edit',{newMerchant:true});
-        }else{
-            props.navigation.replace('MerchantHome');
-        };
+        setIsLoading(false);
     }, [formState]);
 
     const inputChangeHandler = useCallback((inputValues, inputValidities) => {
@@ -120,6 +131,19 @@ const MerchantLoginScreen = props => {
             validities: inputValidities,
         })
     },[dispatchFormState]);
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChange(setLoggedIn);
+        return () => {
+          unsubscribe();
+        };
+    }, []);
+
+    useEffect(() => {
+        if (loggedIn && !isLoading) {
+            submitHandler(true)
+        }
+    },[loggedIn]);
 
     useEffect(() => {
         if (error) {
@@ -139,7 +163,7 @@ const MerchantLoginScreen = props => {
                     onInputChange={inputChangeHandler}
                     onLogin={() => {
                         if (formState.formIsValid){
-                            submitHandler()
+                            submitHandler(false)
                         }else{
                             Alert.alert(
                                 'Invalid Input!',

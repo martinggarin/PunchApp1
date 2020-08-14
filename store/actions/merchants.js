@@ -45,7 +45,7 @@ export const createMerchant = (email, password, useGoogle) => {
       credential = await firebase.auth(merchantApp).createUserWithEmailAndPassword(email, password)
       .catch(error => {
         if (error.code === 'auth/email-already-in-use') {
-           accountExists = true
+          throw new Error('Email associated with another account.'); //accountExists = true
         }
         if (error.code === 'auth/invalid-email') {
           throw new Error('That email address is invalid!');
@@ -56,7 +56,7 @@ export const createMerchant = (email, password, useGoogle) => {
       credential = await firebase.auth(merchantApp).signInWithEmailAndPassword(email, password)
       .catch(error => {
         if (error.code === 'auth/wrong-password') {
-          throw new Error('Email associated with another account.');
+          
         }else{
           throw new Error('Something went wrong!')
         }
@@ -103,24 +103,27 @@ export const createMerchant = (email, password, useGoogle) => {
   };
 };
 
-export const getMerchant = (email, password) => {
+export const getMerchant = (email, password, authenticated) => {
   console.log('~Merchant Action: getMerchant')
   return async dispatch => {
-    
-    credential = await firebase.auth(merchantApp).signInWithEmailAndPassword(email, password)
-    .catch(error => {
-      if (error.code === 'auth/invalid-email' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-        throw new Error('Wrong password. Try again.');
-      }else{
-        throw new Error('Something went wrong!')
-      }
-    });
-    const m_id = credential.user.uid
+    if (authenticated){
+      var m_id = firebase.auth(merchantApp).currentUser.uid
+    }else{
+      credential = await firebase.auth(merchantApp).signInWithEmailAndPassword(email, password)
+      .catch(error => {
+        if (error.code === 'auth/invalid-email' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+          throw new Error('Wrong password. Try again.');
+        }else{
+          throw new Error('Something went wrong!')
+        }
+      });
+      var m_id = credential.user.uid
+    }
     let merchantData = (await firebase.database(merchantApp).ref(`/merchants/${m_id}`).once('value')).val()
     if (merchantData === null){
       throw new Error('Wrong password. Try again.');
     }
-    const merchant = new Merchant(m_id, email);
+    let merchant = new Merchant(m_id, email);
     merchant.title = merchantData.title
     merchant.price = merchantData.price
     merchant.type = merchantData.type
