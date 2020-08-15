@@ -18,6 +18,8 @@ import MerchantHomeScreen from '../screens/merchant/MerchantHomeScreen';
 import Colors from '../constants/Colors';
 import EditScreen from '../screens/merchant/EditScreen';
 import UpdateDealScreen from '../screens/merchant/UpdateDealScreen';
+import EmployeeScreen from '../screens/merchant/EmployeeScreen';
+import UpdateEmployeeScreen from '../screens/merchant/UpdateEmployeeScreen';
 import ScanScreen from '../screens/merchant/ScanScreen';
 import AuditScreen from '../screens/merchant/AuditScreen';
 import * as MerchantActions from '../store/actions/merchants';
@@ -197,7 +199,9 @@ const MerchantNavigator = createStackNavigator({
         screen: EditScreen,
         navigationOptions:{headerLeft: () => null}
     },
-    UpdateDeal:UpdateDealScreen
+    UpdateDeal:UpdateDealScreen,
+    Employee:EmployeeScreen,
+    UpdateEmployee:UpdateEmployeeScreen,
 }, {
     navigationOptions: {
         drawerIcon: drawerConfig => (

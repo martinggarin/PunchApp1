@@ -8,11 +8,9 @@ import RewardBalance from './RewardBalance';
 const DealList = props => {
     
     if (!(props.dealData === undefined)){
-        var sortedDealData = props.dealData
-        sortedDealData.sort((a, b) => parseFloat(a.amount) - parseFloat(b.amount));
-    }
-    else{
-        var sortedDealData = []
+        var dealData = props.dealData
+    }else{
+        var dealData = []
     }
 
     const renderDeal = itemData => {
@@ -46,7 +44,7 @@ const DealList = props => {
     
     return (
         <FlatList 
-            data={sortedDealData}
+            data={dealData}
             renderItem={renderDeal}
             keyExtractor={(item, index) => item.reward}
             ListFooterComponent={props.footer}

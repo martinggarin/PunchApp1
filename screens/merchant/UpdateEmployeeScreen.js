@@ -4,20 +4,25 @@ import {useDispatch} from 'react-redux';
 import Colors from '../../constants/Colors';
 import * as MerchantActions from '../../store/actions/merchants';
 
-const REWARD_INPUT_CHANGE = 'REWARD_INPUT_CHANGE';
-const AMOUNT_INPUT_CHANGE = 'AMOUNT_INPUT_CHANGE';
+const NAME_INPUT_CHANGE = 'NAME_INPUT_CHANGE';
+const LOCATION_INPUT_CHANGE = 'LOCATION_INPUT_CHANGE';
+const ID_INPUT_CHANGE = 'ID_INPUT_CHANGE'
 
 const formReducer = (state, action) =>{
     const updatedValues = state.inputValues
     const updatedValidities = state.inputValidities
     switch(action.type){
-        case REWARD_INPUT_CHANGE:
-            updatedValues.reward = action.newValue
-            updatedValidities.reward = action.isValid
+        case NAME_INPUT_CHANGE:
+            updatedValues.name = action.newValue
+            updatedValidities.name = action.isValid
             break
-        case AMOUNT_INPUT_CHANGE:
-            updatedValues.amount = action.newValue
-            updatedValidities.amount = action.isValid
+        case LOCATION_INPUT_CHANGE:
+            updatedValues.location = action.newValue
+            updatedValidities.location = action.isValid
+            break
+        case ID_INPUT_CHANGE:
+            updatedValues.id = action.newValue
+            updatedValidities.id = action.isValid
             break
         default:
             return {state}
@@ -36,31 +41,33 @@ const formReducer = (state, action) =>{
 };
 
 
-const UpdateDealScreen = props => {
-    console.log('Update Deal');
+const UpdateEmployeeScreen = props => {
+    console.log('Update Employee');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
     const r_id = props.navigation.getParam('id');
-    const deals = props.navigation.getParam('deals');
-    const dealCode = props.navigation.getParam('dealCode')
+    const employees = props.navigation.getParam('employees');
+    const employeeCode = props.navigation.getParam('employeeCode')
     const dispatch = useDispatch();
-    if (deals === undefined){
-        totalDeals = 0
+    if (employees === undefined){
+        totalEmployees = 0
     }
     else{
-        totalDeals = deals.length
+        totalEmployees = employees.length
     }
 
-    if (totalDeals === dealCode){
+    if (totalEmployees === employeeCode){
         var initialValues = {
             inputValues:{
-                reward: '',
-                amount: '',
-                code: dealCode
+                name: '',
+                location: '',
+                id:'',
+                code: employeeCode
             },
             inputValidities:{
-                reward:false,
-                amount:false
+                name:false,
+                location:false,
+                id:''
             },
             formIsValid:false
         }        
@@ -69,13 +76,15 @@ const UpdateDealScreen = props => {
     else{
         var initialValues = {
             inputValues:{
-                reward: deals[dealCode].reward,
-                amount: deals[dealCode].amount,
-                code: dealCode
+                name: employees[employeeCode].name,
+                location: employees[employeeCode].location,
+                id: employees[employeeCode].id,
+                code: employeeCode
             },
             inputValidities:{
-                reward:true,
-                amount:true
+                name:true,
+                location:true,
+                id:''
             },
             formIsValid:true
         }
@@ -83,49 +92,63 @@ const UpdateDealScreen = props => {
 
     const [formState, dispatchFormState] = useReducer(formReducer, initialValues);
     
-    const handleReward = useCallback((text) => {
+    const handleName = useCallback((text) => {
         console.log('-Input Change Handler')
         var isValid = true
         if (text.length === 0){
             isValid = false
         }
         dispatchFormState({
-            type: REWARD_INPUT_CHANGE, 
+            type: NAME_INPUT_CHANGE, 
             newValue: text, 
             isValid: isValid,
         })
     },[dispatchFormState]);
 
-    const handleAMOUNT = useCallback((text) => {
+    const handleLocation = useCallback((text) => {
         console.log('-Input Change Handler')
         var isValid = true
-        if ((text.length === 0) || (text.length > 10) || isNaN(text)){
+        if (text.length === 0){
             isValid = false
         }
         dispatchFormState({
-            type: AMOUNT_INPUT_CHANGE, 
+            type: LOCATION_INPUT_CHANGE, 
+            newValue: text, 
+            isValid: isValid,
+        })
+    },[dispatchFormState]);
+
+    const handleId = useCallback((text) => {
+        console.log('-Input Change Handler')
+        var isValid = true
+        if ((text.length < 4) || isNaN(text)){
+            isValid = false
+        }
+        dispatchFormState({
+            type: ID_INPUT_CHANGE, 
             newValue: text, 
             isValid: isValid,
         })
     },[dispatchFormState]);
 
     const handleSubmit = useCallback( async () => {
-        console.log('-Submit Deal Handler')
+        console.log('-Submit Employee Handler')
         if(!formState.formIsValid){
             Alert.alert('Invalid Inputs!' , 
                         'Please check your inputs...\n\n'
-                        +'Deal Names must be at least 1 character\n\n'
-                        +'Deal Costs must be numeric and are limited to 10 digits', 
+                        +'Employee Names and Locations must be at least 1 character\n\n'
+                        +'Employee IDs must be 4 digits and numeric', 
                         [{text: 'Okay'}]);
             return;
         };
         setError(null);
         setIsLoading(true);
         try{
-            await dispatch(MerchantActions.updateDeal(
+            await dispatch(MerchantActions.updateEmployee(
             r_id,
-            formState.inputValues.amount,
-            formState.inputValues.reward,
+            formState.inputValues.name,
+            formState.inputValues.location,
+            formState.inputValues.id,
             formState.inputValues.code
         ));
         props.navigation.goBack();
@@ -147,31 +170,46 @@ const UpdateDealScreen = props => {
         <View style={styles.screen}>
             <View style={styles.container}>
                 <View style={styles.rowContainer}>
-                    <Text style={styles.text}>Enter a Name for this Deal</Text>
+                    <Text style={styles.text}>Enter the employee's name:</Text>
                     <View style={styles.inputView}>
                         <TextInput 
                             style = {styles.input}
                             underlineColorAndroid = "transparent"
-                            placeholder = "Deal"
+                            placeholder = "Name"
                             placeholderTextColor = {Colors.placeholderText}
-                            defaultValue = {initialValues.inputValues.reward}
+                            defaultValue = {initialValues.inputValues.name}
                             autoCapitalize = "none"
-                            onChangeText = {handleReward}
+                            onChangeText = {handleName}
                         />
                     </View>
                 </View>
                 <View style={styles.rowContainer}>
-                    <Text style={styles.text}>Enter a Point Cost for this Deal</Text>
+                    <Text style={styles.text}>Enter the location where this employee works:</Text>
+                    <View style={styles.inputView}>
+                        <TextInput 
+                            style = {styles.input}
+                            underlineColorAndroid = "transparent"
+                            placeholder = "Location"
+                            placeholderTextColor = {Colors.placeholderText}
+                            defaultValue = {initialValues.inputValues.location}
+                            autoCapitalize = "none"
+                            onChangeText = {handleLocation}
+                        />
+                    </View>
+                </View>
+                <View style={styles.rowContainer}>
+                    <Text style={styles.text}>Enter the ID that the employee will use when completing transactions:</Text>
                     <View style={styles.inputView}>
                         <TextInput 
                             style = {styles.input}
                             keyboardType='decimal-pad'
+                            maxLength={4}
                             underlineColorAndroid = "transparent"
-                            placeholder = "Cost"
+                            placeholder = "4-Digit ID"
                             placeholderTextColor = {Colors.placeholderText}
-                            defaultValue = {initialValues.inputValues.amount}
+                            defaultValue = {initialValues.inputValues.id}
                             autoCapitalize = "none"
-                            onChangeText = {handleAMOUNT}
+                            onChangeText = {handleId}
                         />
                     </View>
                 </View>
@@ -189,7 +227,7 @@ const styles = StyleSheet.create({
     },
     container:{
         width:'95%',
-        height:150,
+        height:'30%',
         justifyContent:'center',
         alignItems:'center',
         backgroundColor:Colors.primary,
@@ -197,7 +235,7 @@ const styles = StyleSheet.create({
         margin:'2.5%'
     },
     rowContainer: {
-        height:'45%',
+        height:'33%',
         width:'95%',
         justifyContent: 'center',
         //borderColor: Colors.borderDark,
@@ -226,4 +264,4 @@ const styles = StyleSheet.create({
     } 
 });
 
-export default UpdateDealScreen;
+export default UpdateEmployeeScreen;
