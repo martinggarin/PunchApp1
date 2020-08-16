@@ -96,10 +96,10 @@ const UpdateDealScreen = props => {
         })
     },[dispatchFormState]);
 
-    const handleAMOUNT = useCallback((text) => {
+    const handleAmount = useCallback((text) => {
         console.log('-Input Change Handler')
         var isValid = true
-        if ((text.length === 0) || (text.length > 10) || isNaN(text)){
+        if ((text.length === 0) || (text.length > 10) || text.indexOf('.') !== -1){
             isValid = false
         }
         dispatchFormState({
@@ -171,7 +171,7 @@ const UpdateDealScreen = props => {
                             placeholderTextColor = {Colors.placeholderText}
                             defaultValue = {initialValues.inputValues.amount}
                             autoCapitalize = "none"
-                            onChangeText = {handleAMOUNT}
+                            onChangeText = {handleAmount}
                         />
                     </View>
                 </View>

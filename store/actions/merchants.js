@@ -222,14 +222,26 @@ export const updateCustomers = (m_id, customerID) => {
   }
 };
 
-export const addTransaction = (m_id, customerID, amount, reward) => {
+export const addTransaction = (m_id, employee, customerID, amount, reward) => {
   console.log('~Merchant Action: addTransactions')
   return async dispatch =>{
     var date = moment()
       .utcOffset('-04:00')
       .format('MM/DD hh:mm:ss a');
-    const newTransaction = (reward) ? {date:date, customerID:customerID, reward:reward, amount:amount}
-    : {date:date, customerID:customerID , amount:amount}
+    const newTransaction = (reward) ? {
+      date:date, 
+      customerID:customerID, 
+      employee:employee.name, 
+      location:employee.location, 
+      reward:reward, 
+      amount:amount
+    }:{
+      date:date, 
+      customerID:customerID,
+      employee:employee.name, 
+      location:employee.location, 
+      amount:amount
+    }
     const merchantData = (await firebase.database(merchantApp).ref(`/merchants/${m_id}`).once('value')).val()
     var transactions = merchantData.transactions
     merchantData.id = m_id

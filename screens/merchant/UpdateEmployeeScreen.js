@@ -121,7 +121,7 @@ const UpdateEmployeeScreen = props => {
     const handleId = useCallback((text) => {
         console.log('-Input Change Handler')
         var isValid = true
-        if ((text.length < 4) || isNaN(text)){
+        if ((text.length < 4) || text.indexOf('.') !== -1){
             isValid = false
         }
         dispatchFormState({
@@ -137,7 +137,7 @@ const UpdateEmployeeScreen = props => {
             Alert.alert('Invalid Inputs!' , 
                         'Please check your inputs...\n\n'
                         +'Employee Names and Locations must be at least 1 character\n\n'
-                        +'Employee IDs must be 4 digits and numeric', 
+                        +'Employee IDs must be a 4 digit and number', 
                         [{text: 'Okay'}]);
             return;
         };

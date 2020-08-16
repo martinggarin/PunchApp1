@@ -212,6 +212,7 @@ export const updateRewards = (r_id, u_id, amount) => {
     //console.log(rs);
 
     let isPresent = false;
+    let insufficient = false;
     const RS = [];
     if(!(RS === undefined)){
       for(const key in rs){
@@ -219,14 +220,20 @@ export const updateRewards = (r_id, u_id, amount) => {
         if(rs[key].r_id === r_id){
           //this handles if the user doesn't have enough rewards, when redeeming
           if((rs[key].amount+amount) < 0){
-            throw 'insufficient';
+            insufficient=true;
+            RS.push(
+              new RewardStatus(
+                rs[key].r_id, rs[key].amount
+              )
+            );
+          }else{
+            RS.push(
+              new RewardStatus(
+                rs[key].r_id, (rs[key].amount+amount)
+              )
+            );
+            isPresent = true;
           }
-          RS.push(
-            new RewardStatus(
-              rs[key].r_id, (rs[key].amount+amount)
-            )
-          );
-          isPresent = true;
         }else{
           RS.push(
             new RewardStatus(
@@ -238,16 +245,17 @@ export const updateRewards = (r_id, u_id, amount) => {
       }//for
       if(!isPresent){
         if(amount < 0){
-          throw 'insufficient';
+          insufficient = true;
+        }else{
+          RS.push(new RewardStatus(r_id, amount));
         }
+      }
+    }else{
+      if(amount < 0){
+        insufficient = true;
+      }else{
         RS.push(new RewardStatus(r_id, amount));
       }
-    }//if
-    else{
-      if(amount < 0){
-        throw 'insufficient';
-      }
-      RS.push(new RewardStatus(r_id, amount));
     }
     //console.log(RS);
     //const d = new Deal(amount, reward, '|.||..|.||..|');
@@ -260,7 +268,10 @@ export const updateRewards = (r_id, u_id, amount) => {
       user:u_id, 
       RS: RS
     })
-    throw 'none'
+    if (insufficient){
+      throw 'insufficient'
+    }else{
+      throw 'none'
+    }
   }
-
 }
