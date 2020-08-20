@@ -19,6 +19,7 @@ const EmployeeList = props => {
                 <EmployeeItem
                     name={itemData.item.name}
                     location={itemData.item.location}
+                    type={itemData.item.type}
                     id={itemData.item.id}
                     onClick={ () => {
                         props.onTap(itemData.item.code)

@@ -72,9 +72,10 @@ const EmployeeScreen = props => {
         <View style={styles.screen}>
             <View style={styles.upperContainer}>
                 <View style={styles.rowContainer}>
-                    <Text style={{...styles.smallBoldText, width:'55%'}}>Name</Text>
-                    <Text style={{...styles.smallBoldText, width:'30%'}}>Location</Text>
-                    <Text style={{...styles.smallBoldText, width:'15%'}}>ID</Text>
+                    <Text style={{...styles.smallBoldText, width:'50%'}}>Name</Text>
+                    <Text style={{...styles.smallBoldText, width:'25%'}}>Location</Text>
+                    <Text style={{...styles.smallBoldText, width:'10%'}}>Type</Text>
+                    <Text style={{...styles.smallBoldText, width:'15%', textAlign:'center'}}>ID</Text>
                 </View>
             </View>
             <View style={styles.lowerContainer}>

@@ -1,12 +1,13 @@
 import React, {useCallback, useReducer, useEffect, useState, useSelector} from 'react';
-import { View, Text, StyleSheet, TextInput, Alert, Button } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Picker, ActionSheetIOS, TextInput, Alert, Button } from 'react-native';
 import {useDispatch} from 'react-redux';
 import Colors from '../../constants/Colors';
 import * as MerchantActions from '../../store/actions/merchants';
 
 const NAME_INPUT_CHANGE = 'NAME_INPUT_CHANGE';
 const LOCATION_INPUT_CHANGE = 'LOCATION_INPUT_CHANGE';
-const ID_INPUT_CHANGE = 'ID_INPUT_CHANGE'
+const ID_INPUT_CHANGE = 'ID_INPUT_CHANGE';
+const TYPE_INPUT_CHANGE = 'TYPE_INPUT_CHANGE';
 
 const formReducer = (state, action) =>{
     const updatedValues = state.inputValues
@@ -19,6 +20,9 @@ const formReducer = (state, action) =>{
         case LOCATION_INPUT_CHANGE:
             updatedValues.location = action.newValue
             updatedValidities.location = action.isValid
+            break
+        case TYPE_INPUT_CHANGE:
+            updatedValues.type = action.newValue
             break
         case ID_INPUT_CHANGE:
             updatedValues.id = action.newValue
@@ -33,6 +37,7 @@ const formReducer = (state, action) =>{
             formIsValid = false
         }
     }
+    console.log(updatedValues)
     return {...state,
         inputValues:updatedValues,
         inputValidities:updatedValidities,
@@ -43,6 +48,7 @@ const formReducer = (state, action) =>{
 
 const UpdateEmployeeScreen = props => {
     console.log('Update Employee');
+    const types = ['Manager', 'Employee']
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
     const r_id = props.navigation.getParam('id');
@@ -61,6 +67,7 @@ const UpdateEmployeeScreen = props => {
             inputValues:{
                 name: '',
                 location: '',
+                type: 'Employee',
                 id:'',
                 code: employeeCode
             },
@@ -78,6 +85,7 @@ const UpdateEmployeeScreen = props => {
             inputValues:{
                 name: employees[employeeCode].name,
                 location: employees[employeeCode].location,
+                type: employees[employeeCode].type,
                 id: employees[employeeCode].id,
                 code: employeeCode
             },
@@ -118,6 +126,14 @@ const UpdateEmployeeScreen = props => {
         })
     },[dispatchFormState]);
 
+    const handleType = useCallback((text) => {
+        console.log('-Input Change Handler')
+        dispatchFormState({
+            type: TYPE_INPUT_CHANGE, 
+            newValue: text, 
+        })
+    },[dispatchFormState]);
+
     const handleId = useCallback((text) => {
         console.log('-Input Change Handler')
         var isValid = true
@@ -145,13 +161,14 @@ const UpdateEmployeeScreen = props => {
         setIsLoading(true);
         try{
             await dispatch(MerchantActions.updateEmployee(
-            r_id,
-            formState.inputValues.name,
-            formState.inputValues.location,
-            formState.inputValues.id,
-            formState.inputValues.code
-        ));
-        props.navigation.goBack();
+                r_id,
+                formState.inputValues.name,
+                formState.inputValues.location,
+                formState.inputValues.type,
+                formState.inputValues.id,
+                formState.inputValues.code
+            ));
+            props.navigation.goBack();
         }catch(err){
             setError(err.message);
         }
@@ -198,7 +215,38 @@ const UpdateEmployeeScreen = props => {
                     </View>
                 </View>
                 <View style={styles.rowContainer}>
-                    <Text style={styles.text}>Enter the ID that the employee will use when completing transactions:</Text>
+                    <Text style={styles.text}>Select the appropriate employee level:</Text>
+                    {Platform.OS === 'android' && <View style={styles.inputView}>
+                        <Picker
+                            selectedValue={initialValues.inputValues.type}
+                            onValueChange={handleType}
+                        >
+                            <Picker.Item label="Manager" value="Manager" />
+                            <Picker.Item label="Employee" value="Employee" />
+                        </Picker>
+                    </View>}
+                    {Platform.OS === 'ios' && <TouchableOpacity style={styles.inputView} 
+                        onPress={()=>{
+                            ActionSheetIOS.showActionSheetWithOptions(
+                                {
+                                    options: ["Cancel", "Manager", "Employee"],
+                                    title:'Type',
+                                    cancelButtonIndex: 0
+                                },
+                                buttonIndex => {
+                                    if (buttonIndex === 0) {
+                                        // cancel action
+                                    }else{
+                                        handleType(types[buttonIndex-1]);
+                                    }
+                                }
+                            )
+                        }}>
+                            <Text style={styles.input}>{formState.inputValues.type}</Text>
+                        </TouchableOpacity>}
+                    </View>
+                <View style={styles.rowContainer}>
+                    <Text style={styles.text}>Enter the employee ID:</Text>
                     <View style={styles.inputView}>
                         <TextInput 
                             style = {styles.input}
@@ -227,7 +275,7 @@ const styles = StyleSheet.create({
     },
     container:{
         width:'95%',
-        height:'30%',
+        height:'40%',
         justifyContent:'center',
         alignItems:'center',
         backgroundColor:Colors.primary,
@@ -235,7 +283,7 @@ const styles = StyleSheet.create({
         margin:'2.5%'
     },
     rowContainer: {
-        height:'33%',
+        height:'25%',
         width:'95%',
         justifyContent: 'center',
         //borderColor: Colors.borderDark,

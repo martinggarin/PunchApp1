@@ -337,7 +337,7 @@ export const removeDeal = (m_id, code) => {
   }
 };
 
-export const updateEmployee = (m_id, name, location, id, code) => {
+export const updateEmployee = (m_id, name, location, type, id, code) => {
   console.log('~Merchant Action: updateEmployee')
   return async dispatch =>{
     const merchantData = (await firebase.database(merchantApp).ref(`/merchants/${m_id}`).once('value')).val()
@@ -347,7 +347,7 @@ export const updateEmployee = (m_id, name, location, id, code) => {
       var employees = merchantData.employees
     }
     
-    var newEmployee = new Employee(name, location, id, code)
+    var newEmployee = new Employee(name, location, type, id, code)
     if (employees.length === code){
       employees.push(newEmployee)
     }else{
@@ -358,11 +358,10 @@ export const updateEmployee = (m_id, name, location, id, code) => {
     employees.sort((a, b) => a.name.localeCompare(b.name));
     for (const key in employees){
       updatedEmployees.push(
-        new Employee(employees[key].name, employees[key].location, employees[key].id, count)
+        new Employee(employees[key].name, employees[key].location, employees[key].type, employees[key].id, count)
       )
       count += 1
     }
-
     await firebase.database(merchantApp).ref(`/merchants/${m_id}/employees`).set(updatedEmployees)
 
     dispatch({
@@ -385,7 +384,7 @@ export const removeEmployee = (m_id, code) => {
       for (const key in employees){
         if (!(employees[key].code === code)){
           updatedEmployees.push(
-            new Employee(employees[key].name, employees[key].location, employees[key].id, count)
+            new Employee(employees[key].name, employees[key].location, employees[key].type, employees[key].id, count)
           )
           count += 1
         }
