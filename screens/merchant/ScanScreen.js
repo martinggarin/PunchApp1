@@ -151,6 +151,7 @@ const ScanScreen = props => {
                                 keyboardType="numeric"
                                 codeLength={4}
                                 autoFocus={true}
+                                compareWithCode='aaaa'
                                 onFulfill={(code) => {
                                     var employee = null
                                     for (const key in employees){
