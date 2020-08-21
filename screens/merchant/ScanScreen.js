@@ -39,7 +39,7 @@ const ScanScreen = props => {
                 await dispatch(userActions.updateRewards(r_id, data, -amount))
             }catch(err){
                 if (err === 'insufficient'){
-                    await dispatch(merchantActions.addTransaction(r_id, employee, data, 'Insufficient Balance', reward))
+                    await dispatch(merchantActions.addTransaction(r_id, employee, data, 'Insufficient', reward))
                     Alert.alert(
                         "Insufficient Balance",
                         "Unable to subtract "+amount+" points from user:\n"+data,
@@ -139,20 +139,20 @@ const ScanScreen = props => {
                     </View> 
                 </View>}
                 <Dialog.Container visible={promptVisibility}>
-                    <Dialog.Title style={{fontWeight:'bold'}}>Confirmation Required!</Dialog.Title>
+                    <Dialog.Title style={styles.boldText}>Confirmation Required!</Dialog.Title>
                     <Dialog.Description>
                         You are about to complete a transaction. Enter your employee identification number to continue...
                     </Dialog.Description>
                     <View>
-                        <View style={{height:30, marginBottom:10}}>
+                        <View style={styles.authenticationInputContainer}>
                             <CodeInput
-                                style={{borderWidth:1, height:'100%', height:30, width:30, marginTop:-20, marginLeft:5, marginRight:5, textAlign:'center', color:'black'}}
+                                style={styles.authenticationInput}
                                 secureTextEntry
                                 keyboardType="numeric"
                                 codeLength={4}
                                 autoFocus={true}
                                 compareWithCode='aaaa'
-                                onFulfill={(code) => {
+                                onFulfill={(isValid, code) => {
                                     var employee = null
                                     for (const key in employees){
                                         if (employees[key].id === code){
@@ -233,9 +233,25 @@ const styles = StyleSheet.create({
         top:'90%',
         marginLeft:'22.5%',
         marginRight:'22.5%'
-        
+    },
+    authenticationInputContainer:{
+        height:30,
+        marginBottom:10
+    },
+    authenticationInput:{
+        borderWidth:1,
+        height:'100%',
+        height:30,
+        width:30,
+        marginTop:-20,
+        marginLeft:5,
+        marginRight:5,
+        textAlign:'center',
+        color:'black'
+    },
+    boldText:{
+        fontWeight:'bold'
     }
-
 });
 
 export default ScanScreen;

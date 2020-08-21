@@ -37,7 +37,6 @@ const formReducer = (state, action) =>{
             formIsValid = false
         }
     }
-    console.log(updatedValues)
     return {...state,
         inputValues:updatedValues,
         inputValidities:updatedValidities,
@@ -74,7 +73,7 @@ const UpdateEmployeeScreen = props => {
             inputValidities:{
                 name:false,
                 location:false,
-                id:''
+                id:false
             },
             formIsValid:false
         }        
@@ -92,7 +91,7 @@ const UpdateEmployeeScreen = props => {
             inputValidities:{
                 name:true,
                 location:true,
-                id:''
+                id:true
             },
             formIsValid:true
         }
@@ -177,10 +176,10 @@ const UpdateEmployeeScreen = props => {
     },[formState, dispatch, r_id]);
     
     useEffect(() => {
-            if (error) {
+        if (error) {
             Alert.alert('An error occurred!', error, [{ text: 'Okay' }]);
-            }
-        }, [error]);
+        }
+    }, [error]);
 
 
     return(

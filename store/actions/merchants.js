@@ -227,7 +227,7 @@ export const addTransaction = (m_id, employee, customerID, amount, reward) => {
   return async dispatch =>{
     var date = moment()
       .utcOffset('-04:00')
-      .format('MM/DD hh:mm:ss a');
+      .format('MM/DD/YY hh:mm:ss a');
     const newTransaction = (reward) ? {
       date:date, 
       customerID:customerID, 

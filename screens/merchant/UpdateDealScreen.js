@@ -123,12 +123,12 @@ const UpdateDealScreen = props => {
         setIsLoading(true);
         try{
             await dispatch(MerchantActions.updateDeal(
-            r_id,
-            formState.inputValues.amount,
-            formState.inputValues.reward,
-            formState.inputValues.code
-        ));
-        props.navigation.goBack();
+                r_id,
+                formState.inputValues.amount,
+                formState.inputValues.reward,
+                formState.inputValues.code
+            ));
+            props.navigation.goBack();
         }catch(err){
             setError(err.message);
         }
