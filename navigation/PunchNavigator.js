@@ -42,10 +42,6 @@ const MerchantHomeNavigator = createStackNavigator({
     UpdateDeal:{
         screen: UpdateDealScreen,
         navigationOptions: { title: 'Update Deal' }
-    },
-    UpdateEmployee:{
-        screen: UpdateEmployeeScreen,
-        navigationOptions: { title: 'Update Employee' }
     }
 }, {
     defaultNavigationOptions: defaultOptions
@@ -205,7 +201,10 @@ const MerchantNavigator = createStackNavigator({
     },
     UpdateDeal:UpdateDealScreen,
     Employee:EmployeeScreen,
-    UpdateEmployee:UpdateEmployeeScreen,
+    UpdateEmployee:{
+        screen: UpdateEmployeeScreen,
+        navigationOptions: { title: 'Update Employee' }
+    },
 }, {
     navigationOptions: {
         drawerIcon: drawerConfig => (

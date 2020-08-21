@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Text, TextInput, View, StyleSheet, Button, Alert} from 'react-native';
-import {useSelector, useDispatch} from 'react-redux';
+import React, { useState } from 'react';
+import { Text, View, StyleSheet, Button, Alert} from 'react-native';
+import {useSelector} from 'react-redux';
+import CodeInput from 'react-native-confirmation-code-input';
 import Dialog from 'react-native-dialog'
 import Colors from '../../constants/Colors';
 import TransactionList from '../../components/TransactionList';
@@ -8,23 +9,15 @@ import TransactionList from '../../components/TransactionList';
 const AuditScreen = props => {
     console.log('Audit')
     const r_item = useSelector(state => state.merchants.myMerchant);
+    const employees = useSelector(state => state.merchants.myEmployees);
     const [authenticated, setAuthenticated] = useState(false);
-    const [promptVisibility, setPromptVisibility] = useState(false)
-    const [adminPasswordInput, setAdminPasswordInput] = useState('')
+    const [promptVisibility, setPromptVisibility] = useState(false);
     return (
         <View style={styles.screen}>
-            <View style={styles.upperContainer}>
-                <View style={styles.rowContainer}>
-                    <Text style={{...styles.smallBoldText, width:'35%', textAlign:'center'}}>Date/Time</Text>
-                    <Text style={{...styles.smallBoldText, width:'25%'}}>Customer</Text>
-                    <Text style={{...styles.smallBoldText, width:'20%'}}>Reward</Text>
-                    <Text style={{...styles.smallBoldText, width:'20%', textAlign:'center'}}>Amount</Text>
-                </View>
-            </View>
             <View style={styles.lowerContainer}>
                 {authenticated && <TransactionList transactions={r_item.transactions}/>}
                 {!authenticated && <View style={styles.authenticationContainer}>
-                    <Text style={styles.warningText}>You are not authorized to view transaction details. Please use the button below to authenticate administrator access.</Text>
+                    <Text style={styles.warningText}>You are not authorized to view transaction details. Please use the button below to authenticate manager access.</Text>
                     <View style={styles.buttonContainer}>
                         <Button title='Authenticate' color={Colors.primary} onPress={() => setPromptVisibility(true)}/>
                     </View>
@@ -35,38 +28,44 @@ const AuditScreen = props => {
                     </View>
                 </View>}
                 <Dialog.Container visible={promptVisibility}>
-                    <Dialog.Title style={{fontWeight:'bold'}}>Verification Required!</Dialog.Title>
+                    <Dialog.Title style={styles.boldText}>Verification Required!</Dialog.Title>
                     <Dialog.Description>
-                        Please enter your administrator password to access the audit screen...
+                        Please enter a manager ID to access the audit screen...
                     </Dialog.Description>
-                    <Dialog.Input 
-                        style={{borderBottomWidth: Platform.OS == 'android' ? 1: 0, color: Colors.borderDark}}
-                        autoCorrect={false}
-                        autoCompleteType='off'
-                        onChangeText={(text) => {
-                            console.log("-Input Change Handler")
-                            setAdminPasswordInput(text)
-                        }}
-                        autoCapitalize = "none"
-                        secureTextEntry
-                    />
+                    <View>
+                        <View style={styles.authenticationInputContainer}>
+                            <CodeInput
+                                style={styles.authenticationInput}
+                                secureTextEntry
+                                keyboardType="numeric"
+                                codeLength={4}
+                                autoFocus={true}
+                                compareWithCode='aaaa'
+                                onFulfill={(isValid, code) => {
+                                    var employee = null
+                                    for (const key in employees){
+                                        if ((employees[key].id === code) && (employees[key].type === 'Manager')){
+                                            console.log('success')
+                                            employee = employees[key]
+                                        }
+                                    }
+                                    if(employee){
+                                        setPromptVisibility(false)
+                                        setAuthenticated(true)
+                                    }else{
+                                        Alert.alert(
+                                            'Invalid ID!',
+                                            'Please try again...', 
+                                            [{text: 'Okay'}]
+                                        );
+                                    };
+                                }}
+                            />
+                        </View>
+                    </View>
                     <Dialog.Button label="Cancel" onPress={() => {
                         console.log('-Cancel Pressed')
                         setPromptVisibility(false)
-                        setAdminPasswordInput('')
-                    }}/>
-                    <Dialog.Button label="Confirm" onPress={() => {
-                        if(adminPasswordInput === r_item.adminPassword){
-                            setAuthenticated(true)
-                            setPromptVisibility(false)
-                        }else{
-                            Alert.alert(
-                                'Wrong Password!',
-                                'Please try again...', 
-                                [{text: 'Okay'}]
-                            );
-                        };
-                        setAdminPasswordInput('')
                     }}/>
                 </Dialog.Container>
             </View>
@@ -80,14 +79,6 @@ const styles = StyleSheet.create({
         //marginTop:20,
         backgroundColor:Colors.fontLight,
     }, 
-    upperContainer:{
-        width:'95%',
-        height:'5%',
-        justifyContent:'center',
-        backgroundColor:Colors.primary,
-        borderRadius:3,
-        top:'2.5%',
-    },
     lowerContainer:{
         top:'2.5%',
         width:'95%',
@@ -102,6 +93,21 @@ const styles = StyleSheet.create({
     authenticationContainer:{
         alignItems:'center',
     },
+    authenticationInputContainer:{
+        height:30,
+        marginBottom:10
+    },
+    authenticationInput:{
+        borderWidth:1,
+        height:'100%',
+        height:30,
+        width:30,
+        marginTop:-20,
+        marginLeft:5,
+        marginRight:5,
+        textAlign:'center',
+        color:'black'
+    },
     buttonContainer:{
         width:'60%',
         marginTop:5,
@@ -110,8 +116,7 @@ const styles = StyleSheet.create({
         textAlign:'center',
         marginTop:10
     },
-    smallBoldText:{
-        //marginLeft:5,
+    boldText:{
         fontWeight:'bold',
     }
 })
