@@ -112,6 +112,18 @@ const UserHomeScreen = props => {
     }
 };
 
+UserHomeScreen.navigationOptions = navData => {
+    return {
+        headerLeft: () => (
+            <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                <Item title="Menu" iconName='md-menu' onPress={()=>{
+                    navData.navigation.toggleDrawer();
+                }} />
+            </HeaderButtons>
+        )
+    };
+};
+
 const styles = StyleSheet.create({
     screen:{
         flex:1,

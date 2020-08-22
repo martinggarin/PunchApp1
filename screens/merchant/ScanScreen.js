@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Text, TextInput, View, StyleSheet, Button, Alert, Keyboard, TouchableWithoutFeedback} from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import {useDispatch, useSelector} from 'react-redux';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import HeaderButton from '../../components/HeaderButton';
 import Dialog from 'react-native-dialog'
 import CodeInput from 'react-native-confirmation-code-input';
 import * as userActions from '../../store/actions/user';
@@ -181,6 +183,18 @@ const ScanScreen = props => {
             </View>
         </TouchableWithoutFeedback>
     );
+};
+
+ScanScreen.navigationOptions = navData => {
+    return {
+        headerLeft: () => (
+            <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                <Item title="Menu" iconName='md-menu' onPress={()=>{
+                    navData.navigation.toggleDrawer();
+                }} />
+            </HeaderButtons>
+        )
+    };
 };
 
 const styles = StyleSheet.create({

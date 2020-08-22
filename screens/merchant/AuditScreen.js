@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Text, View, StyleSheet, Button, Alert} from 'react-native';
 import {useSelector} from 'react-redux';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import HeaderButton from '../../components/HeaderButton';
 import CodeInput from 'react-native-confirmation-code-input';
 import Dialog from 'react-native-dialog'
 import Colors from '../../constants/Colors';
@@ -72,6 +74,19 @@ const AuditScreen = props => {
         </View>
     )
 }
+
+AuditScreen.navigationOptions = navData => {
+    return {
+        headerLeft: () => (
+            <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                <Item title="Menu" iconName='md-menu' onPress={()=>{
+                    navData.navigation.toggleDrawer();
+                }} />
+            </HeaderButtons>
+        )
+    };
+};
+
 const styles = StyleSheet.create({
     screen:{
         flex:1,

@@ -1,6 +1,8 @@
 import React, {useCallback, useEffect, useState}from 'react';
 import { SafeAreaView, StyleSheet } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import HeaderButton from '../../components/HeaderButton';
 import Colors from '../../constants/Colors';
 import MerchantList from '../../components/MerchantList';
 import * as MerchantActions from '../../store/actions/merchants';
@@ -59,6 +61,19 @@ const ExploreScreen = props => {
         </SafeAreaView>
     );
 };
+
+ExploreScreen.navigationOptions = navData => {
+    return {
+        headerLeft: () => (
+            <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                <Item title="Menu" iconName='md-menu' onPress={()=>{
+                    navData.navigation.toggleDrawer();
+                }} />
+            </HeaderButtons>
+        )
+    };
+};
+
 const styles = StyleSheet.create({
     screen:{
         flex:1,

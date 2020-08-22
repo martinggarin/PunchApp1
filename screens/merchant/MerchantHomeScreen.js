@@ -1,6 +1,8 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import { Alert, View, Text, StyleSheet, Button, TouchableOpacity} from 'react-native';
 import {useSelector} from 'react-redux';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import HeaderButton from '../../components/HeaderButton';
 import Dialog from 'react-native-dialog'
 import { Feather, Ionicons, AntDesign} from '@expo/vector-icons';
 import DealList from '../../components/DealList';
@@ -172,17 +174,17 @@ MerchantHomeScreen.navigationOptions = navigationData => {
     const navigateToEdit = navigationData.navigation.getParam('navigateToEdit');
     const setEditPromptVisibility = navigationData.navigation.getParam('setEditPromptVisibility');
     const setEmployeePromptVisibility = navigationData.navigation.getParam('setEmployeePromptVisibility');
-    if (deals > 0){
-        var published = true
-        var iconName = 'checkcircle'
-    }else{
-        var published = false
-        var iconName = 'checkcircleo'
-    }
     return{
         headerLeft: () => {
             return (
                 <View style={styles.headerLeft}>
+                    <View style={styles.headerButton}>
+                        <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                            <Item title="Menu" iconName='md-menu' onPress={()=>{
+                                navigationData.navigation.toggleDrawer();
+                            }} />
+                        </HeaderButtons>
+                    </View>
                     <View style={styles.headerButton}>
                         <AntDesign
                             name='questioncircleo'
@@ -198,22 +200,6 @@ MerchantHomeScreen.navigationOptions = navigationData => {
                                     +'• To credit loyalty points to a customer account, scan their reward code using the scanning tab\n\n'
                                     +'• To redeem a deal for a customer, select it on the home screen and scan their reward code\n\n'
                                     +'• The audit tab can be used check employee validated transaction histories once authenticated using an administrator password',
-                                    [{text: 'Okay'}]
-                                )
-                            }}
-                        />
-                    </View>
-                    <View style={styles.headerButton}>
-                        <AntDesign
-                            name={iconName}
-                            size={25}
-                            color={Colors.lightLines}
-                            onPress={()=>{
-                                Alert.alert(
-                                    'Profile Status',
-                                    (published)
-                                    ? 'Your profile is currently LIVE! Users can find you on the explore page and in their favorites.'
-                                    : 'Your profile is currently HIDDEN! Add a deal to publish your profile.',
                                     [{text: 'Okay'}]
                                 )
                             }}

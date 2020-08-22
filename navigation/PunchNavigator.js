@@ -302,8 +302,7 @@ const MainNavigator = createDrawerNavigator({
                     <TouchableOpacity style={styles.privacyPolicyView} onPress={loadPrivacyPolicyInBrowser}>
                         <Text style={styles.text}>Privacy Policy</Text>
                     </TouchableOpacity>
-                </View>
-                
+                </View>    
             </SafeAreaView>
         )
     }
