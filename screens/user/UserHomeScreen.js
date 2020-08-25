@@ -37,16 +37,11 @@ const UserHomeScreen = props => {
             updatedUserMerchants.push(merch);
         }
     }
-    // console.log('----updatedUserMerchants-----');
-    // console.log(updatedUserMerchants);
 
     const loadMerchants = useCallback(async () => {
         setError(null);
         setIsRefreshing(true);
         try {
-            //console.log('________________');
-            //console.log(u_id);
-            //console.log('________________');
             await dispatch(MerchantActions.loadAllMerchants());
             await dispatch(UserActions.refreshUser(u_id));
 
@@ -93,8 +88,7 @@ const UserHomeScreen = props => {
 
     if(updatedUserMerchants.length > 0){
         return(
-            <SafeAreaView
-            style={styles.screen}>
+            <SafeAreaView style={styles.screen}>
                 <MerchantList 
                     onRefresh={loadMerchants}
                     refreshing={isRefreshing}
@@ -127,6 +121,7 @@ UserHomeScreen.navigationOptions = navData => {
 const styles = StyleSheet.create({
     screen:{
         flex:1,
+        height:'100%',
         backgroundColor:Colors.background,//this is the color for everything need to fix
     },
     addContainer:{

@@ -1,15 +1,30 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, StyleSheet, FlatList} from 'react-native';
 import ListItem from './ListItem';
 import Colors from '../constants/Colors';
 import {useSelector} from 'react-redux';
+import {SearchBar} from 'react-native-elements';
 import RewardBalance from '../components/RewardBalance';
 
 const MerchantList = props => {
     const faves = useSelector(state => state.user.userMerchants);
     const rs = useSelector(state => state.user.userRewards);
+    const [state, setState] = useState({data:props.listData, search:''})
     //console.log(faves)
     //console.log(rs);
+
+    const searchAction = (text) => {
+        const newData = props.listData.filter( item => {
+            const itemData = `${item.title.toUpperCase()}`;
+            const textData = text.toUpperCase();
+            return itemData.indexOf(textData) > -1;
+        });
+        setState({
+            data:newData,
+            search:text
+        });
+    };
+
     const renderItems = (itemData) => {
         //console.log(itemData)
         //const prog = itemData.item.punches/itemData.item.getDeal().amount;
@@ -71,14 +86,25 @@ const MerchantList = props => {
     };
 
     return (
-        <FlatList 
-            {...props}
-            data={props.listData}
-            keyExtractor={(item, index) => item.id}
-            renderItem={renderItems}
-            ListFooterComponent={props.footer}
-            //ListFooterComponentStyle={props.footerStyle}
-        />
+        <View style={styles.screen}>
+            <SearchBar
+                containerStyle={{backgroundColor: Colors.backgroundColor}}
+                inputContainerStyle={{backgroundColor:Colors.lightLines}}
+                placeholder="Search Merchants"
+                lightTheme   
+                onChangeText={text=> searchAction(text)}
+                autoCorrect={false}
+                value={state.search}
+            />
+            <FlatList 
+                {...props}
+                data={state.data}
+                keyExtractor={(item, index) => item.id}
+                renderItem={renderItems}
+                ListFooterComponent={props.footer}
+            />
+        </View>
+        
     );
 };
 

@@ -48,8 +48,7 @@ const ExploreScreen = props => {
       }, [dispatch, loadMerchants]);
 
     return(
-        <SafeAreaView
-        style={styles.screen}>
+        <SafeAreaView style={styles.screen}>
             <MerchantList 
                 listData={display}
                 navigation={props.navigation}
@@ -77,6 +76,7 @@ ExploreScreen.navigationOptions = navData => {
 const styles = StyleSheet.create({
     screen:{
         flex:1,
+        height:'100%',
         backgroundColor:Colors.background
     }
 });
