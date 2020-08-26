@@ -19,9 +19,18 @@ const ScanScreen = props => {
     const [input, setInput] = useState('1')
     const dispatch = useDispatch();
     const r_id = useSelector(state => state.merchants.myMerchant.id);
+    let transactions = useSelector(state => state.merchants.myMerchant.transactions);
     const employees = useSelector(state => state.merchants.myEmployees);
     const reward = props.navigation.getParam('reward');
     const amount = props.navigation.getParam('amount');
+
+    if (transactions === undefined || transactions === null){
+        var totalTransactions = 0
+        transactions = []
+    }
+    else{
+        var totalTransactions = transactions.length
+    }
 
     useEffect(() => {
         (async () => {
@@ -41,7 +50,7 @@ const ScanScreen = props => {
                 await dispatch(userActions.updateRewards(r_id, data, -amount))
             }catch(err){
                 if (err === 'insufficient'){
-                    await dispatch(merchantActions.addTransaction(r_id, employee, data, 'Insufficient', reward))
+                    await dispatch(merchantActions.addTransaction(r_id, employee, data, 'Insufficient', totalTransactions, reward))
                     Alert.alert(
                         "Insufficient Balance",
                         "Unable to subtract "+amount+" points from user:\n"+data,
@@ -53,7 +62,7 @@ const ScanScreen = props => {
                         { cancelable: false }
                     ); 
                 }else if(err === 'none'){
-                    await dispatch(merchantActions.addTransaction(r_id, employee, data, -amount, reward))
+                    await dispatch(merchantActions.addTransaction(r_id, employee, data, -amount, totalTransactions, reward))
                     Alert.alert(
                         "Deal Redeemed",
                         amount+" point(s) subtracted from user:\n"+data,
@@ -65,7 +74,7 @@ const ScanScreen = props => {
                         { cancelable: false }
                     );
                 }else{
-                    Alert.alert('An error occurred!', err.message, [{ text: 'Okay' }]);
+                    throw err
                 }
             }
         }else{
@@ -76,7 +85,7 @@ const ScanScreen = props => {
                 await dispatch(userActions.updateRewards(r_id, data, Number(input)));
             }catch(err){
                 if (err === 'none'){
-                    await dispatch(merchantActions.addTransaction(r_id, employee, data, Number(input)))
+                    await dispatch(merchantActions.addTransaction(r_id, employee, data, Number(input), totalTransactions))
                     await dispatch(merchantActions.updateCustomers(r_id, data))
                     await dispatch(userActions.toggleFav(r_id, data, true))
                     Alert.alert(
@@ -88,7 +97,7 @@ const ScanScreen = props => {
                         { cancelable: false }
                     );
                 }else{
-                    Alert.alert('An error occurred!', err.message, [{ text: 'Okay' }]);
+                    throw err
                 }
             }
         };

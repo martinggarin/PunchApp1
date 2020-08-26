@@ -1,11 +1,11 @@
 import React from 'react';
-import { StyleSheet, FlatList,Text, View } from 'react-native';
-import moment from 'moment'
+import { StyleSheet, FlatList,Text, View, TouchableOpacity } from 'react-native';
+import moment from 'moment';
 
 const TransactionList = props => {
     if (!(props.transactions === undefined)){
         var sortedTransactions = props.transactions
-        sortedTransactions.sort((a, b) => moment(b.date, 'MM/DD/YY hh:mm:ss a').diff(moment(a.date, 'MM/DD/YY hh:mm:ss a'), 'seconds'));
+        sortedTransactions.sort((a, b) => b.code - a.code);
     }
     else{
         var sortedTransactions = []
@@ -13,19 +13,21 @@ const TransactionList = props => {
 
     const renderTransaction = itemData => {
         return(
-            <View style={styles.rowContainer}>
-                <View style={styles.dateView}>
-                    <Text style={styles.boldText}>{itemData.item.date.slice(0,8)}</Text>
-                    <Text style={styles.boldText}>{itemData.item.date.slice(9)}</Text>
+            <TouchableOpacity onPress={() => props.onPress(itemData.item.code)}>
+                <View style={styles.rowContainer}>
+                    <View style={styles.dateView}>
+                        <Text style={styles.boldText}>{itemData.item.date.slice(0,8)}</Text>
+                        <Text style={styles.boldText}>{itemData.item.date.slice(9)}</Text>
+                    </View>
+                    <View>
+                        <Text>Customer: {itemData.item.customerID.slice(0,7)}...</Text>
+                        <Text>Location: {itemData.item.location}</Text>
+                        <Text>Employee: {itemData.item.employee}</Text>
+                        <Text>Amount: {itemData.item.amount}</Text>
+                        <Text>Deal: {(itemData.item.reward === undefined) ? 'N/A' : itemData.item.reward}</Text>
+                    </View>
                 </View>
-                <View>
-                    <Text>Customer: {itemData.item.customerID.slice(0,7)}...</Text>
-                    <Text>Location: {itemData.item.location}</Text>
-                    <Text>Employee: {itemData.item.employee}</Text>
-                    <Text>Amount: {itemData.item.amount}</Text>
-                    <Text>Deal: {(itemData.item.reward === undefined) ? 'N/A' : itemData.item.reward}</Text>
-                </View>
-            </View>
+            </TouchableOpacity>
         );
     };
     

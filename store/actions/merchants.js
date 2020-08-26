@@ -222,7 +222,7 @@ export const updateCustomers = (m_id, customerID) => {
   }
 };
 
-export const addTransaction = (m_id, employee, customerID, amount, reward) => {
+export const addTransaction = (m_id, employee, customerID, amount, code, reward) => {
   console.log('~Merchant Action: addTransactions')
   return async dispatch =>{
     var date = moment()
@@ -234,23 +234,26 @@ export const addTransaction = (m_id, employee, customerID, amount, reward) => {
       employee:employee.name, 
       location:employee.location, 
       reward:reward, 
-      amount:amount
+      amount:amount,
+      code:code
     }:{
       date:date, 
       customerID:customerID,
       employee:employee.name, 
       location:employee.location, 
-      amount:amount
+      amount:amount,
+      code:code
     }
     const merchantData = (await firebase.database(merchantApp).ref(`/merchants/${m_id}`).once('value')).val()
-    var transactions = merchantData.transactions
+    let transactions = merchantData.transactions
     merchantData.id = m_id
     
-    if (transactions === undefined){
+    if ((transactions === undefined || transactions === null) && !(amount === 'Insufficient')){
       transactions = [newTransaction]
-    }
-    else{
+    }else if(!(amount === 'Insufficient')){
       transactions.push(newTransaction)
+    }else{
+      transactions = []
     }
     merchantData.transactions = transactions
 
@@ -258,6 +261,39 @@ export const addTransaction = (m_id, employee, customerID, amount, reward) => {
 
     dispatch({
       type:UPDATE_MERCHANT,
+      merchantData:merchantData
+    })
+  }
+};
+
+export const removeTransaction = (m_id, code) => {
+  console.log('~Merchant Action: removeTransaction')
+  return async dispatch =>{
+    const merchantData = (await firebase.database(merchantApp).ref(`/merchants/${m_id}`).once('value')).val()
+    const transactions = merchantData.transactions; 
+    merchantData.id = m_id
+
+    transactions.sort((a, b) => parseFloat(b.code) - parseFloat(a.code));
+    if(!(transactions === undefined)){
+      var updatedTransactions = []
+      var count = 0
+      for (const key in transactions){
+        if (!(transactions[key].code === code)){
+          let transaction = transactions[key]
+          transaction.code = count
+          updatedTransactions.push(transaction)
+          count += 1
+        }
+      }
+    }else{
+      var updatedTransactions = []
+    }
+    merchantData.transactions = updatedTransactions
+
+    await firebase.database(merchantApp).ref(`/merchants/${m_id}/transactions`).set(updatedTransactions)
+
+    dispatch({
+      type: UPDATE_MERCHANT,
       merchantData:merchantData
     })
   }

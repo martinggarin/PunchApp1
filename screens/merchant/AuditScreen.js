@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Text, View, StyleSheet, Button, Alert} from 'react-native';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
 import HeaderButton from '../../components/HeaderButton';
 import CodeInput from 'react-native-confirmation-code-input';
 import Dialog from 'react-native-dialog'
 import Colors from '../../constants/Colors';
 import TransactionList from '../../components/TransactionList';
+import * as MerchantActions from '../../store/actions/merchants';
+import * as UserActions from '../../store/actions/user';
 
 const AuditScreen = props => {
     console.log('Audit')
@@ -14,10 +16,64 @@ const AuditScreen = props => {
     const employees = useSelector(state => state.merchants.myEmployees);
     const [authenticated, setAuthenticated] = useState(false);
     const [promptVisibility, setPromptVisibility] = useState(false);
+
+    const dispatch = useDispatch();
+
+    const transactionTapHandler = useCallback( (transactionCode) => {
+        const transaction = r_item.transactions.find(transaction => transaction.code === transactionCode)
+        const action = transaction.reward ? 'added to' : 'subtracted from'
+        
+        Alert.alert(
+            "Undo Transaction: #"+transactionCode,
+            Math.abs(transaction.amount)+" point(s) will be "+action+" the customer's loyalty point balance",
+            [
+                { 
+                    text: "Cancel",
+                    onPress: () => {console.log('-Cancel Pressed')}, 
+                    style:'cancel'
+                },
+                { 
+                    text: "Confirm",
+                    onPress:  async () => {
+                        await dispatch(MerchantActions.removeTransaction(r_item.id, transactionCode))
+                        try{
+                            await dispatch(UserActions.updateRewards(r_item.id, transaction.customerID, -transaction.amount))
+                        }catch(err){
+                            if (err === 'insufficient'){
+                                Alert.alert(
+                                    "Insufficient Balance",
+                                    "Unable to subtract "+amount+" points from user:\n"+transaction.customerID,
+                                    [
+                                        { text: "Ok" },
+                                    ],
+                                    { cancelable: false }
+                                ); 
+                            }else if(err === 'none'){
+                                Alert.alert(
+                                    "Transaction Reversed",
+                                    Math.abs(transaction.amount)+" point(s) "+action+" user:\n"+transaction.customerID,
+                                    [
+                                        { text: "Ok", onPress: () => {
+                                            props.navigation.goBack()
+                                        }},
+                                    ],
+                                    { cancelable: false }
+                                );
+                            }else{
+                                throw err
+                            }
+                        }
+                    }
+                }
+            ],
+            { cancelable: true }
+        ); 
+    })
+
     return (
         <View style={styles.screen}>
             <View style={styles.lowerContainer}>
-                {authenticated && <TransactionList transactions={r_item.transactions}/>}
+                {authenticated && <TransactionList transactions={r_item.transactions} onPress={transactionTapHandler}/>}
                 {!authenticated && <View style={styles.authenticationContainer}>
                     <Text style={styles.warningText}>You are not authorized to view transaction details. Please use the button below to authenticate manager access.</Text>
                     <View style={styles.buttonContainer}>
@@ -47,7 +103,6 @@ const AuditScreen = props => {
                                     var employee = null
                                     for (const key in employees){
                                         if ((employees[key].id === code) && (employees[key].type === 'Manager')){
-                                            console.log('success')
                                             employee = employees[key]
                                         }
                                     }
@@ -91,14 +146,14 @@ const styles = StyleSheet.create({
     screen:{
         flex:1,
         alignItems:'center',
-        //marginTop:20,
+        height:'100%',
         backgroundColor:Colors.fontLight,
     }, 
     lowerContainer:{
-        top:'2.5%',
+        height:'100%',
         width:'95%',
-        height:'92.5%',
-        alignItems:'center'
+        alignItems:'center',
+        paddingTop:10
     },
     rowContainer:{
         flex: 1,
@@ -114,7 +169,6 @@ const styles = StyleSheet.create({
     },
     authenticationInput:{
         borderWidth:1,
-        height:'100%',
         height:30,
         width:30,
         marginTop:-20,
