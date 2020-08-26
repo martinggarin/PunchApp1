@@ -194,12 +194,13 @@ MerchantHomeScreen.navigationOptions = navigationData => {
                                 Alert.alert(
                                     'Merchant Help',
                                     'Thank you for using PunchApp! We hope you are enjoying your experience.\n\n'
-                                    +'• Profile information, employee information, and deals can only be updated from the edit screen using an administrator password\n\n'
                                     +'• Maintain at least one deal to ensure your profile remains public\n\n'
-                                    +'• To edit or remove a deal, select it on the edit screen\n\n'
-                                    +'• To credit loyalty points to a customer account, scan their reward code using the scanning tab\n\n'
+                                    +'• To credit loyalty points to a customer\'s balance, scan their reward code using the scanning tab\n\n'
                                     +'• To redeem a deal for a customer, select it on the home screen and scan their reward code\n\n'
-                                    +'• The audit tab can be used check employee validated transaction histories once authenticated using an administrator password',
+                                    +'• Profile information and deals can only be updated from the edit screen using an administrator password\n\n'
+                                    +'• Employee information can only be updated from the employee screen using an administrator password\n\n'
+                                    +'• The audit tab can be used check employee validated transactions once authenticated using a manager ID\n\n'
+                                    +'• A completed transaction can be reversed by selecting it in the transaction history on the audit tab',
                                     [{text: 'Okay'}]
                                 )
                             }}
