@@ -4,6 +4,7 @@ import ListItem from './ListItem';
 import Colors from '../constants/Colors';
 import {useSelector} from 'react-redux';
 import {SearchBar} from 'react-native-elements';
+import { AntDesign } from '@expo/vector-icons'; 
 import RewardBalance from '../components/RewardBalance';
 
 const MerchantList = props => {
@@ -88,8 +89,8 @@ const MerchantList = props => {
     return (
         <View style={styles.screen}>
             <SearchBar
-                containerStyle={{backgroundColor: Colors.backgroundColor}}
-                inputContainerStyle={{backgroundColor:Colors.lightLines}}
+                containerStyle={{backgroundColor: Colors.background}}
+                inputContainerStyle={{backgroundColor:Colors.secondaryBackground, borderRadius:10}}
                 placeholder="Search Merchants"
                 lightTheme   
                 onChangeText={text=> searchAction(text)}
