@@ -43,7 +43,7 @@ export const createUser = (email, password, useGoogle) => {
       credential = await firebase.auth(userApp).createUserWithEmailAndPassword(email, password)
       .catch(async (error) => {
         if (error.code === 'auth/email-already-in-use') {
-          accountExists = true
+          throw new Error('Email associated with another account.'); //accountExists = true
         }
         if (error.code === 'auth/invalid-email') {
           throw new Error('That email address is invalid!');
@@ -97,30 +97,32 @@ export const createUser = (email, password, useGoogle) => {
   };
 };
 
-export const getUser = (email, password) => {
+export const getUser = (email, password, authenticated) => {
   console.log('~User Action: getUser')
   return async dispatch => {
-    // any async code you want!
-    let credential = null
-    credential = await firebase.auth(userApp).signInWithEmailAndPassword(email, password)
-    .catch(error => {
-      if (error.code === 'auth/invalid-email' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-        throw new Error('Wrong password. Try again.');
-      }else{
-        throw new Error('Something went wrong!')
-      }
-    });
-    const u_id = credential.user.uid
-    let userData = (await firebase.database(userApp).ref(`/users/${u_id}`).once('value')).val()
+    if (authenticated){
+      var u_id = firebase.auth(userApp).currentUser.uid
+    }else{
+      let credential = null
+      credential = await firebase.auth(userApp).signInWithEmailAndPassword(email, password)
+      .catch(error => {
+        if (error.code === 'auth/invalid-email' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+          throw new Error('Wrong password. Try again.');
+        }else{
+          throw new Error('Something went wrong!')
+        }
+      });
+      var u_id = credential.user.uid
+    }
+    const userData = (await firebase.database(userApp).ref(`/users/${u_id}`).once('value')).val()
     if (userData === null){
       throw new Error('Wrong password. Try again.');
     }
-    const user = new Customer(u_id, email);
+    let user = new Customer(u_id, userData.email);
     user.RS = userData.RS;
     user.favorites = userData.favorites;
     //console.log(userData)
     //console.log(user);
-    
     dispatch({
       type: GET_USER,
       user: user
@@ -136,23 +138,18 @@ export const logoutUser = () => {
   }
 }
 
-export const refreshUser = (id) => {
+export const refreshUser = (u_id) => {
   console.log('~User Action: refreshUser')
   return async dispatch => {
     // any async code you want!
-    try {
-      const userData = (await firebase.database(userApp).ref(`/users/${u_id}`).once('value')).val()
-      const user = new Customer(id, userData.email);
-      user.RS = userData.RS;
-      user.favorites = userData.favorites;
-      dispatch({ 
-        type: GET_USER,
-        user: user 
-      });
-    } catch (err) {
-      // send to custom analytics server
-      throw err;
-    }
+    const userData = (await firebase.database(userApp).ref(`/users/${u_id}`).once('value')).val()
+    let user = new Customer(u_id, userData.email);
+    user.RS = userData.RS;
+    user.favorites = userData.favorites;
+    dispatch({ 
+      type: GET_USER,
+      user: user 
+    });
   };
 }
 
@@ -215,6 +212,7 @@ export const updateRewards = (r_id, u_id, amount) => {
     //console.log(rs);
 
     let isPresent = false;
+    let insufficient = false;
     const RS = [];
     if(!(RS === undefined)){
       for(const key in rs){
@@ -222,14 +220,20 @@ export const updateRewards = (r_id, u_id, amount) => {
         if(rs[key].r_id === r_id){
           //this handles if the user doesn't have enough rewards, when redeeming
           if((rs[key].amount+amount) < 0){
-            throw 'insufficient';
+            insufficient=true;
+            RS.push(
+              new RewardStatus(
+                rs[key].r_id, rs[key].amount
+              )
+            );
+          }else{
+            RS.push(
+              new RewardStatus(
+                rs[key].r_id, (rs[key].amount+amount)
+              )
+            );
+            isPresent = true;
           }
-          RS.push(
-            new RewardStatus(
-              rs[key].r_id, (rs[key].amount+amount)
-            )
-          );
-          isPresent = true;
         }else{
           RS.push(
             new RewardStatus(
@@ -241,16 +245,17 @@ export const updateRewards = (r_id, u_id, amount) => {
       }//for
       if(!isPresent){
         if(amount < 0){
-          throw 'insufficient';
+          insufficient = true;
+        }else{
+          RS.push(new RewardStatus(r_id, amount));
         }
+      }
+    }else{
+      if(amount < 0){
+        insufficient = true;
+      }else{
         RS.push(new RewardStatus(r_id, amount));
       }
-    }//if
-    else{
-      if(amount < 0){
-        throw 'insufficient';
-      }
-      RS.push(new RewardStatus(r_id, amount));
     }
     //console.log(RS);
     //const d = new Deal(amount, reward, '|.||..|.||..|');
@@ -263,7 +268,10 @@ export const updateRewards = (r_id, u_id, amount) => {
       user:u_id, 
       RS: RS
     })
-    throw 'none'
+    if (insufficient){
+      throw 'insufficient'
+    }else{
+      throw 'none'
+    }
   }
-
 }

@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, TextInput, Alert, Button } from 'react-native';
 import {useDispatch} from 'react-redux';
 import Colors from '../../constants/Colors';
 import * as MerchantActions from '../../store/actions/merchants';
-import Deal from '../../models/Deal';
 
 const REWARD_INPUT_CHANGE = 'REWARD_INPUT_CHANGE';
 const AMOUNT_INPUT_CHANGE = 'AMOUNT_INPUT_CHANGE';
@@ -97,10 +96,10 @@ const UpdateDealScreen = props => {
         })
     },[dispatchFormState]);
 
-    const handleAMOUNT = useCallback((text) => {
+    const handleAmount = useCallback((text) => {
         console.log('-Input Change Handler')
         var isValid = true
-        if ((text.length === 0) || (text.length > 10) || isNaN(text)){
+        if ((text.length === 0) || (text.length > 10) || text.indexOf('.') !== -1){
             isValid = false
         }
         dispatchFormState({
@@ -124,12 +123,12 @@ const UpdateDealScreen = props => {
         setIsLoading(true);
         try{
             await dispatch(MerchantActions.updateDeal(
-            r_id,
-            formState.inputValues.amount,
-            formState.inputValues.reward,
-            formState.inputValues.code
-        ));
-        props.navigation.goBack();
+                r_id,
+                formState.inputValues.amount,
+                formState.inputValues.reward,
+                formState.inputValues.code
+            ));
+            props.navigation.goBack();
         }catch(err){
             setError(err.message);
         }
@@ -148,7 +147,7 @@ const UpdateDealScreen = props => {
         <View style={styles.screen}>
             <View style={styles.container}>
                 <View style={styles.rowContainer}>
-                    <Text style={styles.text}>Ender a Name for this Deal</Text>
+                    <Text style={styles.text}>Enter a Name for this Deal</Text>
                     <View style={styles.inputView}>
                         <TextInput 
                             style = {styles.input}
@@ -172,7 +171,7 @@ const UpdateDealScreen = props => {
                             placeholderTextColor = {Colors.placeholderText}
                             defaultValue = {initialValues.inputValues.amount}
                             autoCapitalize = "none"
-                            onChangeText = {handleAMOUNT}
+                            onChangeText = {handleAmount}
                         />
                     </View>
                 </View>

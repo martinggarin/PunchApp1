@@ -1,12 +1,14 @@
 import React, {useCallback, useEffect, useState}from 'react';
 import { SafeAreaView, StyleSheet } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import HeaderButton from '../../components/HeaderButton';
 import Colors from '../../constants/Colors';
 import MerchantList from '../../components/MerchantList';
 import * as MerchantActions from '../../store/actions/merchants';
 
-const SearchMerchantScreen = props => {
-    console.log('Search Merchant');
+const ExploreScreen = props => {
+    console.log('Explore');
     const display = useSelector(state => state.merchants.availableMerchants);
     const faves = useSelector(state => state.user.userMerchants);
     const [isLoading, setIsLoading] = useState(false);
@@ -46,8 +48,7 @@ const SearchMerchantScreen = props => {
       }, [dispatch, loadMerchants]);
 
     return(
-        <SafeAreaView
-        style={styles.screen}>
+        <SafeAreaView style={styles.screen}>
             <MerchantList 
                 listData={display}
                 navigation={props.navigation}
@@ -59,11 +60,25 @@ const SearchMerchantScreen = props => {
         </SafeAreaView>
     );
 };
+
+ExploreScreen.navigationOptions = navData => {
+    return {
+        headerLeft: () => (
+            <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                <Item title="Menu" iconName='md-menu' onPress={()=>{
+                    navData.navigation.toggleDrawer();
+                }} />
+            </HeaderButtons>
+        )
+    };
+};
+
 const styles = StyleSheet.create({
     screen:{
         flex:1,
+        height:'100%',
         backgroundColor:Colors.background
     }
 });
 
-export default SearchMerchantScreen;
+export default ExploreScreen;

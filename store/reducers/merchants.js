@@ -4,6 +4,7 @@ import {
     LOGOUT_MERCHANT, 
     UPDATE_MERCHANT,
     UPDATE_DEALS,
+    UPDATE_EMPLOYEES,
     LOAD_ALL_MERCHANTS} from '../actions/merchants';
 import Merchant from '../../models/Merchant';
 
@@ -31,6 +32,7 @@ export default (state = initialState, action) => {
                 ...state,
                 myMerchant: action.merchant,
                 myDeals: action.merchant.deal,
+                myEmployees: action.merchant.employees
             };
 
         case LOGOUT_MERCHANT:
@@ -40,7 +42,8 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 myMerchant: action.merchantData,
-                myDeals: action.merchantData.deal
+                myDeals: action.merchantData.deal,
+                myEmployees: action.merchantData.employees
             }
 
         case UPDATE_DEALS:
@@ -50,6 +53,15 @@ export default (state = initialState, action) => {
                 ...state, 
                 myMerchant: updatedMerchant,
                 myDeals: updatedMerchant.deal
+            }
+        
+        case UPDATE_EMPLOYEES:
+            var updatedMerchant = state.myMerchant;
+            updatedMerchant.employees = action.employees
+            return{
+                ...state, 
+                myMerchant: updatedMerchant,
+                myEmployees: updatedMerchant.employees
             }
 
         case LOAD_ALL_MERCHANTS:

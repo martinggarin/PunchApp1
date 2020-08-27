@@ -1,17 +1,20 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import { Alert, View, Text, StyleSheet, Button, TouchableOpacity} from 'react-native';
 import {useSelector} from 'react-redux';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import HeaderButton from '../../components/HeaderButton';
 import Dialog from 'react-native-dialog'
 import { Feather, Ionicons, AntDesign} from '@expo/vector-icons';
 import DealList from '../../components/DealList';
 import Colors from '../../constants/Colors';
 
-const MerchantProfileScreen = props => {
-    console.log('Merchant Profile');
+const MerchantHomeScreen = props => {
+    console.log('Merchant Home');
     const r_item = useSelector(state => state.merchants.myMerchant);
     //console.log(r_item)
     let deals = useSelector(state => state.merchants.myDeals);
-    const [promptVisibility, setPromptVisibility] = useState(false)
+    const [editPromptVisibility, setEditPromptVisibility] = useState(false)
+    const [employeePromptVisibility, setEmployeePromptVisibility] = useState(false)
     const [adminPasswordInput, setAdminPasswordInput] = useState('')
     let totalDeals = null
     let totalCustomers = null
@@ -32,7 +35,7 @@ const MerchantProfileScreen = props => {
 
     const dealTapHandler = useCallback((dealCode) => {
         Alert.alert(
-            deals[dealCode].reward+" Deal Selected",
+            deals[dealCode].reward,
             deals[dealCode].amount+" point(s) will be deducted from the customer's loyalty point balance",
             [
                 { 
@@ -47,7 +50,6 @@ const MerchantProfileScreen = props => {
                         props.navigation.navigate('Scan', {reward:deals[dealCode].reward, amount:deals[dealCode].amount})
                     }
                 }
-                
             ],
             { cancelable: true }
         ); 
@@ -56,7 +58,11 @@ const MerchantProfileScreen = props => {
     useEffect(()=>{
         props.navigation.setParams({
             deals:totalDeals,
-            setPromptVisibility:setPromptVisibility
+            adminPasswordExists:!(r_item.adminPassword === undefined),
+            navigateToEdit:() => props.navigation.navigate('Edit', {newMerchant:true}),
+            navigateToEmployee:() => props.navigation.navigate('Employee'),
+            setEditPromptVisibility:setEditPromptVisibility,
+            setEmployeePromptVisibility:setEmployeePromptVisibility
         });
     },[totalDeals]);
 
@@ -90,7 +96,7 @@ const MerchantProfileScreen = props => {
                     merchantSide={true}
                 />
             </View>
-            <Dialog.Container visible={promptVisibility}>
+            <Dialog.Container visible={editPromptVisibility}>
                 <Dialog.Title style={{fontWeight:'bold'}}>Verification Required!</Dialog.Title>
                 <Dialog.Description>
                     Please enter your administrator password to access the edit screen...
@@ -108,13 +114,47 @@ const MerchantProfileScreen = props => {
                 />
                 <Dialog.Button label="Cancel" onPress={() => {
                     setAdminPasswordInput('')
-                    setPromptVisibility(false)
+                    setEditPromptVisibility(false)
                 }}/>
                 <Dialog.Button label="Confirm" onPress={() => {
                     if(adminPasswordInput === r_item.adminPassword){
                         props.navigation.navigate('Edit', {newMerchant:false})
                         setAdminPasswordInput('')
-                        setPromptVisibility(false)
+                        setEditPromptVisibility(false)
+                    }else{
+                        Alert.alert(
+                            'Wrong Password!',
+                            'Please try again...', 
+                            [{text: 'Okay'}]
+                        );
+                    };
+                }}/>
+            </Dialog.Container>
+            <Dialog.Container visible={employeePromptVisibility}>
+                <Dialog.Title style={{fontWeight:'bold'}}>Verification Required!</Dialog.Title>
+                <Dialog.Description>
+                    Please enter your administrator password to access the employee screen...
+                </Dialog.Description>
+                <Dialog.Input 
+                    style={{borderBottomWidth: Platform.OS == 'android' ? 1: 0, color: Colors.borderDark}}
+                    autoCorrect={false}
+                    autoCompleteType='off'
+                    onChangeText={(text) => {
+                        console.log("-Input Change Handler")
+                        setAdminPasswordInput(text)
+                    }}
+                    autoCapitalize = "none"
+                    secureTextEntry
+                />
+                <Dialog.Button label="Cancel" onPress={() => {
+                    setAdminPasswordInput('')
+                    setEmployeePromptVisibility(false)
+                }}/>
+                <Dialog.Button label="Confirm" onPress={() => {
+                    if(adminPasswordInput === r_item.adminPassword){
+                        props.navigation.navigate('Employee')
+                        setAdminPasswordInput('')
+                        setEmployeePromptVisibility(false)
                     }else{
                         Alert.alert(
                             'Wrong Password!',
@@ -128,20 +168,23 @@ const MerchantProfileScreen = props => {
     );
 };
 
-MerchantProfileScreen.navigationOptions = navigationData => {
+MerchantHomeScreen.navigationOptions = navigationData => {
     const deals = navigationData.navigation.getParam('deals');
-    const setPromptVisibility = navigationData.navigation.getParam('setPromptVisibility');
-    if (deals > 0){
-        var published = true
-        var iconName = 'checkcircle'
-    }else{
-        var published = false
-        var iconName = 'checkcircleo'
-    }
+    const adminPasswordExists = navigationData.navigation.getParam('adminPasswordExists');
+    const navigateToEdit = navigationData.navigation.getParam('navigateToEdit');
+    const setEditPromptVisibility = navigationData.navigation.getParam('setEditPromptVisibility');
+    const setEmployeePromptVisibility = navigationData.navigation.getParam('setEmployeePromptVisibility');
     return{
         headerLeft: () => {
             return (
                 <View style={styles.headerLeft}>
+                    <View style={styles.headerButton}>
+                        <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                            <Item title="Menu" iconName='md-menu' onPress={()=>{
+                                navigationData.navigation.toggleDrawer();
+                            }} />
+                        </HeaderButtons>
+                    </View>
                     <View style={styles.headerButton}>
                         <AntDesign
                             name='questioncircleo'
@@ -151,11 +194,13 @@ MerchantProfileScreen.navigationOptions = navigationData => {
                                 Alert.alert(
                                     'Merchant Help',
                                     'Thank you for using PunchApp! We hope you are enjoying your experience.\n\n'
-                                    +'• Profile information and deals can only be updated on the edit screen using an administrator password\n\n'
                                     +'• Maintain at least one deal to ensure your profile remains public\n\n'
-                                    +'• To edit or remove a deal, select it on the edit screen\n\n'
-                                    +'• To credit loyalty points to a customer account, scan their reward code using the scanning tab\n\n'
-                                    +'• To redeem a deal for a customer, select it on the home screen and scan their reward code\n\n',
+                                    +'• To credit loyalty points to a customer\'s balance, scan their reward code using the scanning tab\n\n'
+                                    +'• To redeem a deal for a customer, select it on the home screen and scan their reward code\n\n'
+                                    +'• Profile information and deals can only be updated from the edit screen using an administrator password\n\n'
+                                    +'• Employee information can only be updated from the employee screen using an administrator password\n\n'
+                                    +'• The audit tab can be used check employee validated transactions once authenticated using a manager ID\n\n'
+                                    +'• A completed transaction can be reversed by selecting it in the transaction history on the audit tab',
                                     [{text: 'Okay'}]
                                 )
                             }}
@@ -168,18 +213,17 @@ MerchantProfileScreen.navigationOptions = navigationData => {
             return (
                 <View style={styles.headerRight}>
                     <View style={styles.headerButton}>
-                        <AntDesign
-                            name={iconName}
+                        <Ionicons 
+                            name='ios-people'
                             size={25}
                             color={Colors.lightLines}
                             onPress={()=>{
-                                Alert.alert(
-                                    'Profile Status',
-                                    (published)
-                                    ? 'Your profile is currently LIVE! Users can find you on the explore page and in their favorites.'
-                                    : 'Your profile is currently HIDDEN! Add a deal to publish your profile.',
-                                    [{text: 'Okay'}]
-                                )
+                                console.log('-Employee Handler')
+                                if (adminPasswordExists){
+                                    setEmployeePromptVisibility(true)
+                                }else{
+                                    navigateToEdit()
+                                }
                             }}
                         />
                     </View>
@@ -190,7 +234,11 @@ MerchantProfileScreen.navigationOptions = navigationData => {
                             color={Colors.lightLines}
                             onPress={()=>{
                                 console.log('-Edit Profile Handler')
-                                setPromptVisibility(true)
+                                if (adminPasswordExists){
+                                    setEditPromptVisibility(true)
+                                }else{
+                                    navigateToEdit()
+                                }
                             }}
                         />
                     </View>
@@ -208,15 +256,15 @@ const styles = StyleSheet.create({
         backgroundColor:Colors.fontLight,
     }, 
     upperContainer:{
+        flex:1,
         width:'95%',
-        height:'25%',
         backgroundColor:Colors.primary,
         borderRadius:3,
         margin:'2.5%'
     },
     lowerContainer:{
         height:'77.5%',
-        justifyContent:'center'
+        justifyContent:'center',
     },
     rowContainer:{
         flex: 1,
@@ -241,7 +289,7 @@ const styles = StyleSheet.create({
     headerLeft:{
         flex:1,
         flexDirection:'row',
-        width:50,
+        width:100,
         alignItems:'center',
         justifyContent:'center'
     },
@@ -260,4 +308,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default MerchantProfileScreen;
+export default MerchantHomeScreen;

@@ -8,7 +8,6 @@ import ProfileInput from '../../components/ProfileInput';
 import DealList from '../../components/DealList';
 import Colors from '../../constants/Colors';
 import * as MerchantActions from '../../store/actions/merchants';
-import { setLightEstimationEnabled } from 'expo/build/AR';
 
 const INPUT_UPDATE = 'UPDATE';
 const PASSWORD_UPDATE = 'PASSWORD_UPDATE';
@@ -152,8 +151,8 @@ const EditScreen = props => {
 
     const dealTapHandler = useCallback((dealCode) => {
         Alert.alert(
-            deals[dealCode].reward+" Deal Selected",
-            "What would you like to do with it?",
+            deals[dealCode].reward,
+            "What would you like to do?",
             [{   
                 text: "Edit", 
                 onPress: () => {

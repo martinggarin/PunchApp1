@@ -8,8 +8,8 @@ class Merchant {
         this.address = '';
         this.city = ''
         this.deal = [];
-        this.customers = []
-        this.transactions = []
+        this.customers = [];
+        this.transactions = [];
     }
 }
 export default Merchant;

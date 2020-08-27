@@ -1,6 +1,6 @@
 import React from 'react';
 import { Ionicons, AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
-import {Platform, SafeAreaView, Button, View} from 'react-native';
+import {StyleSheet, Platform, SafeAreaView, TouchableOpacity, Linking, Button, View, Text} from 'react-native';
 import {createStackNavigator} from 'react-navigation-stack'; 
 import {createAppContainer} from 'react-navigation';
 import {createDrawerNavigator, DrawerNavigatorItems} from 'react-navigation-drawer';
@@ -12,12 +12,14 @@ import UserHomeScreen from '../screens/user/UserHomeScreen';
 import PunchScreen from '../screens/user/PunchScreen';
 import UserLoginScreen from '../screens/user/UserLoginScreen';
 import RewardScreen from '../screens/user/RewardScreen';
-import SearchMerchantScreen from '../screens/user/SearchMerchantScreen';
+import ExploreScreen from '../screens/user/ExploreScreen';
 import MerchantLoginScreen from '../screens/merchant/MerchantLoginScreen';
-import MerchantHomeScreen from '../screens/merchant/MerchantProfileScreen';
+import MerchantHomeScreen from '../screens/merchant/MerchantHomeScreen';
 import Colors from '../constants/Colors';
 import EditScreen from '../screens/merchant/EditScreen';
 import UpdateDealScreen from '../screens/merchant/UpdateDealScreen';
+import EmployeeScreen from '../screens/merchant/EmployeeScreen';
+import UpdateEmployeeScreen from '../screens/merchant/UpdateEmployeeScreen';
 import ScanScreen from '../screens/merchant/ScanScreen';
 import AuditScreen from '../screens/merchant/AuditScreen';
 import * as MerchantActions from '../store/actions/merchants';
@@ -85,7 +87,7 @@ const RewardNavigator = createStackNavigator({
 
 const ExploreNavigator = createStackNavigator({
     Explore: {
-        screen: SearchMerchantScreen,
+        screen: ExploreScreen,
         navigationOptions: { title: 'Explore' }
     },
     Punch: PunchScreen,
@@ -197,7 +199,12 @@ const MerchantNavigator = createStackNavigator({
         screen: EditScreen,
         navigationOptions:{headerLeft: () => null}
     },
-    UpdateDeal:UpdateDealScreen
+    UpdateDeal:UpdateDealScreen,
+    Employee:EmployeeScreen,
+    UpdateEmployee:{
+        screen: UpdateEmployeeScreen,
+        navigationOptions: { title: 'Update Employee' }
+    },
 }, {
     navigationOptions: {
         drawerIcon: drawerConfig => (
@@ -271,31 +278,58 @@ const MainNavigator = createDrawerNavigator({
             var showLogout = false
         }
 
+        loadPrivacyPolicyInBrowser = () => {
+            Linking.openURL('https://www.punch-app.com/privacy').catch(err => console.error("Couldn't load page", err));
+        };
+
         const dispatch = useDispatch()
         return (
-            <View style={{flex:1, marginTop:20}}>
-                <SafeAreaView forceInset={{top:'always', horizontal:'never'}}>
-                    <DrawerNavigatorItems style={{}} {...props}/>
-                    <View style={{alignItems:'center', marginTop:5}}>
-                        <View style={{width:'50%'}}>
-                            {showLogout && <Button 
-                                title='Logout'
-                                color={Colors.darkLines}
-                                onPress={() => {
-                                    props.navigation.navigate('MerchantLogin')
-                                    dispatch(MerchantActions.logoutMerchant())
-                                    props.navigation.navigate('UserLogin')
-                                    dispatch(UserActions.logoutUser())
-                                }}
-                            />}
-                        </View>
+            <SafeAreaView style={styles.drawer} forceInset={{top:'always', horizontal:'never'}}>
+                <DrawerNavigatorItems style={{}} {...props}/>
+                <View style={styles.lowerDrawerContainer}>
+                    <View style={{width:'50%'}}>
+                        {showLogout && <Button 
+                            title='Logout'
+                            color={Colors.darkLines}
+                            onPress={() => {
+                                props.navigation.navigate('MerchantLogin')
+                                dispatch(MerchantActions.logoutMerchant())
+                                props.navigation.navigate('UserLogin')
+                                dispatch(UserActions.logoutUser())
+                            }}
+                        />}
                     </View>
-                    
-                </SafeAreaView>
-            </View>
+                    <TouchableOpacity style={styles.privacyPolicyView} onPress={loadPrivacyPolicyInBrowser}>
+                        <Text style={styles.text}>Privacy Policy</Text>
+                    </TouchableOpacity>
+                </View>    
+            </SafeAreaView>
         )
     }
 });
 
+const styles = StyleSheet.create({
+    drawer:{
+        flex:1, 
+        marginTop:20
+    },
+    lowerDrawerContainer:{
+        flexGrow:1,
+        alignItems:'center',
+        marginTop:5
+    },
+    privacyPolicyView:{
+        position: 'absolute',
+        bottom:0,
+        height:40,
+        alignItems:'center',
+        justifyContent:'center',
+        width:'100%'
+    },
+    text:{
+        color:Colors.darkLines,
+        fontSize:15
+    }
+})
 
 export default createAppContainer(MainNavigator);
