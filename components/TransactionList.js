@@ -3,7 +3,7 @@ import { StyleSheet, FlatList,Text, View, TouchableOpacity } from 'react-native'
 import moment from 'moment';
 
 const TransactionList = props => {
-    if (!(props.transactions === undefined)){
+    if (!(props.transactions === undefined || props.transactions === null)){
         var sortedTransactions = props.transactions
         sortedTransactions.sort((a, b) => b.code - a.code);
     }

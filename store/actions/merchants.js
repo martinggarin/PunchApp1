@@ -47,7 +47,7 @@ export const createMerchant = (email, password, useGoogle) => {
       credential = await firebase.auth(merchantApp).createUserWithEmailAndPassword(email, password)
       .catch(error => {
         if (error.code === 'auth/email-already-in-use') {
-          throw new Error('Email associated with another account.'); //accountExists = true
+          accountExists = true
         }
         if (error.code === 'auth/invalid-email') {
           throw new Error('That email address is invalid!');

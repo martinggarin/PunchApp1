@@ -188,7 +188,7 @@ const EditScreen = props => {
     }, [error]);
 
     useEffect(() => {
-        if(newMerchant && !(formState.adminPassword === null) && !submitted){
+        if(newMerchant && !(formState.adminPassword === null) && !submitted && formState.formIsValid){
             submitHandler()
             setSubmitted(true)
         }
