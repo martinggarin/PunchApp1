@@ -252,7 +252,8 @@ const EditScreen = props => {
             <Dialog.Container visible={promptVisibility}>
                 <Dialog.Title style={{fontWeight:'bold'}}>Set Admin Password!</Dialog.Title>
                 <Dialog.Description>
-                    Please enter a unique password to use for administrator access...
+                    Please enter a password to use for administrator access. You need this password to manage employees,
+                    edit profile information, and update deals...
                 </Dialog.Description>
                 <Dialog.Input 
                     style={{borderBottomWidth: Platform.OS == 'android' ? 1: 0, color: Colors.borderDark}}
