@@ -59,7 +59,7 @@ const MerchantHomeScreen = props => {
         props.navigation.setParams({
             deals:totalDeals,
             adminPasswordExists:!(r_item.adminPassword === undefined),
-            navigateToEdit:() => props.navigation.navigate('Edit', {newMerchant:true}),
+            navigateToEdit:() => props.navigation.navigate('Edit', {newMerchant:false}),
             navigateToEmployee:() => props.navigation.navigate('Employee'),
             setEditPromptVisibility:setEditPromptVisibility,
             setEmployeePromptVisibility:setEmployeePromptVisibility
@@ -70,7 +70,7 @@ const MerchantHomeScreen = props => {
         <View style={styles.screen}>
             <View style={styles.upperContainer}>
                 <View style={styles.rowContainer}>
-                    <View style={{left:10}}>
+                    <View style={{left:10, width:'70%'}}>
                         <Text style={styles.largeBoldText}>
                             {r_item.title}
                         </Text>
