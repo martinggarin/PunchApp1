@@ -167,6 +167,12 @@ export const updateMerchant = (m_id, title, price, type, address, city, adminPas
     if (merchantData.customers === undefined){
       merchantData.customers = null
     }
+    if (merchantData.transactions === undefined){
+      merchantData.transactions = null
+    }
+    if (merchantData.employees === undefined){
+      merchantData.employees = null
+    }
     const updatedMerchantData = {
       email:merchantData.email,
       deal:merchantData.deal,
