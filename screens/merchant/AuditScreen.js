@@ -119,7 +119,7 @@ const AuditScreen = (props) => {
                   if (employees) {
                     let employee = null;
                     Object.values(employees).forEach((value) => {
-                      if (value.id === code && employee.type === 'Manager') {
+                      if (value.id === code && value.type === 'Manager') {
                         employee = value;
                       }
                     });

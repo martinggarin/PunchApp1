@@ -256,11 +256,13 @@ export const addTransaction = (merchantID, employee, customerID, amount, code, r
     let { transactions } = merchantData;
     merchantData.id = merchantID;
 
-    if ((transactions === undefined || transactions === null) && !(amount === 'Insufficient')) {
-      transactions = [newTransaction];
-    } else if (!(amount === 'Insufficient')) {
-      transactions.push(newTransaction);
-    } else {
+    if (!(amount === 'Insufficient')) {
+      if (transactions === undefined || transactions === null) {
+        transactions = [newTransaction];
+      } else {
+        transactions.push(newTransaction);
+      }
+    } else if (transactions === undefined || transactions === null) {
       transactions = [];
     }
     merchantData.transactions = transactions;
@@ -369,7 +371,7 @@ export const removeDeal = (merchantID, code) => {
 
     dispatch({
       type: UPDATE_DEALS,
-      updatedDeals,
+      deal: updatedDeals,
     });
   };
 };

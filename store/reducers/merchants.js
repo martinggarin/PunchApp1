@@ -17,10 +17,11 @@ const initialState = {
 
 // most problems have been due to my inability to spell retaurant
 export default (state = initialState, action) => {
-  const newMerchant = new Merchant(action.merchantData.id, action.merchantData.email);
+  let newMerchant;
   let updatedMerchant;
   switch (action.type) {
   case CREATE_MERCHANT:
+    newMerchant = new Merchant(action.merchantData.id, action.merchantData.email);
     return {
       ...state,
       myMerchant: newMerchant,

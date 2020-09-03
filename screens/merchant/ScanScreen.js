@@ -51,40 +51,45 @@ const ScanScreen = (props) => {
       try {
         await dispatch(userActions.updateRewards(merchantID, data, -amount));
       } catch (err) {
+        console.log(err);
         if (err === 'insufficient') {
-          await dispatch(merchantActions.addTransaction(merchantID, employee, data, 'Insufficient', totalTransactions, reward));
-          Alert.alert(
-            'Insufficient Balance',
-            `Unable to subtract ${amount} points from user:\n${data}`,
-            [
-              {
-                text: 'Ok',
-                onPress: () => {
-                  props.navigation.goBack();
+          dispatch(merchantActions.addTransaction(
+            merchantID, employee, data, 'Insufficient', totalTransactions, reward,
+          ));
+          setTimeout(() => {
+            Alert.alert(
+              'Insufficient Balance',
+              `Unable to subtract ${amount} points from user:\n${data}`,
+              [
+                {
+                  text: 'Ok',
+                  onPress: () => {
+                    props.navigation.goBack();
+                  },
                 },
-              },
-            ],
-            { cancelable: false },
-          );
+              ],
+              { cancelable: false },
+            );
+          }, 1000);
         } else if (err === 'none') {
-          await dispatch(
-            merchantActions.addTransaction(
-              merchantID, employee, data, -amount, totalTransactions, reward,
-            ),
-          );
-          Alert.alert(
-            'Deal Redeemed',
-            `${amount} point(s) subtracted from user:\n${data}`,
-            [
-              {
-                text: 'Ok',
-                onPress: () => {
-                  props.navigation.goBack();
+          dispatch(merchantActions.addTransaction(
+            merchantID, employee, data, -amount, totalTransactions, reward,
+          ));
+          setTimeout(() => {
+            Alert.alert(
+              'Deal Redeemed',
+              `${amount} point(s) subtracted from user:\n${data}`,
+              [
+                {
+                  text: 'Ok',
+                  onPress: () => {
+                    props.navigation.goBack();
+                  },
                 },
-              },
-            ],
-            { cancelable: false },
-          );
+              ],
+              { cancelable: false },
+            );
+          }, 1000);
         } else {
           throw err;
         }
@@ -96,22 +101,25 @@ const ScanScreen = (props) => {
         // console.log('U_ID: ' + data);
         await dispatch(userActions.updateRewards(merchantID, data, Number(input)));
       } catch (err) {
+        console.log(err);
         if (err === 'none') {
-          await dispatch(
+          dispatch(
             merchantActions.addTransaction(
               merchantID, employee, data, Number(input), totalTransactions,
             ),
           );
-          await dispatch(merchantActions.updateCustomers(merchantID, data));
-          await dispatch(userActions.toggleFav(merchantID, data, true));
-          Alert.alert(
-            'Reward Redeemed',
-            `${input} point(s) added to user: ${data}`,
-            [
-              { text: 'Ok' },
-            ],
-            { cancelable: false },
-          );
+          dispatch(merchantActions.updateCustomers(merchantID, data));
+          dispatch(userActions.toggleFav(merchantID, data, true));
+          setTimeout(() => {
+            Alert.alert(
+              'Reward Redeemed',
+              `${input} point(s) added to user: ${data}`,
+              [
+                { text: 'Ok' },
+              ],
+              { cancelable: false },
+            );
+          }, 1000);
         } else {
           throw err;
         }
