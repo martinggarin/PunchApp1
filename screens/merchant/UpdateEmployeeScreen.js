@@ -160,9 +160,9 @@ const UpdateEmployeeScreen = (props) => {
     }
     let employeeExists = false;
     Object.values(employees).forEach((value) => {
-      if (value.name === formState.inputValues.name) {
+      if (value.name === formState.inputValues.name || value.id === formState.inputValues.id) {
         Alert.alert('Invalid Input!',
-          'Employee name must be unique...',
+          'Employee name and ID must be unique...',
           [{ text: 'Okay' }]);
         employeeExists = true;
       }
