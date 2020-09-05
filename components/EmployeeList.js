@@ -32,7 +32,7 @@ const EmployeeList = (props) => {
     <FlatList
       data={employeeData}
       renderItem={renderEmployee}
-      keyExtractor={(item, index) => item.name}
+      keyExtractor={(item) => item.name}
       ListFooterComponent={props.footer}
     />
   );

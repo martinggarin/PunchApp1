@@ -158,6 +158,18 @@ const UpdateEmployeeScreen = (props) => {
         [{ text: 'Okay' }]);
       return;
     }
+    let employeeExists = false;
+    Object.values(employees).forEach((value) => {
+      if (value.name === formState.inputValues.name) {
+        Alert.alert('Invalid Input!',
+          'Employee name must be unique...',
+          [{ text: 'Okay' }]);
+        employeeExists = true;
+      }
+    });
+    if (employeeExists) {
+      return;
+    }
     setError(null);
     try {
       await dispatch(MerchantActions.updateEmployee(
