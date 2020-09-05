@@ -70,7 +70,7 @@ const ScanScreen = (props) => {
               ],
               { cancelable: false },
             );
-          }, 1000);
+          }, 500);
         } else if (err === 'none') {
           dispatch(merchantActions.addTransaction(
             merchantID, employee, data, -amount, totalTransactions, reward,
@@ -89,7 +89,7 @@ const ScanScreen = (props) => {
               ],
               { cancelable: false },
             );
-          }, 1000);
+          }, 500);
         } else {
           throw err;
         }
@@ -119,7 +119,7 @@ const ScanScreen = (props) => {
               ],
               { cancelable: false },
             );
-          }, 1000);
+          }, 500);
         } else {
           throw err;
         }

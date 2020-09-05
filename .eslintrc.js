@@ -9,6 +9,7 @@ module.exports = {
   ],
   rules: {
     'react/jsx-filename-extension': 0,
+    'react/jsx-props-no-spreading': 0,
     'linebreak-style': 0,
     'no-use-before-define': 0,
     'react/prop-types': 0,

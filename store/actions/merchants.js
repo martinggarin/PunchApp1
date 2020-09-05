@@ -449,7 +449,7 @@ export const loadAllMerchants = () => {
     const merchantData = (await firebase.database(userApp).ref('/merchants').once('value')).val();
     // console.log(merchantData)
     const loadedMerchants = [];
-    Object.values(merchantData).forEach((value) => {
+    Object.entries(merchantData).forEach(([key, value]) => {
       const merchant = new Merchant(
         key,
         value.email,
