@@ -14,7 +14,7 @@ const ExploreScreen = (props) => {
 
   const loadMerchants = useCallback(async () => {
     await dispatch(MerchantActions.loadAllMerchants());
-  }, [dispatch, setError]);
+  }, [dispatch]);
 
   useEffect(() => {
     const willFocusSub = props.navigation.addListener(
