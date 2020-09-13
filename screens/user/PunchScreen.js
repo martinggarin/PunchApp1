@@ -12,11 +12,10 @@ import RewardBalance from '../../components/RewardBalance';
 
 const PunchScreen = (props) => {
   console.log('Punch');
-  const merchantID = props.navigation.getParam('merchant_id');
-  // console.log(merchantID);
-  const merchant = useSelector((state) => {
-    (state.merchants.availableMerchants).find((r) => r.id === merchantID);
-  });
+  const merchantID = props.navigation.getParam('merchantID');
+  const merchant = useSelector(
+    (state) => (state.merchants.availableMerchants).find((m) => m.id === merchantID),
+  );
   const faves = useSelector((state) => state.user.userMerchants);
   const userID = useSelector((state) => state.user.user.id);
   const rs = useSelector((state) => state.user.userRewards);

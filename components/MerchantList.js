@@ -28,29 +28,33 @@ const MerchantList = (props) => {
   const renderItems = (itemData) => {
     // console.log(itemData)
     // const prog = itemData.item.punches/itemData.item.getDeal().amount;
+    let isFav;
+    let hasRS;
+    let text;
+    let number;
     if (faves === undefined) {
-      var isFav = false;
+      isFav = false;
     } else {
-      var isFav = faves.some((r) => r === itemData.item.id);
+      isFav = faves.some((m) => m === itemData.item.id);
     }
     if (rs === undefined) {
-      var hasRS = false;
+      hasRS = false;
     } else {
-      var hasRS = rs.some((r) => r.r_id === itemData.item.id);
+      hasRS = rs.some((m) => m.r_id === itemData.item.id);
     }
     if (props.showDeals) {
-      var text = ['Deals', 'Available'];
+      text = ['Deals', 'Available'];
       if (itemData.item.deal === undefined) {
-        var number = 0;
+        number = 0;
       } else {
-        var number = itemData.item.deal.length;
+        number = itemData.item.deal.length;
       }
     } else {
-      var text = ['Loyalty', 'Points'];
-      var number = 0;
+      text = ['Loyalty', 'Points'];
+      number = 0;
       if (hasRS) {
         // console.log('________hasRS________');
-        number = rs.find((r) => r.r_id === itemData.item.id).amount;
+        number = rs.find((m) => m.r_id === itemData.item.id).amount;
         // console.log(number);
       }
     }
@@ -61,7 +65,7 @@ const MerchantList = (props) => {
         onClick={() => props.navigation.navigate({
           routeName: props.routeName,
           params: {
-            merchant_id: itemData.item.id,
+            merchantID: itemData.item.id,
             isFav,
             title: itemData.item.title,
           },
