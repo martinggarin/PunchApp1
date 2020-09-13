@@ -141,7 +141,7 @@ const EditScreen = (props) => {
         formState.adminPassword,
       ));
       if (newMerchant) {
-        props.navigation.replace('MerchantHome');
+        props.navigation.navigate('MerchantHome');
       } else {
         props.navigation.goBack();
       }
