@@ -7,7 +7,7 @@
       "android"
     ],
     "description": "PunchApp is a place where Merchants and Customers can interact. Customers can explore and receive loyalty rewards. Merchants can give out rewards and view Analytics that will help grow their Revenue!",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -23,7 +23,7 @@
     ],
     "ios": {
       "bundleIdentifier": "com.app.punchapp",
-      "buildNumber": "1.2.1",
+      "buildNumber": "1.2.2",
       "supportsTablet": false,
       "infoPlist": {
         "NSCameraUsageDescription": "Punch-App uses the camera to scan user QR-codes and process rewards."
@@ -31,7 +31,7 @@
     },
     "android": {
       "package": "com.punch_app.punchapp",
-      "versionCode": 4,
+      "versionCode": 5,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon_adaptive.png",
         "backgroundColor": "#F26419"
