@@ -209,27 +209,27 @@ export const updateRewards = (merchantID, userID, amount) => {
     if (userData === null) {
       throw new Error('User does not exist!');
     }
-    const rs = userData.RS;
+    const { RS } = userData;
 
     // console.log('-----Updating RS-----');
     // console.log(rs);
 
     let isPresent = false;
     let insufficient = false;
-    const RS = [];
-    if (!(RS === undefined)) {
-      Object.values(rs).forEach((value) => {
+    const updatedRS = [];
+    if (!(RS === undefined || RS === null)) {
+      Object.values(RS).forEach((value) => {
         if (value.merchantID === merchantID) {
           // this handles if the user doesn't have enough rewards, when redeeming
           if ((value.amount + amount) < 0) {
             insufficient = true;
-            RS.push(
+            updatedRS.push(
               new RewardStatus(
                 value.merchantID, value.amount,
               ),
             );
           } else {
-            RS.push(
+            updatedRS.push(
               new RewardStatus(
                 value.merchantID, (value.amount + amount),
               ),
@@ -237,7 +237,7 @@ export const updateRewards = (merchantID, userID, amount) => {
             isPresent = true;
           }
         } else {
-          RS.push(
+          updatedRS.push(
             new RewardStatus(
               value.merchantID, value.amount,
             ),
@@ -248,24 +248,23 @@ export const updateRewards = (merchantID, userID, amount) => {
         if (amount < 0) {
           insufficient = true;
         } else {
-          RS.push(new RewardStatus(merchantID, amount));
+          updatedRS.push(new RewardStatus(merchantID, amount));
         }
       }
     } else if (amount < 0) {
       insufficient = true;
     } else {
-      RS.push(new RewardStatus(merchantID, amount));
+      updatedRS.push(new RewardStatus(merchantID, amount));
     }
     // console.log(RS);
     // const d = new Deal(amount, reward, '|.||..|.||..|');
-
-    await firebase.database(merchantApp).ref(`/users/${userID}/RS`).set(RS);
+    await firebase.database(merchantApp).ref(`/users/${userID}/RS`).set(updatedRS);
 
     dispatch({
       type: UPDATE_RS,
       merchant: merchantID,
       user: userID,
-      RS,
+      RS: updatedRS,
     });
     if (insufficient) {
       throw new Error('insufficient');

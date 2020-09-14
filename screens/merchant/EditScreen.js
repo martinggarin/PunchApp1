@@ -108,6 +108,9 @@ const EditScreen = (props) => {
   }
   const [formState, dispatchFormState] = useReducer(formReducer, initialValues);
 
+  if (formState.adminPassword) {
+    newMerchant = false;
+  }
   if (newMerchant && displayHelp) {
     setTimeout(() => Alert.alert(
       'Welcome to PunchApp!',
@@ -140,11 +143,9 @@ const EditScreen = (props) => {
         formState.inputValues.city,
         formState.adminPassword,
       ));
-      if (newMerchant) {
+      setTimeout(() => {
         props.navigation.navigate('MerchantHome');
-      } else {
-        props.navigation.goBack();
-      }
+      }, 500);
     } catch (err) {
       setError(err.message);
     }
@@ -317,7 +318,9 @@ const EditScreen = (props) => {
             } else if (formState.adminPassword === rePasswordInput) {
               console.log('-Password Change Handler');
               setPromptVisibility(false);
-              submitHandler();
+              if (promptParams.submitAfter) {
+                submitHandler();
+              }
             } else {
               Alert.alert(
                 'Passwords do not match!',

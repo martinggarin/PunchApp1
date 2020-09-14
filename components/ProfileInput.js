@@ -201,7 +201,7 @@ ProfileInput = (props) => {
             <TextInput
               style={styles.input}
               underlineColorAndroid="transparent"
-              placeholder="City"
+              placeholder="City, State"
               placeholderTextColor={Colors.placeholderText}
               defaultValue={initialValues.inputValues.city}
               autoCapitalize="none"

@@ -209,6 +209,8 @@ const UserLoginScreen = (props) => {
         <Dialog.Input
           style={{ borderBottomWidth: Platform.OS === 'android' ? 1 : 0, color: Colors.borderDark }}
           autoCorrect={false}
+          placeholder="Re-enter password"
+          placeholderTextColor={Colors.placeholderText}
           autoCompleteType="off"
           onChangeText={(text) => { dispatchFormState({ type: RE_PASSWORD_UPDATE, text }); }}
           autoCapitalize="none"

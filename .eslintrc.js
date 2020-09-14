@@ -16,6 +16,7 @@ module.exports = {
     'react/destructuring-assignment': 0,
     'no-undef': 0,
     'no-console': 0,
+    'global-require': 0,
     indent: ['error', 2],
   },
 };

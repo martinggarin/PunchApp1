@@ -37,22 +37,22 @@ const AuditScreen = (props) => {
         {
           text: 'Confirm',
           onPress: async () => {
-            await dispatch(MerchantActions.removeTransaction(merchant.id, transactionCode));
             try {
               await dispatch(
                 UserActions.updateRewards(merchant.id, transaction.customerID, -transaction.amount),
               );
             } catch (err) {
-              if (err === 'insufficient') {
+              if (err.message === 'insufficient') {
                 Alert.alert(
                   'Insufficient Balance',
-                  `Unable to subtract ${amount} points from user:\n${transaction.customerID}`,
+                  `Unable to subtract ${transaction.amount} points from user:\n${transaction.customerID}`,
                   [
                     { text: 'Ok' },
                   ],
                   { cancelable: false },
                 );
-              } else if (err === 'none') {
+              } else if (err.message === 'none') {
+                await dispatch(MerchantActions.removeTransaction(merchant.id, transactionCode));
                 Alert.alert(
                   'Transaction Reversed',
                   `${Math.abs(transaction.amount)} point(s) ${action} user:\n${transaction.customerID}`,

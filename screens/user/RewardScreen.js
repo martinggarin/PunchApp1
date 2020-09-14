@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  View, Text, StyleSheet,
+  View, Text, StyleSheet, Image,
 } from 'react-native';
 import { useSelector } from 'react-redux';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
@@ -15,10 +15,26 @@ const RewardScreen = () => {
   // console.log(userID);
   return (
     <View style={styles.screen}>
-      <Text>
-        Scan this QR Code to process rewards!
+      <View style={{
+        width: '90%', height: '20%',
+      }}
+      >
+        <Image style={{ flex: 1, width: undefined, height: undefined }} source={require('../../assets/logo.png')} resizeMode="contain" />
+      </View>
+      <Text style={styles.text}>
+        Merchants will scan this QR Code to process rewards!
       </Text>
-      <QRCode value={userID} size={250} />
+      <View style={{
+        borderWidth: 5, padding: 10, borderRadius: 15, borderColor: Colors.darkLines,
+      }}
+      >
+        <View style={{
+          borderWidth: 5, padding: 15, borderRadius: 10, borderColor: Colors.primary,
+        }}
+        >
+          <QRCode value={userID} size={250} />
+        </View>
+      </View>
     </View>
   );
 };
@@ -41,7 +57,6 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: Colors.background,
   },
   image: {
@@ -50,7 +65,10 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   text: {
-    color: Colors.fontLight,
+    color: Colors.darkLines,
+    fontWeight: 'bold',
+    fontSize: 12,
+    marginBottom: 30,
   },
 });
 

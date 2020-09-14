@@ -1,4 +1,4 @@
-import * as Google from 'expo-google-app-auth';
+// import * as Google from 'expo-google-app-auth';
 import firebase from 'firebase';
 import moment from 'moment';
 import Merchant from '../../models/Merchant';
@@ -18,44 +18,43 @@ export const LOAD_ALL_MERCHANTS = 'LOAD_ALL_MERCHANTS';
 const userApp = Apps.firebaseApp.user;
 const merchantApp = Apps.firebaseApp.merchant;
 
-export const createMerchant = (email, password, useGoogle) => {
+export const createMerchant = (email, password, inputToken) => {
   console.log('~Merchant Action: createMerchant');
   return async (dispatch) => {
     // any async code you want!
     let credential = null;
-    let googleUser = null;
     let accountExists = false;
-    if (useGoogle) {
-      googleUser = await Google.logInAsync({
-        androidClientId: '685510681673-falsomf7g38i1d2v957dksi672oa75pa.apps.googleusercontent.com',
-        iosClientId: '685510681673-223e0ep20l00k03mf5fes84ojhdkjhr1.apps.googleusercontent.com',
+    // if (useGoogle) {
+    //  googleUser = await Google.logInAsync({
+    //    androidClientId:
+    //       '685510681673-falsomf7g38i1d2v957dksi672oa75pa.apps.googleusercontent.com',
+    //    iosClientId: '685510681673-223e0ep20l00k03mf5fes84ojhdkjhr1.apps.googleusercontent.com',
+    //  });
+    //  if (googleUser.type === 'success') {
+    //    const authenticatedMerchant = firebase.auth.GoogleAuthProvider.credential(
+    //      googleUser.idToken, googleUser.accessToken,
+    //    );
+    //    credential = await firebase.auth(merchantApp).signInWithCredential(authenticatedMerchant)
+    //      .catch((error) => {
+    //        if (error.code === 'auth/account-exists-with-different-credential') {
+    //          throw new Error('Email associated with another account.');
+    //        } else {
+    //          throw new Error('Something went wrong!');
+    //        }
+    //      });
+    //  } else {
+    //    throw new Error('Google sign in cancelled!');
+    //  }
+    // }
+    credential = await firebase.auth(merchantApp).createUserWithEmailAndPassword(email, password)
+      .catch((error) => {
+        if (error.code === 'auth/email-already-in-use') {
+          accountExists = true;
+        }
+        if (error.code === 'auth/invalid-email') {
+          throw new Error('That email address is invalid!');
+        }
       });
-      if (googleUser.type === 'success') {
-        const authenticatedMerchant = firebase.auth.GoogleAuthProvider.credential(
-          googleUser.idToken, googleUser.accessToken,
-        );
-        credential = await firebase.auth(merchantApp).signInWithCredential(authenticatedMerchant)
-          .catch((error) => {
-            if (error.code === 'auth/account-exists-with-different-credential') {
-              throw new Error('Email associated with another account.');
-            } else {
-              throw new Error('Something went wrong!');
-            }
-          });
-      } else {
-        throw new Error('Google sign in cancelled!');
-      }
-    } else {
-      credential = await firebase.auth(merchantApp).createUserWithEmailAndPassword(email, password)
-        .catch((error) => {
-          if (error.code === 'auth/email-already-in-use') {
-            accountExists = true;
-          }
-          if (error.code === 'auth/invalid-email') {
-            throw new Error('That email address is invalid!');
-          }
-        });
-    }
     if (accountExists) {
       credential = await firebase.auth(merchantApp).signInWithEmailAndPassword(email, password)
         .catch((error) => {
@@ -67,43 +66,35 @@ export const createMerchant = (email, password, useGoogle) => {
         });
     }
     const merchantID = credential.user.uid;
+    const tokens = (await firebase.database(merchantApp).ref('/tokens').once('value')).val();
+    let token;
+    let tokenIndex;
+    Object.values(tokens).forEach((value, index) => {
+      if (value.token === inputToken) {
+        token = value;
+        tokenIndex = index;
+      }
+    });
+    if (token === undefined) {
+      throw new Error('Unknown merchant creation token.');
+    } else if (token.merchantID !== undefined) {
+      throw new Error('Merchant creation token associated with another account.');
+    }
 
     let merchantData = (await firebase.database(merchantApp).ref(`/merchants/${merchantID}`).once('value')).val();
     if (merchantData === null) {
       // handle case: new merchant account creation
       merchantData = { id: merchantID };
-      if (useGoogle) {
-        merchantData.email = googleUser.user.email;
-      } else {
-        merchantData.email = email;
-      }
+      merchantData.email = email;
+      await firebase.database(merchantApp).ref(`/tokens/${tokenIndex}/merchantID`).set(merchantID);
       await firebase.database(merchantApp).ref(`/merchants/${merchantID}`).set({ email: merchantData.email });
       dispatch({
         type: CREATE_MERCHANT,
         merchantData,
       });
-      return true;
-    } if (accountExists) {
+    } else if (accountExists) {
       // handle case: merchant account already exists
       throw new Error('Email associated with another account.');
-    } else {
-      // handle case: google sign in
-      const merchant = new Merchant(merchantID, googleUser.user.email);
-      merchant.title = merchantData.title;
-      merchant.price = merchantData.price;
-      merchant.type = merchantData.type;
-      merchant.address = merchantData.address;
-      merchant.city = merchantData.city;
-      merchant.deal = merchantData.deal;
-      merchant.customers = merchantData.customers;
-      merchant.transactions = merchantData.transactions;
-      merchant.adminPassword = merchantData.adminPassword;
-      merchant.employees = merchantData.employees;
-      dispatch({
-        type: GET_MERCHANT,
-        merchant,
-      });
-      return false;
     }
   };
 };
@@ -112,17 +103,19 @@ export const getMerchant = (email, password, authenticated) => {
   console.log('~Merchant Action: getMerchant');
   return async (dispatch) => {
     let merchantID;
+    let credential;
     if (authenticated) {
       merchantID = firebase.auth(merchantApp).currentUser.uid;
     } else {
-      credential = await firebase.auth(merchantApp).signInWithEmailAndPassword(email, password)
-        .catch((error) => {
-          if (error.code === 'auth/invalid-email' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-            throw new Error('Wrong password. Try again.');
-          } else {
-            throw new Error('Something went wrong!');
-          }
-        });
+      try {
+        credential = await firebase.auth(merchantApp).signInWithEmailAndPassword(email, password);
+      } catch (error) {
+        if (error.code === 'auth/invalid-email' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+          throw new Error('Wrong password. Try again.');
+        } else {
+          throw error;
+        }
+      }
       merchantID = credential.user.uid;
     }
     const merchantData = (await firebase.database(merchantApp).ref(`/merchants/${merchantID}`).once('value')).val();

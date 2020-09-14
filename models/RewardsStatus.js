@@ -2,7 +2,7 @@
 // shows how many rewwards the user has for that specific resturant
 class RewardStatus {
   constructor(merchantID, amount = 0) {
-    this.r_id = merchantID;
+    this.merchantID = merchantID;
     // this.c_id = c_id;
     this.amount = amount; // amount of rewards
 

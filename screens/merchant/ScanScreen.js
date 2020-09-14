@@ -51,8 +51,7 @@ const ScanScreen = (props) => {
       try {
         await dispatch(userActions.updateRewards(merchantID, data, -amount));
       } catch (err) {
-        console.log(err);
-        if (err === 'insufficient') {
+        if (err.message === 'insufficient') {
           dispatch(merchantActions.addTransaction(
             merchantID, employee, data, 'Insufficient', totalTransactions, reward,
           ));
@@ -71,7 +70,7 @@ const ScanScreen = (props) => {
               { cancelable: false },
             );
           }, 500);
-        } else if (err === 'none') {
+        } else if (err.message === 'none') {
           dispatch(merchantActions.addTransaction(
             merchantID, employee, data, -amount, totalTransactions, reward,
           ));
@@ -96,13 +95,9 @@ const ScanScreen = (props) => {
       }
     } else {
       try {
-        // console.log('_________Updating Rewards__________');
-        // console.log('merchantID: ' + merchantID);
-        // console.log('U_ID: ' + data);
         await dispatch(userActions.updateRewards(merchantID, data, Number(input)));
       } catch (err) {
-        console.log(err);
-        if (err === 'none') {
+        if (err.message === 'none') {
           dispatch(
             merchantActions.addTransaction(
               merchantID, employee, data, Number(input), totalTransactions,

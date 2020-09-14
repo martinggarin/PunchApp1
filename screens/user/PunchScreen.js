@@ -42,7 +42,6 @@ const PunchScreen = (props) => {
   if (hasRS) {
     loyaltyPoints = rs.find((r) => r.merchantID === merchantID).amount;
   }
-
   const dispatch = useDispatch();
 
   const toggleFavHandler = useCallback(() => {
@@ -50,12 +49,8 @@ const PunchScreen = (props) => {
   }, [merchantID, dispatch, userID]);
 
   useEffect(() => {
-    props.navigation.setParams({ isFav });
-  }, [isFav]);
-
-  useEffect(() => {
-    props.navigation.setParams({ toggleFavHandler });
-  }, [toggleFavHandler]);
+    props.navigation.setParams({ isFav, toggleFav: toggleFavHandler });
+  }, [isFav, toggleFavHandler]);
 
   return (
     <View style={styles.screen}>
@@ -87,7 +82,6 @@ PunchScreen.navigationOptions = (navigationData) => {
   const merchantTitle = navigationData.navigation.getParam('title');
   const isFav = navigationData.navigation.getParam('isFav');
   const toggleFavHandler = navigationData.navigation.getParam('toggleFav');
-
   return {
     headerTitle: merchantTitle,
     headerTitleStyle: {

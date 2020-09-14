@@ -26,6 +26,7 @@ const onAuthStateChange = (callback) => firebase.auth(merchantApp).onAuthStateCh
 
 const INPUT_UPDATE = 'INPUT_UPDATE';
 const RE_PASSWORD_UPDATE = 'RE_PASSWORD_UPDATE';
+const TOKEN_UPDATE = 'TOKEN_UPDATE';
 
 const formReducer = (state, action) => {
   let updatedValues;
@@ -39,6 +40,11 @@ const formReducer = (state, action) => {
     return {
       ...state,
       rePassword: action.text,
+    };
+  case TOKEN_UPDATE:
+    return {
+      ...state,
+      token: action.text,
     };
   default:
     return state;
@@ -62,6 +68,7 @@ const MerchantLoginScreen = (props) => {
   console.log('Merchant Login');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
+  const [signUpError, setSignUpError] = useState();
   const [loggedIn, setLoggedIn] = useState(false);
   const [isNewUser, setIsNewUser] = useState(true);
   const [promptVisibility, setPromptVisibility] = useState(false);
@@ -78,6 +85,7 @@ const MerchantLoginScreen = (props) => {
     },
     formIsValid: false,
     rePassword: '',
+    token: '',
   });
 
   const submitHandler = useCallback(async (authenticated) => {
@@ -99,9 +107,9 @@ const MerchantLoginScreen = (props) => {
     setIsNewUser(true);
   }, [formState]);
 
-  const signUpHandler = useCallback(async (useGoogle) => {
+  const signUpHandler = useCallback(async () => {
     console.log('-Sign Up Handler');
-    if (!(formState.inputValues.password === formState.rePassword) && !useGoogle) {
+    if (!(formState.inputValues.password === formState.rePassword)) {
       Alert.alert(
         'Passwords do not match!',
         'Please check password inputs',
@@ -112,20 +120,16 @@ const MerchantLoginScreen = (props) => {
     setError(null);
     setIsLoading(true);
     try {
-      const newMerchant = await dispatch(merchantActions.createMerchant(
+      await dispatch(merchantActions.createMerchant(
         formState.inputValues.email,
         formState.inputValues.password,
-        useGoogle,
+        formState.token,
       ));
-      if (newMerchant) {
-        props.navigation.replace('Edit');
-      } else {
-        props.navigation.replace('MerchantHome');
-      }
+      setPromptVisibility(false);
+      props.navigation.replace('Edit');
     } catch (err) {
-      setError(err.message);
+      setSignUpError(err.message);
     }
-    setPromptVisibility(false);
     setIsLoading(false);
   }, [formState]);
 
@@ -157,9 +161,19 @@ const MerchantLoginScreen = (props) => {
         'Problem signing in!',
         error,
         [{ text: 'Okay' }],
-      ), 500);
+      ), 100);
     }
   }, [error]);
+
+  useEffect(() => {
+    if (signUpError) {
+      setTimeout(() => Alert.alert(
+        'Problem signing up!',
+        signUpError,
+        [{ text: 'Okay' }],
+      ), 100);
+    }
+  }, [signUpError]);
 
   return (
     <View style={styles.screen}>
@@ -207,20 +221,32 @@ const MerchantLoginScreen = (props) => {
             </View> */}
       {isLoading && <ActivityIndicator color={Colors.darkLines} size="large" />}
       <Dialog.Container visible={promptVisibility}>
-        <Dialog.Title style={{ fontWeight: 'bold' }}>Confirmation Required!</Dialog.Title>
+        <Dialog.Title style={{ fontWeight: 'bold' }}>Verification Required!</Dialog.Title>
         <Dialog.Description>
-          Please re-enter your password to create a merchant account...
+          Please re-enter your password and a valid merchant creation token
+          to create a merchant account...
         </Dialog.Description>
         <Dialog.Input
           style={{ borderBottomWidth: Platform.OS === 'android' ? 1 : 0, color: Colors.borderDark }}
           autoCorrect={false}
+          placeholder="Re-enter password"
+          placeholderTextColor={Colors.placeholderText}
           autoCompleteType="off"
           onChangeText={(text) => { dispatchFormState({ type: RE_PASSWORD_UPDATE, text }); }}
           autoCapitalize="none"
           secureTextEntry
         />
+        <Dialog.Input
+          style={{ borderBottomWidth: Platform.OS === 'android' ? 1 : 0, color: Colors.borderDark }}
+          autoCorrect={false}
+          placeholder="Enter token"
+          placeholderTextColor={Colors.placeholderText}
+          autoCompleteType="off"
+          onChangeText={(text) => { dispatchFormState({ type: TOKEN_UPDATE, text }); }}
+          autoCapitalize="none"
+        />
         <Dialog.Button label="Cancel" onPress={() => setPromptVisibility(false)} />
-        <Dialog.Button label="Confirm" onPress={() => signUpHandler(false)} />
+        <Dialog.Button label="Confirm" onPress={() => signUpHandler()} />
       </Dialog.Container>
     </View>
   );

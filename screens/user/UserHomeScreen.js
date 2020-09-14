@@ -13,43 +13,30 @@ import * as UserActions from '../../store/actions/user';
 
 const UserHomeScreen = (props) => {
   console.log('User Home');
-  const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [error, setError] = useState();
   const allMerchants = useSelector((state) => state.merchants.availableMerchants);
   const display = useSelector((state) => state.user.userMerchants);
-  const u_id = useSelector((state) => state.user.user).id;
+  const userID = useSelector((state) => state.user.user).id;
   const dispatch = useDispatch();
-
-  // console.log('------allMerchants--------');
-  // console.log(allMerchants);
-  // console.log('------display-------------');
-  // console.log(display)
 
   const updatedUserMerchants = [];
   if (display && allMerchants.length > 0) {
-    for (const key in display) {
-      const merch = allMerchants.find((m) => m.id === display[key]);
+    Object.values(display).forEach((value) => {
+      const merchant = allMerchants.find((m) => m.id === value);
       // console.log('....merch....');
       // console.log(merch);
-      if (merch === undefined) {
-        continue;
+      if (merchant !== undefined) {
+        updatedUserMerchants.push(merchant);
       }
-      updatedUserMerchants.push(merch);
-    }
+    });
   }
 
   const loadMerchants = useCallback(async () => {
-    setError(null);
     setIsRefreshing(true);
-    try {
-      await dispatch(MerchantActions.loadAllMerchants());
-      await dispatch(UserActions.refreshUser(u_id));
-    } catch (err) {
-      setError(err.message);
-    }
+    await dispatch(MerchantActions.loadAllMerchants());
+    await dispatch(UserActions.refreshUser(userID));
     setIsRefreshing(false);
-  }, [dispatch, setIsLoading, setError]);
+  }, [dispatch]);
 
   useEffect(() => {
     const willFocusSub = props.navigation.addListener(
@@ -64,12 +51,7 @@ const UserHomeScreen = (props) => {
   }, [loadMerchants]);
 
   useEffect(() => {
-    setIsLoading(true);
-    loadMerchants().then(() => {
-      setIsLoading(false);
-      // console.log('is loading');
-      // console.log(allMerchants);
-    });
+    loadMerchants();
   }, [dispatch, loadMerchants]);
 
   const footer = (

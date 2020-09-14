@@ -40,7 +40,7 @@ const MerchantList = (props) => {
     if (rs === undefined) {
       hasRS = false;
     } else {
-      hasRS = rs.some((m) => m.r_id === itemData.item.id);
+      hasRS = rs.some((m) => m.merchantID === itemData.item.id);
     }
     if (props.showDeals) {
       text = ['Deals', 'Available'];
@@ -54,7 +54,7 @@ const MerchantList = (props) => {
       number = 0;
       if (hasRS) {
         // console.log('________hasRS________');
-        number = rs.find((m) => m.r_id === itemData.item.id).amount;
+        number = rs.find((m) => m.merchantID === itemData.item.id).amount;
         // console.log(number);
       }
     }
@@ -108,7 +108,7 @@ const MerchantList = (props) => {
         }}
         isRefreshing={props.refreshing}
         data={state.data}
-        keyExtractor={(item, index) => item.id}
+        keyExtractor={(item) => item.id}
         renderItem={renderItems}
         ListFooterComponent={props.footer}
       />

@@ -2,6 +2,7 @@ import React from 'react';
 import {
   StyleSheet, FlatList, Text, View, TouchableOpacity,
 } from 'react-native';
+import Colors from '../constants/Colors';
 
 const TransactionList = (props) => {
   let sortedTransactions;
@@ -15,31 +16,32 @@ const TransactionList = (props) => {
   const renderTransaction = (itemData) => (
     <TouchableOpacity onPress={() => props.onPress(itemData.item.code)}>
       <View style={styles.rowContainer}>
-        <View style={styles.dateView}>
+        <View style={styles.leftView}>
+          <Text style={styles.lightText}>{`#${itemData.item.code}\n`}</Text>
           <Text style={styles.boldText}>{itemData.item.date.slice(0, 8)}</Text>
           <Text style={styles.boldText}>{itemData.item.date.slice(9)}</Text>
         </View>
         <View>
           <Text>
             Customer:
-            {itemData.item.customerID.slice(0, 7)}
+            {` ${itemData.item.customerID.slice(0, 7)}`}
             ...
           </Text>
           <Text>
             Location:
-            {itemData.item.location}
+            {` ${itemData.item.location}`}
           </Text>
           <Text>
             Employee:
-            {itemData.item.employee}
+            {` ${itemData.item.employee}`}
           </Text>
           <Text>
             Amount:
-            {itemData.item.amount}
+            {` ${itemData.item.amount}`}
           </Text>
           <Text>
             Deal:
-            {(itemData.item.reward === undefined) ? 'N/A' : itemData.item.reward}
+            {` ${(itemData.item.reward === undefined) ? 'N/A' : itemData.item.reward}`}
           </Text>
         </View>
       </View>
@@ -66,10 +68,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  dateView: {
+  leftView: {
     width: '35%',
     alignItems: 'center',
     marginRight: 10,
+  },
+  lightText: {
+    color: Colors.darkLines,
   },
   boldText: {
     fontWeight: 'bold',

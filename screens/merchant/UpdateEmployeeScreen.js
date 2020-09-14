@@ -160,14 +160,16 @@ const UpdateEmployeeScreen = (props) => {
     }
     let employeeExists = false;
     Object.values(employees).forEach((value) => {
-      if (value.name === formState.inputValues.name || value.id === formState.inputValues.id) {
-        Alert.alert('Invalid Input!',
-          'Employee name and ID must be unique...',
-          [{ text: 'Okay' }]);
+      console.log(value.code);
+      if (value.code !== employeeCode
+        && (value.name === formState.inputValues.name || value.id === formState.inputValues.id)) {
         employeeExists = true;
       }
     });
     if (employeeExists) {
+      Alert.alert('Invalid Input!',
+        'Employee name and ID must be unique...',
+        [{ text: 'Okay' }]);
       return;
     }
     setError(null);
