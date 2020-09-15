@@ -162,7 +162,7 @@ const MerchantHomeScreen = (props) => {
           Please enter your administrator password to access the employee screen...
         </Dialog.Description>
         <Dialog.Input
-          style={{ borderBottomWidth: Platform.OS === 'android' ? 1 : 0, color: Colors.borderDark }}
+          style={{ borderBottomWidth: Platform.OS === 'android' ? 1 : 0, borderColor: Colors.borderDark }}
           autoCorrect={false}
           autoCompleteType="off"
           onChangeText={(text) => {
@@ -263,7 +263,7 @@ MerchantHomeScreen.navigationOptions = (navigationData) => {
           <Feather
             name="edit"
             size={25}
-            color={Colors.lightLines}
+            color={Colors.background}
             onPress={() => {
               console.log('-Edit Profile Handler');
               if (adminPasswordExists) {
@@ -287,8 +287,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.fontLight,
   },
   upperContainer: {
-    flex: 1,
     width: '95%',
+    height: 125,
     backgroundColor: Colors.primary,
     borderRadius: 3,
     margin: '2.5%',

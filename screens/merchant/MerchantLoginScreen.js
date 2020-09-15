@@ -177,10 +177,7 @@ const MerchantLoginScreen = (props) => {
 
   return (
     <View style={styles.screen}>
-      <View style={{
-        width: '80%', height: '15%', marginTop: 10,
-      }}
-      >
+      <View style={styles.imageContainer}>
         <Image style={{ flex: 1, width: undefined, height: undefined }} source={require('../../assets/logo.png')} resizeMode="contain" />
       </View>
       <View style={styles.inputContainer}>
@@ -279,10 +276,12 @@ const styles = StyleSheet.create({
     height: '100%',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
+  },
+  imageContainer: {
+    width: '80%', height: '15%', marginTop: 10,
   },
   inputContainer: {
-    flex: 1,
+    height: 200,
     width: '100%',
   },
   googleContainer: {

@@ -300,6 +300,7 @@ const styles = StyleSheet.create({
   },
   authenticationInput: {
     borderWidth: 1,
+    borderRadius: 3,
     height: 30,
     width: 30,
     marginTop: -20,
