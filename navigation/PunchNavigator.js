@@ -243,7 +243,7 @@ const MainNavigator = createDrawerNavigator({
   UserHome: {
     screen: UserNavigator,
     navigationOptions: {
-      drawerLabel: 'Home',
+      drawerLabel: 'Customer',
     },
   },
   MerchantHome: {

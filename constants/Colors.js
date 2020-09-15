@@ -15,5 +15,5 @@ export default {
   borderLight: 'white',
   iconDark: 'black',
   input: 'black',
-  placeholderText: '#7A8586',
+  placeholderText: '#c3c7b5',
 };

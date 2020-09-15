@@ -2,7 +2,7 @@ import React, {
   useCallback, useEffect, useReducer, useState,
 } from 'react';
 import {
-  View, StyleSheet, Alert,
+  View, StyleSheet, Alert, Image,
 } from 'react-native';
 import Dialog from 'react-native-dialog';
 import { useDispatch } from 'react-redux';
@@ -177,6 +177,12 @@ const MerchantLoginScreen = (props) => {
 
   return (
     <View style={styles.screen}>
+      <View style={{
+        width: '80%', height: '15%', marginTop: 10,
+      }}
+      >
+        <Image style={{ flex: 1, width: undefined, height: undefined }} source={require('../../assets/logo.png')} resizeMode="contain" />
+      </View>
       <View style={styles.inputContainer}>
         {isNewUser && (
           <LoginInput
@@ -229,7 +235,7 @@ const MerchantLoginScreen = (props) => {
         <Dialog.Input
           style={{ borderBottomWidth: Platform.OS === 'android' ? 1 : 0, color: Colors.borderDark }}
           autoCorrect={false}
-          placeholder="Re-enter password"
+          placeholder="Confirm password"
           placeholderTextColor={Colors.placeholderText}
           autoCompleteType="off"
           onChangeText={(text) => { dispatchFormState({ type: RE_PASSWORD_UPDATE, text }); }}
@@ -239,7 +245,7 @@ const MerchantLoginScreen = (props) => {
         <Dialog.Input
           style={{ borderBottomWidth: Platform.OS === 'android' ? 1 : 0, color: Colors.borderDark }}
           autoCorrect={false}
-          placeholder="Enter token"
+          placeholder="Token"
           placeholderTextColor={Colors.placeholderText}
           autoCompleteType="off"
           onChangeText={(text) => { dispatchFormState({ type: TOKEN_UPDATE, text }); }}
@@ -252,7 +258,7 @@ const MerchantLoginScreen = (props) => {
   );
 };
 MerchantLoginScreen.navigationOptions = (navData) => ({
-  headerTitle: 'Merchant Login',
+  headerTitle: 'MERCHANT',
   headerLeft: () => (
     <HeaderButtons HeaderButtonComponent={HeaderButton}>
       <Item
@@ -268,12 +274,16 @@ MerchantLoginScreen.navigationOptions = (navData) => ({
 
 const styles = StyleSheet.create({
   screen: {
-    width: '100%',
     flex: 1,
+    width: '100%',
+    height: '100%',
     flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   inputContainer: {
-    height: 245,
+    flex: 1,
+    width: '100%',
   },
   googleContainer: {
     width: '100%',

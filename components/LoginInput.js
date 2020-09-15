@@ -1,7 +1,8 @@
 import React, { useReducer, useEffect } from 'react';
 import {
-  View, Text, TextInput, Button, StyleSheet,
+  View, TextInput, Button, StyleSheet,
 } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
 
 const EMAIL_INPUT_CHANGE = 'EMAIL_INPUT_CHANGE';
@@ -74,42 +75,48 @@ const LoginInput = (props) => {
     <View style={styles.container}>
       <View style={styles.upperContainer}>
         <View style={styles.fieldView}>
-          <Text style={styles.text}>EMAIL</Text>
-          <View style={styles.inputView}>
-            <TextInput
-              style={styles.input}
-              keyboardType="email-address"
-              underlineColorAndroid="transparent"
-              placeholder="Enter Your Email Address"
-              placeholderTextColor={Colors.placeholderText}
-              defaultValue={initialValues.inputValues.email}
-              autoCapitalize="none"
-              onChangeText={handleEmail}
-            />
-          </View>
+          <MaterialIcons
+            name="email"
+            size={20}
+            color={Colors.lightLines}
+            style={{ marginRight: 10 }}
+          />
+          <TextInput
+            style={styles.input}
+            keyboardType="email-address"
+            underlineColorAndroid="transparent"
+            placeholder="Email"
+            placeholderTextColor={Colors.placeholderText}
+            defaultValue={initialValues.inputValues.email}
+            autoCapitalize="none"
+            onChangeText={handleEmail}
+          />
         </View>
         <View style={styles.fieldView}>
-          <Text style={styles.text}>PASSWORD</Text>
-          <View style={styles.inputView}>
-            <TextInput
-              style={styles.input}
-              secureTextEntry
-              underlineColorAndroid="transparent"
-              placeholder="Enter Your Password"
-              placeholderTextColor={Colors.placeholderText}
-              defaultValue={initialValues.inputValues.password}
-              autoCapitalize="none"
-              onChangeText={handlePassword}
-            />
-          </View>
+          <MaterialIcons
+            name="lock"
+            size={20}
+            color={Colors.lightLines}
+            style={{ marginRight: 10 }}
+          />
+          <TextInput
+            style={styles.input}
+            secureTextEntry
+            underlineColorAndroid="transparent"
+            placeholder="Password"
+            placeholderTextColor={Colors.placeholderText}
+            defaultValue={initialValues.inputValues.password}
+            autoCapitalize="none"
+            onChangeText={handlePassword}
+          />
         </View>
       </View>
       <View style={styles.lowerContainer}>
         <View style={styles.buttonContainer}>
-          <Button title="Login" color={Colors.primary} onPress={props.onLogin} />
+          <Button title="LOG IN" color={Colors.primary} onPress={props.onLogin} />
         </View>
         <View style={styles.buttonContainer}>
-          <Button title="Sign Up" color={Colors.darkLines} onPress={props.onSignUp} />
+          <Button title="SIGN UP" color={Colors.primary} onPress={props.onSignUp} />
         </View>
 
       </View>
@@ -119,16 +126,15 @@ const LoginInput = (props) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     flexDirection: 'column',
     height: '100%',
     width: '100%',
   },
   upperContainer: {
     width: '95%',
-    height: 180,
+    height: 150,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     backgroundColor: Colors.primary,
     borderRadius: 3,
     margin: '2.5%',
@@ -138,22 +144,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     width: '100%',
-    height: '10%',
   },
   fieldView: {
-    width: '90%',
-    height: '40%',
-    justifyContent: 'center',
-  },
-  inputView: {
-    height: 30,
-    marginLeft: 2,
-    marginRight: 2,
-    borderColor: Colors.borderDark,
+    flexDirection: 'row',
+    paddingBottom: 5,
     borderBottomWidth: 1,
+    borderColor: '#c3c7b5',
+    width: '90%',
+    alignItems: 'center',
   },
   input: {
-    color: Colors.input,
+    width: '90%',
+    height: 30,
+    fontSize: 16,
+    color: Colors.lightLines,
     marginLeft: 5,
   },
   text: {
