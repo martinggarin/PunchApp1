@@ -125,6 +125,8 @@ const MerchantHomeScreen = (props) => {
           style={{ borderBottomWidth: Platform.OS === 'android' ? 1 : 0, color: Colors.borderDark }}
           autoCorrect={false}
           autoCompleteType="off"
+          placeholder="Administrator password"
+          placeholderTextColor={Colors.placeholderText}
           onChangeText={(text) => {
             console.log('-Input Change Handler');
             setAdminPasswordInput(text);
@@ -165,6 +167,8 @@ const MerchantHomeScreen = (props) => {
           style={{ borderBottomWidth: Platform.OS === 'android' ? 1 : 0, borderColor: Colors.borderDark }}
           autoCorrect={false}
           autoCompleteType="off"
+          placeholder="Admin password"
+          placeholderTextColor={Colors.placeholderText}
           onChangeText={(text) => {
             console.log('-Input Change Handler');
             setAdminPasswordInput(text);
@@ -223,7 +227,7 @@ MerchantHomeScreen.navigationOptions = (navigationData) => {
           <AntDesign
             name="questioncircleo"
             size={25}
-            color={Colors.lightLines}
+            color={Colors.background}
             onPress={() => {
               Alert.alert(
                 'Merchant Help',
@@ -248,7 +252,7 @@ MerchantHomeScreen.navigationOptions = (navigationData) => {
           <Ionicons
             name="ios-people"
             size={25}
-            color={Colors.lightLines}
+            color={Colors.background}
             onPress={() => {
               console.log('-Employee Handler');
               if (adminPasswordExists) {
@@ -292,9 +296,11 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
     borderRadius: 3,
     margin: '2.5%',
+    shadowOffset: { width: 5, height: 5 },
+    shadowOpacity: 0.3,
   },
   lowerContainer: {
-    height: '77.5%',
+    flex: 1,
     justifyContent: 'center',
   },
   rowContainer: {

@@ -188,7 +188,7 @@ ProfileInput = (props) => {
               style={styles.input}
               underlineColorAndroid="transparent"
               placeholder="Address"
-              placeholderTextColor={Colors.placeholderText}
+              placeholderTextColor={Colors.darkLines}
               defaultValue={initialValues.inputValues.address}
               autoCapitalize="none"
               onChangeText={handleAddress}
@@ -202,7 +202,7 @@ ProfileInput = (props) => {
               style={styles.input}
               underlineColorAndroid="transparent"
               placeholder="City, State"
-              placeholderTextColor={Colors.placeholderText}
+              placeholderTextColor={Colors.darkLines}
               defaultValue={initialValues.inputValues.city}
               autoCapitalize="none"
               onChangeText={handleCity}
@@ -216,24 +216,20 @@ ProfileInput = (props) => {
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
+    flex: 1,
     width: '90%',
-    height: '90%',
   },
   rowView: {
-    paddingTop: Platform.OS === 'ios' ? 10 : 0,
-    flex: 1,
     flexDirection: 'row',
-    height: '33%',
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 10,
     // borderColor: Colors.borderDark,
     // borderWidth: 1,
   },
   singleFieldView: {
     width: '100%',
-    height: '100%',
   },
   leftFieldView: {
     marginRight: '2.5%',
@@ -249,8 +245,8 @@ const styles = StyleSheet.create({
     marginRight: 2,
     borderColor: Colors.borderDark,
     borderBottomWidth: 1,
-    height: '65%',
     justifyContent: 'center',
+    paddingBottom: 5,
   },
   input: {
     color: Colors.fontDark,

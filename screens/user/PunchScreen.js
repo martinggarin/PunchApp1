@@ -54,10 +54,7 @@ const PunchScreen = (props) => {
 
   return (
     <View style={styles.screen}>
-      <PunchCard style={{
-        height: '30%', width: '95%', margin: '2.5%', backgroundColor: Colors.primary,
-      }}
-      >
+      <PunchCard style={styles.punchCard}>
         <View style={styles.textContainer}>
           <RewardBalance
             text={['Loyalty', 'Points']}
@@ -71,7 +68,7 @@ const PunchScreen = (props) => {
         <DealList
           merchantSide={false}
           dealData={deals}
-          onTap={() => props.navigation.navigate('Reward')}
+          onTap={() => props.navigation.navigate('Rewards')}
         />
       </View>
     </View>
@@ -111,6 +108,12 @@ const styles = StyleSheet.create({
     // justifyContent:'center',
     // height:'50%',
     backgroundColor: Colors.background,
+  },
+  punchCard: {
+    height: '30%',
+    width: '95%',
+    margin: '2.5%',
+    backgroundColor: Colors.primary,
   },
   textContainer: {
     flexDirection: 'row',

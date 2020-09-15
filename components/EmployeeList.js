@@ -1,9 +1,8 @@
 import React from 'react';
 import {
-  StyleSheet, FlatList, View,
+  StyleSheet, FlatList, View, Text, TouchableOpacity,
 } from 'react-native';
 import Colors from '../constants/Colors';
-import EmployeeItem from './EmployeeItem';
 
 const EmployeeList = (props) => {
   let employeeData;
@@ -14,22 +13,33 @@ const EmployeeList = (props) => {
   }
 
   const renderEmployee = (itemData) => (
-    <View style={styles.container}>
-      <EmployeeItem
-        name={itemData.item.name}
-        location={itemData.item.location}
-        type={itemData.item.type}
-        id={itemData.item.id}
-        onClick={() => {
-          props.onTap(itemData.item.code);
-        }}
-        color={Colors.background}
-      />
-    </View>
+    <TouchableOpacity onPress={() => props.onTap(itemData.item.code)}>
+      <View style={styles.rowContainer}>
+        <View style={styles.leftView}>
+          <Text style={styles.lightText}>{`#${itemData.item.code}`}</Text>
+          <Text style={styles.boldText}>{itemData.item.name}</Text>
+        </View>
+        <View style={{ flex: 1 }}>
+          <Text>
+            Location:
+            {` ${itemData.item.location}`}
+          </Text>
+          <Text>
+            Type:
+            {` ${itemData.item.type}`}
+          </Text>
+          <Text>
+            ID:
+            {` ${itemData.item.id}`}
+          </Text>
+        </View>
+      </View>
+    </TouchableOpacity>
   );
 
   return (
     <FlatList
+      style={{ width: '100%' }}
       data={employeeData}
       renderItem={renderEmployee}
       keyExtractor={(item) => item.name}
@@ -39,10 +49,25 @@ const EmployeeList = (props) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    height: 70,
+  rowContainer: {
+    flex: 1,
     width: '100%',
-    alignContent: 'center',
+    borderBottomWidth: 1,
+    marginBottom: 10,
+    paddingBottom: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  leftView: {
+    width: '35%',
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  lightText: {
+    color: Colors.darkLines,
+  },
+  boldText: {
+    fontWeight: 'bold',
   },
 });
 

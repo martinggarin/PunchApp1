@@ -204,7 +204,7 @@ const UpdateEmployeeScreen = (props) => {
               style={styles.input}
               underlineColorAndroid="transparent"
               placeholder="Name"
-              placeholderTextColor={Colors.placeholderText}
+              placeholderTextColor={Colors.darkLines}
               defaultValue={initialValues.inputValues.name}
               autoCapitalize="none"
               onChangeText={handleName}
@@ -218,7 +218,7 @@ const UpdateEmployeeScreen = (props) => {
               style={styles.input}
               underlineColorAndroid="transparent"
               placeholder="Location"
-              placeholderTextColor={Colors.placeholderText}
+              placeholderTextColor={Colors.darkLines}
               defaultValue={initialValues.inputValues.location}
               autoCapitalize="none"
               onChangeText={handleLocation}
@@ -271,7 +271,7 @@ const UpdateEmployeeScreen = (props) => {
               maxLength={4}
               underlineColorAndroid="transparent"
               placeholder="4-Digit ID"
-              placeholderTextColor={Colors.placeholderText}
+              placeholderTextColor={Colors.darkLines}
               defaultValue={initialValues.inputValues.id}
               autoCapitalize="none"
               onChangeText={handleId}
@@ -292,17 +292,18 @@ const styles = StyleSheet.create({
   },
   container: {
     width: '95%',
-    height: '40%',
-    justifyContent: 'center',
+    height: 225,
     alignItems: 'center',
     backgroundColor: Colors.primary,
     borderRadius: 3,
     margin: '2.5%',
+    shadowOffset: { width: 5, height: 5 },
+    shadowOpacity: 0.3,
   },
   rowContainer: {
-    height: '25%',
     width: '95%',
     justifyContent: 'center',
+    marginTop: 10,
     // borderColor: Colors.borderDark,
     // borderWidth: 1,
   },
@@ -316,12 +317,12 @@ const styles = StyleSheet.create({
     marginRight: 2,
     borderColor: Colors.borderDark,
     borderBottomWidth: 1,
-    height: '65%',
+    paddingBottom: 5,
+    paddingLeft: 5,
     justifyContent: 'center',
   },
   input: {
     color: Colors.input,
-    marginLeft: 5,
   },
   button: {
     width: '50%',

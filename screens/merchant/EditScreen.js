@@ -271,7 +271,7 @@ const EditScreen = (props) => {
           style={{ borderBottomWidth: Platform.OS === 'android' ? 1 : 0, color: Colors.borderDark }}
           autoCorrect={false}
           autoCompleteType="off"
-          placeholder="Enter admin password"
+          placeholder="Administrator password"
           placeholderTextColor={Colors.placeholderText}
           onChangeText={(text) => {
             console.log('-Input Change Handler');
@@ -287,7 +287,7 @@ const EditScreen = (props) => {
           style={{ borderBottomWidth: Platform.OS === 'android' ? 1 : 0, color: Colors.borderDark }}
           autoCorrect={false}
           autoCompleteType="off"
-          placeholder="Re-enter admin password"
+          placeholder="Confirm administrator password"
           placeholderTextColor={Colors.placeholderText}
           onChangeText={(text) => {
             console.log('-Input Change Handler');
@@ -372,15 +372,17 @@ const styles = StyleSheet.create({
   },
   upperContainer: {
     width: '95%',
-    height: 190,
+    height: 175,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: Colors.primary,
     borderRadius: 3,
     margin: '2.5%',
+    shadowOffset: { width: 5, height: 5 },
+    shadowOpacity: 0.3,
   },
   lowerContainer: {
-    height: '60%',
+    flex: 1,
     justifyContent: 'center',
   },
   addContainer: {

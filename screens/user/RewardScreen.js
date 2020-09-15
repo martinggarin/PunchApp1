@@ -9,16 +9,13 @@ import HeaderButton from '../../components/HeaderButton';
 import Colors from '../../constants/Colors';
 
 const RewardScreen = () => {
-  console.log('Reward');
+  console.log('Rewards');
   const userID = useSelector((state) => state.user.user.id);
   // console.log('------ID--------');
   // console.log(userID);
   return (
     <View style={styles.screen}>
-      <View style={{
-        width: '90%', height: '20%',
-      }}
-      >
+      <View style={styles.imageContainer}>
         <Image style={{ flex: 1, width: undefined, height: undefined }} source={require('../../assets/logo.png')} resizeMode="contain" />
       </View>
       <Text style={styles.text}>
@@ -59,6 +56,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: Colors.background,
   },
+  imageContainer: {
+    width: '80%', height: '15%', marginTop: 10, marginBottom: 10,
+  },
   image: {
     width: '80%',
     height: '50%',
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     color: Colors.darkLines,
     fontWeight: 'bold',
     fontSize: 12,
-    marginBottom: 30,
+    marginBottom: 40,
   },
 });
 

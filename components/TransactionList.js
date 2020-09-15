@@ -21,7 +21,7 @@ const TransactionList = (props) => {
           <Text style={styles.boldText}>{itemData.item.date.slice(0, 8)}</Text>
           <Text style={styles.boldText}>{itemData.item.date.slice(9)}</Text>
         </View>
-        <View>
+        <View style={{ flex: 1 }}>
           <Text>
             Customer:
             {` ${itemData.item.customerID.slice(0, 7)}`}
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   leftView: {
-    width: '35%',
+    width: '30%',
     alignItems: 'center',
     marginRight: 10,
   },

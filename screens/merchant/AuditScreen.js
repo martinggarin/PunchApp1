@@ -79,7 +79,7 @@ const AuditScreen = (props) => {
 
   return (
     <View style={styles.screen}>
-      <View style={styles.lowerContainer}>
+      <View style={styles.container}>
         {authenticated && (
           <TransactionList transactions={merchant.transactions} onPress={transactionTapHandler} />
         )}
@@ -178,16 +178,11 @@ const styles = StyleSheet.create({
     height: '100%',
     backgroundColor: Colors.fontLight,
   },
-  lowerContainer: {
+  container: {
     height: '100%',
     width: '95%',
     alignItems: 'center',
     paddingTop: 10,
-  },
-  rowContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
   },
   authenticationContainer: {
     alignItems: 'center',

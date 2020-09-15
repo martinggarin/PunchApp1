@@ -151,7 +151,7 @@ const UpdateDealScreen = (props) => {
               style={styles.input}
               underlineColorAndroid="transparent"
               placeholder="Deal"
-              placeholderTextColor={Colors.placeholderText}
+              placeholderTextColor={Colors.darkLines}
               defaultValue={initialValues.inputValues.reward}
               autoCapitalize="none"
               onChangeText={handleReward}
@@ -166,7 +166,7 @@ const UpdateDealScreen = (props) => {
               keyboardType="decimal-pad"
               underlineColorAndroid="transparent"
               placeholder="Cost"
-              placeholderTextColor={Colors.placeholderText}
+              placeholderTextColor={Colors.darkLines}
               defaultValue={initialValues.inputValues.amount}
               autoCapitalize="none"
               onChangeText={handleAmount}
@@ -187,17 +187,18 @@ const styles = StyleSheet.create({
   },
   container: {
     width: '95%',
-    height: 150,
-    justifyContent: 'center',
+    height: 120,
     alignItems: 'center',
     backgroundColor: Colors.primary,
     borderRadius: 3,
     margin: '2.5%',
+    shadowOffset: { width: 5, height: 5 },
+    shadowOpacity: 0.3,
   },
   rowContainer: {
-    height: '45%',
     width: '95%',
     justifyContent: 'center',
+    marginTop: 10,
     // borderColor: Colors.borderDark,
     // borderWidth: 1,
   },
@@ -211,12 +212,12 @@ const styles = StyleSheet.create({
     marginRight: 2,
     borderColor: Colors.borderDark,
     borderBottomWidth: 1,
-    height: '65%',
+    paddingBottom: 5,
+    paddingLeft: 5,
     justifyContent: 'center',
   },
   input: {
     color: Colors.input,
-    marginLeft: 5,
   },
   button: {
     width: '50%',

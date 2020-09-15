@@ -78,7 +78,7 @@ const UserHomeNavigator = createStackNavigator({
 });
 
 const RewardNavigator = createStackNavigator({
-  Reward: {
+  Rewards: {
     screen: RewardScreen,
     navigationOptions: { title: 'Rewards' },
   },
@@ -132,7 +132,7 @@ const tabScreen = {
       tabBarColor: Colors.header,
     },
   },
-  Reward: {
+  Rewards: {
     screen: RewardNavigator,
     navigationOptions: {
       tabBarIcon: (tabInfo) => (<AntDesign name="qrcode" size={25} color={tabInfo.tintColor} />),

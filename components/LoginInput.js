@@ -137,6 +137,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
     borderRadius: 3,
     margin: '2.5%',
+    shadowOffset: { width: 5, height: 5 },
+    shadowOpacity: 0.3,
   },
   lowerContainer: {
     flexDirection: 'row',

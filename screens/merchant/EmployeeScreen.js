@@ -66,15 +66,7 @@ const EmployeeScreen = (props) => {
 
   return (
     <View style={styles.screen}>
-      <View style={styles.upperContainer}>
-        <View style={styles.rowContainer}>
-          <Text style={{ ...styles.smallBoldText, width: '50%' }}>Name</Text>
-          <Text style={{ ...styles.smallBoldText, width: '25%' }}>Location</Text>
-          <Text style={{ ...styles.smallBoldText, width: '10%' }}>Type</Text>
-          <Text style={{ ...styles.smallBoldText, width: '15%', textAlign: 'center' }}>ID</Text>
-        </View>
-      </View>
-      <View style={styles.lowerContainer}>
+      <View style={styles.container}>
         <EmployeeList
           employeeData={employees}
           onTap={employeeTapHandler}
@@ -91,36 +83,20 @@ EmployeeScreen.navigationOptions = () => ({
 
 const styles = StyleSheet.create({
   screen: {
+    flex: 1,
     alignItems: 'center',
     height: '100%',
     width: '100%',
   },
-  upperContainer: {
+  container: {
+    height: '100%',
     width: '95%',
-    height: '5%',
     alignItems: 'center',
-    backgroundColor: Colors.primary,
-    borderRadius: 3,
-    marginTop: 10,
-  },
-  lowerContainer: {
-    height: '95%',
-    width: '95%',
-  },
-  rowContainer: {
-    flex: 1,
-    marginLeft: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  smallBoldText: {
-    // marginLeft:5,
-    fontWeight: 'bold',
+    paddingTop: 10,
+    paddingBottom: 15,
   },
   addContainer: {
     alignItems: 'center',
-    height: 150,
-    margin: 10,
   },
 });
 

@@ -262,12 +262,12 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
     borderRadius: 3,
     top: '2.5%',
-
   },
   inputView: {
     marginLeft: 2,
     marginRight: 2,
     borderColor: Colors.borderLight,
+    borderRadius: 3,
     borderWidth: 1,
     height: 30,
     width: 50,
