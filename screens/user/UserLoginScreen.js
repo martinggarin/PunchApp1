@@ -152,7 +152,7 @@ const UserLoginScreen = (props) => {
         'Problem signing in!',
         error,
         [{ text: 'Okay' }],
-      ), 500);
+      ), 100);
     }
   }, [error]);
 
@@ -203,7 +203,7 @@ const UserLoginScreen = (props) => {
                     </View>
                 </TouchableOpacity>
             </View> */}
-      {isLoading && <ActivityIndicator color={Colors.darkLines} size="large" />}
+      {isLoading && <ActivityIndicator color={Colors.placeholderText} size="large" />}
       <Dialog.Container visible={promptVisibility}>
         <Dialog.Title style={{ fontWeight: 'bold' }}>Confirmation Required!</Dialog.Title>
         <Dialog.Description>
@@ -226,7 +226,7 @@ const UserLoginScreen = (props) => {
   );
 };
 UserLoginScreen.navigationOptions = (navData) => ({
-  headerTitle: 'CUSTOMER',
+  headerTitle: 'Customer',
   headerLeft: () => (
     <HeaderButtons HeaderButtonComponent={HeaderButton}>
       <Item
@@ -249,7 +249,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   imageContainer: {
-    width: '80%', height: '15%', marginTop: 10,
+    width: '80%',
+    height: '11%',
+    marginTop: 20,
+    marginBottom: 15,
   },
   inputContainer: {
     height: 200,

@@ -18,20 +18,20 @@ const RewardScreen = () => {
       <View style={styles.imageContainer}>
         <Image style={{ flex: 1, width: undefined, height: undefined }} source={require('../../assets/logo.png')} resizeMode="contain" />
       </View>
-      <Text style={styles.text}>
-        Merchants will scan this QR Code to process rewards!
-      </Text>
       <View style={{
-        borderWidth: 5, padding: 10, borderRadius: 15, borderColor: Colors.darkLines,
+        borderWidth: 5, padding: 7, borderRadius: 15, borderColor: Colors.darkLines,
       }}
       >
         <View style={{
-          borderWidth: 5, padding: 15, borderRadius: 10, borderColor: Colors.primary,
+          borderWidth: 5, padding: 10, borderRadius: 10, borderColor: Colors.primary,
         }}
         >
           <QRCode value={userID} size={250} />
         </View>
       </View>
+      <Text style={styles.text}>
+        Merchants will scan this QR Code to process rewards!
+      </Text>
     </View>
   );
 };
@@ -57,7 +57,10 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
   },
   imageContainer: {
-    width: '80%', height: '15%', marginTop: 10, marginBottom: 10,
+    width: '80%',
+    height: '11%',
+    marginTop: 30,
+    marginBottom: 30,
   },
   image: {
     width: '80%',
@@ -66,9 +69,11 @@ const styles = StyleSheet.create({
   },
   text: {
     color: Colors.darkLines,
+    width: '80%',
     fontWeight: 'bold',
-    fontSize: 12,
-    marginBottom: 40,
+    textAlign: 'center',
+    fontSize: 16,
+    marginTop: 30,
   },
 });
 

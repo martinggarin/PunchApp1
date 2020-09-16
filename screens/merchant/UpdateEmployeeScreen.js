@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
   },
   container: {
     width: '95%',
-    height: 225,
+    height: 250,
     alignItems: 'center',
     backgroundColor: Colors.primary,
     borderRadius: 3,
@@ -302,6 +302,7 @@ const styles = StyleSheet.create({
   },
   rowContainer: {
     width: '95%',
+    height: 50,
     justifyContent: 'center',
     marginTop: 10,
     // borderColor: Colors.borderDark,
@@ -312,6 +313,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   inputView: {
+    flex: 1,
     marginBottom: Platform.OS === 'ios' ? 5 : 0,
     marginLeft: 2,
     marginRight: 2,

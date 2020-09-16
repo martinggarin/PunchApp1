@@ -124,7 +124,7 @@ const ScanScreen = (props) => {
 
   const handleBarCodeScanned = async ({ type, data }) => {
     setScanned(true);
-    if (data.length === 28 && type === 'org.iso.QRCode') {
+    if (data.length === 28 && (type === 'org.iso.QRCode' || type === 256)) {
       setScannedData(data);
       setPromptVisibility(true);
     } else {

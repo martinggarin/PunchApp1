@@ -44,7 +44,7 @@ const DealList = (props) => {
     <FlatList
       data={dealData}
       renderItem={renderDeal}
-      keyExtractor={(item, index) => index.reward}
+      keyExtractor={(item, index) => index.toString()}
       ListFooterComponent={props.footer}
     />
   );

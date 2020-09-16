@@ -222,7 +222,7 @@ const MerchantLoginScreen = (props) => {
                     </View>
                 </TouchableOpacity>
             </View> */}
-      {isLoading && <ActivityIndicator color={Colors.darkLines} size="large" />}
+      {isLoading && <ActivityIndicator color={Colors.placeholderText} size="large" />}
       <Dialog.Container visible={promptVisibility}>
         <Dialog.Title style={{ fontWeight: 'bold' }}>Verification Required!</Dialog.Title>
         <Dialog.Description>
@@ -255,7 +255,7 @@ const MerchantLoginScreen = (props) => {
   );
 };
 MerchantLoginScreen.navigationOptions = (navData) => ({
-  headerTitle: 'MERCHANT',
+  headerTitle: 'Merchant',
   headerLeft: () => (
     <HeaderButtons HeaderButtonComponent={HeaderButton}>
       <Item
@@ -278,7 +278,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   imageContainer: {
-    width: '80%', height: '15%', marginTop: 10,
+    width: '80%',
+    height: '11%',
+    marginTop: 20,
+    marginBottom: 15,
   },
   inputContainer: {
     height: 200,

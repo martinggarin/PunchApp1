@@ -221,12 +221,12 @@ const styles = StyleSheet.create({
   },
   rowView: {
     flexDirection: 'row',
+    height: 45,
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 10,
     // borderColor: Colors.borderDark,
-    // borderWidth: 1,
   },
   singleFieldView: {
     width: '100%',
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
     width: '37.5%',
   },
   inputView: {
-    marginVertical: Platform.OS === 'ios' ? 2 : 0,
+    flex: 1,
     marginLeft: 2,
     marginRight: 2,
     borderColor: Colors.borderDark,
@@ -253,7 +253,6 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   text: {
-    fontSize: 14,
     fontWeight: 'bold',
   },
 });

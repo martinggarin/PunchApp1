@@ -78,7 +78,7 @@ const LoginInput = (props) => {
           <MaterialIcons
             name="email"
             size={20}
-            color={Colors.lightLines}
+            color={Colors.primary}
             style={{ marginRight: 10 }}
           />
           <TextInput
@@ -96,7 +96,7 @@ const LoginInput = (props) => {
           <MaterialIcons
             name="lock"
             size={20}
-            color={Colors.lightLines}
+            color={Colors.primary}
             style={{ marginRight: 10 }}
           />
           <TextInput
@@ -113,10 +113,10 @@ const LoginInput = (props) => {
       </View>
       <View style={styles.lowerContainer}>
         <View style={styles.buttonContainer}>
-          <Button title="LOG IN" color={Colors.primary} onPress={props.onLogin} />
+          <Button title="LOG IN" color={(Platform.OS === 'ios') ? Colors.background : Colors.primary} onPress={props.onLogin} />
         </View>
         <View style={styles.buttonContainer}>
-          <Button title="SIGN UP" color={Colors.primary} onPress={props.onSignUp} />
+          <Button title="SIGN UP" color={(Platform.OS === 'ios') ? Colors.background : Colors.primary} onPress={props.onSignUp} />
         </View>
 
       </View>
@@ -132,13 +132,10 @@ const styles = StyleSheet.create({
   },
   upperContainer: {
     width: '95%',
-    height: 150,
+    height: 125,
     alignItems: 'center',
-    backgroundColor: Colors.primary,
-    borderRadius: 3,
+    borderRadius: 1,
     margin: '2.5%',
-    shadowOffset: { width: 5, height: 5 },
-    shadowOpacity: 0.3,
   },
   lowerContainer: {
     flexDirection: 'row',
@@ -147,10 +144,10 @@ const styles = StyleSheet.create({
   },
   fieldView: {
     flexDirection: 'row',
-    marginTop: 25,
+    marginBottom: 30,
     paddingBottom: 2.5,
     borderBottomWidth: 1,
-    borderColor: '#c3c7b5',
+    borderColor: Colors.primary,
     width: '90%',
     alignItems: 'center',
   },
@@ -158,7 +155,7 @@ const styles = StyleSheet.create({
     width: '90%',
     height: 30,
     fontSize: 16,
-    color: Colors.lightLines,
+    color: Colors.primary,
     marginLeft: 5,
   },
   text: {
@@ -167,6 +164,10 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     width: '40%',
+    borderRadius: 5,
+    backgroundColor: Colors.primary,
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.2,
   },
 });
 

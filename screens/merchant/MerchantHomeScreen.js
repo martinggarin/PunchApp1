@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {
-  Alert, View, Text, StyleSheet,
+  Alert, View, Text, StyleSheet, Platform,
 } from 'react-native';
 import { useSelector } from 'react-redux';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
@@ -223,15 +223,16 @@ MerchantHomeScreen.navigationOptions = (navigationData) => {
             />
           </HeaderButtons>
         </View>
-        <View style={styles.headerButton}>
-          <AntDesign
-            name="questioncircleo"
-            size={25}
-            color={Colors.background}
-            onPress={() => {
-              Alert.alert(
-                'Merchant Help',
-                'Thank you for using PunchApp! We hope you are enjoying your experience.\n\n'
+        {Platform.OS === 'ios' && (
+          <View style={styles.headerButton}>
+            <AntDesign
+              name="questioncircleo"
+              size={25}
+              color={Colors.background}
+              onPress={() => {
+                Alert.alert(
+                  'Merchant Help',
+                  'Thank you for using PunchApp! We hope you are enjoying your experience.\n\n'
                                     + '• Maintain at least one deal to ensure your profile remains public\n\n'
                                     + '• To credit loyalty points to a customer\'s balance, scan their reward code using the scanning tab\n\n'
                                     + '• To redeem a deal for a customer, select it on the home screen and scan their reward code\n\n'
@@ -239,15 +240,39 @@ MerchantHomeScreen.navigationOptions = (navigationData) => {
                                     + '• Employee information can only be updated from the employee screen using an administrator password\n\n'
                                     + '• The audit tab can be used check employee validated transactions once authenticated using a manager ID\n\n'
                                     + '• A completed transaction can be reversed by selecting it in the transaction history on the audit tab',
-                [{ text: 'Okay' }],
-              );
-            }}
-          />
-        </View>
+                  [{ text: 'Okay' }],
+                );
+              }}
+            />
+          </View>
+        )}
       </View>
     ),
     headerRight: () => (
       <View style={styles.headerRight}>
+        {Platform.OS !== 'ios' && (
+          <View style={styles.headerButton}>
+            <AntDesign
+              name="questioncircleo"
+              size={25}
+              color={Colors.background}
+              onPress={() => {
+                Alert.alert(
+                  'Merchant Help',
+                  'Thank you for using PunchApp! We hope you are enjoying your experience.\n\n'
+                                    + '• Maintain at least one deal to ensure your profile remains public\n\n'
+                                    + '• To credit loyalty points to a customer\'s balance, scan their reward code using the scanning tab\n\n'
+                                    + '• To redeem a deal for a customer, select it on the home screen and scan their reward code\n\n'
+                                    + '• Profile information and deals can only be updated from the edit screen using an administrator password\n\n'
+                                    + '• Employee information can only be updated from the employee screen using an administrator password\n\n'
+                                    + '• The audit tab can be used check employee validated transactions once authenticated using a manager ID\n\n'
+                                    + '• A completed transaction can be reversed by selecting it in the transaction history on the audit tab',
+                  [{ text: 'Okay' }],
+                );
+              }}
+            />
+          </View>
+        )}
         <View style={styles.headerButton}>
           <Ionicons
             name="ios-people"
@@ -326,14 +351,14 @@ const styles = StyleSheet.create({
   headerLeft: {
     flex: 1,
     flexDirection: 'row',
-    width: 100,
+    width: (Platform.OS === 'ios') ? 100 : 50,
     alignItems: 'center',
     justifyContent: 'center',
   },
   headerRight: {
     flex: 1,
     flexDirection: 'row',
-    width: 100,
+    width: (Platform.OS === 'ios') ? 100 : 150,
     alignItems: 'center',
     justifyContent: 'center',
   },

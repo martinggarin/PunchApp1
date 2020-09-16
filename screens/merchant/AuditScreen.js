@@ -185,6 +185,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   authenticationContainer: {
+    marginBottom: 5,
     alignItems: 'center',
   },
   authenticationInputContainer: {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Ionicons, AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 import {
-  StyleSheet, Platform, SafeAreaView, TouchableOpacity, Linking, Button, View, Text,
+  StyleSheet, Platform, SafeAreaView, TouchableOpacity, Linking, View, Text,
 } from 'react-native';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createAppContainer } from 'react-navigation';
@@ -275,24 +275,23 @@ const MainNavigator = createDrawerNavigator({
       <SafeAreaView style={styles.drawer} forceInset={{ top: 'always', horizontal: 'never' }}>
         <DrawerNavigatorItems style={{}} {...props} />
         <View style={styles.lowerDrawerContainer}>
-          <View style={{ width: '50%' }}>
-            {showLogout && (
-              <Button
-                title="Logout"
-                color={Colors.darkLines}
-                onPress={() => {
-                  props.navigation.navigate('MerchantLogin');
-                  dispatch(MerchantActions.logoutMerchant());
-                  props.navigation.navigate('UserLogin');
-                  dispatch(UserActions.logoutUser());
-                }}
-              />
-            )}
-          </View>
-          <TouchableOpacity style={styles.privacyPolicyView} onPress={loadPrivacyPolicyInBrowser}>
+          {showLogout && (
+            <TouchableOpacity
+              onPress={() => {
+                props.navigation.navigate('MerchantLogin');
+                dispatch(MerchantActions.logoutMerchant());
+                props.navigation.navigate('UserLogin');
+                dispatch(UserActions.logoutUser());
+              }}
+            >
+              <Text style={{ ...styles.text, fontSize: 18 }}>Logout</Text>
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity style={styles.buttonView} onPress={loadPrivacyPolicyInBrowser}>
             <Text style={styles.text}>Privacy Policy</Text>
           </TouchableOpacity>
         </View>
+
       </SafeAreaView>
     );
   },
@@ -308,7 +307,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 5,
   },
-  privacyPolicyView: {
+  buttonView: {
     position: 'absolute',
     bottom: 0,
     height: 40,
@@ -319,6 +318,7 @@ const styles = StyleSheet.create({
   text: {
     color: Colors.darkLines,
     fontSize: 15,
+    marginBottom: 5,
   },
 });
 
