@@ -276,6 +276,7 @@ const styles = StyleSheet.create({
     height: '100%',
     flexDirection: 'column',
     alignItems: 'center',
+    backgroundColor: Colors.background,
   },
   imageContainer: {
     width: '80%',

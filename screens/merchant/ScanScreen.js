@@ -247,8 +247,7 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: Colors.scanBackground,
-    // justifyContent:'center'
+    backgroundColor: Colors.background,
   },
   scanner: {
     ...StyleSheet.absoluteFill,

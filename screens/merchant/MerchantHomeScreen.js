@@ -312,8 +312,7 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     alignItems: 'center',
-    // marginTop:20,
-    backgroundColor: Colors.fontLight,
+    backgroundColor: Colors.background,
   },
   upperContainer: {
     width: '95%',

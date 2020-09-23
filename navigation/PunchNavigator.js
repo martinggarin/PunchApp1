@@ -103,7 +103,6 @@ const MerchantTabScreen = {
     navigationOptions: {
       tabBarIcon: (tabInfo) => (<MaterialCommunityIcons name="home-analytics" size={25} color={tabInfo.tintColor} />),
       tabBarColor: Colors.header,
-      activeColor: Colors.fontLight,
     },
   },
   Scan: {
@@ -111,7 +110,6 @@ const MerchantTabScreen = {
     navigationOptions: {
       tabBarIcon: (tabInfo) => (<Ionicons name="ios-qr-scanner" size={25} color={tabInfo.tintColor} />),
       tabBarColor: Colors.header,
-      activeColor: Colors.fontLight,
     },
   },
   Audit: {
@@ -119,7 +117,6 @@ const MerchantTabScreen = {
     navigationOptions: {
       tabBarIcon: (tabInfo) => (<MaterialCommunityIcons name="account-search" size={25} color={tabInfo.tintColor} />),
       tabBarColor: Colors.header,
-      activeColor: Colors.fontLight,
     },
   },
 };
@@ -144,7 +141,6 @@ const tabScreen = {
     navigationOptions: {
       tabBarIcon: (tabInfo) => (<Ionicons name="ios-search" size={25} color={tabInfo.tintColor} />),
       tabBarColor: Colors.header,
-      activeColor: Colors.fontLight,
     },
   },
 };

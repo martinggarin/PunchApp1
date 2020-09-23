@@ -369,6 +369,7 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     alignItems: 'center',
+    backgroundColor: Colors.background,
   },
   upperContainer: {
     width: '95%',

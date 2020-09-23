@@ -105,8 +105,6 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     alignItems: 'center',
-    // justifyContent:'center',
-    // height:'50%',
     backgroundColor: Colors.background,
   },
   punchCard: {

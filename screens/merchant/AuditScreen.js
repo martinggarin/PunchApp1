@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     height: '100%',
-    backgroundColor: Colors.fontLight,
+    backgroundColor: Colors.background,
   },
   container: {
     height: '100%',

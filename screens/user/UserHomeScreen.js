@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     height: '100%',
-    backgroundColor: Colors.background, // this is the color for everything need to fix
+    backgroundColor: Colors.background,
   },
   addContainer: {
     alignItems: 'center',

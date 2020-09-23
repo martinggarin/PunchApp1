@@ -289,6 +289,7 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     alignItems: 'center',
+    backgroundColor: Colors.background,
   },
   container: {
     width: '95%',
