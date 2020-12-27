@@ -145,7 +145,7 @@ const EditScreen = (props) => {
       ));
       setTimeout(() => {
         props.navigation.navigate('MerchantHome');
-      }, 500);
+      }, 1000);
     } catch (err) {
       setError(err.message);
     }
