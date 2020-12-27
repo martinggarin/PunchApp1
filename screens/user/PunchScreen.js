@@ -60,8 +60,10 @@ const PunchScreen = (props) => {
             text={['Loyalty', 'Points']}
             number={loyaltyPoints}
             size={20}
+            textColor={Colors.fontLight}
+            numberColor={Colors.fontLight}
           />
-          <Ionicons name="md-add-circle" size={75} />
+          <Ionicons name="md-add-circle" size={75} color={Colors.fontLight} />
         </View>
       </PunchCard>
       <View style={{ height: '67.5%', width: '100%', justifyContent: 'center' }}>
@@ -116,8 +118,7 @@ const styles = StyleSheet.create({
   textContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '70%',
+    width: '60%',
     marginStart: 10,
 
   },

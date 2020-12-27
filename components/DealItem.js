@@ -15,7 +15,7 @@ const DealItem = (props) => (
       }}
       >
         <View>
-          <Text style={{ fontSize: 21 }}>{props.title}</Text>
+          <Text style={{ fontSize: 21, color: Colors.primary }}>{props.title}</Text>
         </View>
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
           {props.children}

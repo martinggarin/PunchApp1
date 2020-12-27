@@ -208,6 +208,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   warningText: {
+    color: Colors.darkLines,
     textAlign: 'center',
     marginTop: 10,
   },

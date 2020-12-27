@@ -82,14 +82,14 @@ const MerchantHomeScreen = (props) => {
             <Text style={styles.largeBoldText}>
               {merchant.title}
             </Text>
-            <Text>
+            <Text style={styles.smallText}>
               {merchant.price}
               {' '}
               •
               {' '}
               {merchant.type}
             </Text>
-            <Text style={styles.addressText}>
+            <Text style={styles.smallText}>
               {merchant.address}
               {' '}
               •
@@ -100,11 +100,11 @@ const MerchantHomeScreen = (props) => {
           <View style={{ right: 15 }}>
             <View>
               <Text style={styles.smallBoldText}>Total Deals</Text>
-              <Text style={{ textAlign: 'center' }}>{totalDeals}</Text>
+              <Text style={{ ...styles.smallText, textAlign: 'center' }}>{totalDeals}</Text>
             </View>
             <View>
               <Text style={styles.smallBoldText}>Customers</Text>
-              <Text style={{ textAlign: 'center' }}>{totalCustomers}</Text>
+              <Text style={{ ...styles.smallText, textAlign: 'center' }}>{totalCustomers}</Text>
             </View>
           </View>
         </View>
@@ -167,7 +167,7 @@ const MerchantHomeScreen = (props) => {
           style={{ borderBottomWidth: Platform.OS === 'android' ? 1 : 0, borderColor: Colors.borderDark }}
           autoCorrect={false}
           autoCompleteType="off"
-          placeholder="Admin password"
+          placeholder="Admin Password"
           placeholderTextColor={Colors.placeholderText}
           onChangeText={(text) => {
             console.log('-Input Change Handler');
@@ -334,13 +334,18 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   largeBoldText: {
+    color: Colors.fontLight,
     margin: 2,
     fontSize: 24,
     fontWeight: 'bold',
   },
   smallBoldText: {
+    color: Colors.fontLight,
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  smallText: {
+    color: Colors.fontLight,
   },
   addContainer: {
     alignItems: 'center',

@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     margin: 5,
     fontSize: 18,
     fontWeight: 'bold',
-    color: Colors.fontDark,
+    color: Colors.primary,
   },
   textContainer: {
     width: '70%',
@@ -110,7 +110,9 @@ const styles = StyleSheet.create({
   addressText: {
     color: Colors.darkLines,
   },
-  priceText: {},
+  priceText: {
+    color: Colors.darkLines,
+  },
   priceTextContainer: {},
 
 });
