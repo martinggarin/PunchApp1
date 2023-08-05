@@ -28,7 +28,7 @@
     "expo": "^49.0.6",
     "expo-barcode-scanner": "~12.5.3",
     "expo-constants": "~14.4.2",
-    "expo-google-app-auth": "^8.1.4",
+    "expo-google-app-auth": "^8.3.0",
     "firebase": "^9.6.5",
     "moment": "^2.29.4",
     "patch-package": "^8.0.0",
