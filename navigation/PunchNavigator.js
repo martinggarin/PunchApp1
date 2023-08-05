@@ -3,12 +3,19 @@ import { Ionicons, AntDesign, MaterialCommunityIcons } from '@expo/vector-icons'
 import {
   StyleSheet, Platform, SafeAreaView, TouchableOpacity, Linking, View, Text,
 } from 'react-native';
-import { createStackNavigator } from 'react-navigation-stack';
-import { createAppContainer } from 'react-navigation';
-import { createDrawerNavigator, DrawerNavigatorItems } from 'react-navigation-drawer';
+
+// import { createStackNavigator } from 'react-navigation-stack';
+import { createStackNavigator } from '@react-navigation/stack';
+import { createCompatNavigatorFactory } from '@react-navigation/compat';
+
+import { NavigationContainer } from '@react-navigation/native';
+
+import { createDrawerNavigator, DrawerNavigatorItems } from '@react-navigation/drawer';
+
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { useSelector, useDispatch } from 'react-redux';
+
 
 import UserHomeScreen from '../screens/user/UserHomeScreen';
 import PunchScreen from '../screens/user/PunchScreen';
@@ -34,7 +41,7 @@ const defaultOptions = {
   headerTintColor: Colors.lines,
 };
 
-const MerchantHomeNavigator = createStackNavigator({
+const MerchantHomeNavigator = createCompatNavigatorFactory(createStackNavigator)({
   MerchantHome: {
     screen: MerchantHomeScreen,
     navigationOptions: { title: 'Merchant Home' },
@@ -49,7 +56,7 @@ const MerchantHomeNavigator = createStackNavigator({
   defaultNavigationOptions: defaultOptions,
 });
 
-const ScanNavigator = createStackNavigator({
+const ScanNavigator = createCompatNavigatorFactory(createStackNavigator)({
   Scan: {
     screen: ScanScreen,
     navigationOptions: { title: 'Scan' },
@@ -58,7 +65,7 @@ const ScanNavigator = createStackNavigator({
   defaultNavigationOptions: defaultOptions,
 });
 
-const AuditNavigator = createStackNavigator({
+const AuditNavigator = createCompatNavigatorFactory(createStackNavigator)({
   Audit: {
     screen: AuditScreen,
     navigationOptions: { title: 'Transaction History' },
@@ -67,7 +74,7 @@ const AuditNavigator = createStackNavigator({
   defaultNavigationOptions: defaultOptions,
 });
 
-const UserHomeNavigator = createStackNavigator({
+const UserHomeNavigator = createCompatNavigatorFactory(createStackNavigator)({
   Home: {
     screen: UserHomeScreen,
     navigationOptions: { title: 'Home' },
@@ -77,7 +84,7 @@ const UserHomeNavigator = createStackNavigator({
   defaultNavigationOptions: defaultOptions,
 });
 
-const RewardNavigator = createStackNavigator({
+const RewardNavigator = createCompatNavigatorFactory(createStackNavigator)({
   Rewards: {
     screen: RewardScreen,
     navigationOptions: { title: 'Rewards' },
@@ -87,7 +94,7 @@ const RewardNavigator = createStackNavigator({
   defaultNavigationOptions: defaultOptions,
 });
 
-const ExploreNavigator = createStackNavigator({
+const ExploreNavigator = createCompatNavigatorFactory(createStackNavigator)({
   Explore: {
     screen: ExploreScreen,
     navigationOptions: { title: 'Explore' },
@@ -167,7 +174,7 @@ const UserTabNavigator = Platform.OS === 'android'
     },
   });
 
-const MerchantNavigator = createStackNavigator({
+const MerchantNavigator = createCompatNavigatorFactory(createStackNavigator)({
   MerchantLogin: {
     screen: MerchantLoginScreen,
     navigationOptions: { gestureEnabled: false },
@@ -202,7 +209,7 @@ const MerchantNavigator = createStackNavigator({
   defaultNavigationOptions: defaultOptions,
 });
 
-const UserNavigator = createStackNavigator({
+const UserNavigator = createCompatNavigatorFactory(createStackNavigator)({
   UserLogin: {
     screen: UserLoginScreen,
     navigationOptions: { gestureEnabled: false },
@@ -235,7 +242,7 @@ const UserNavigator = createStackNavigator({
   defaultNavigationOptions: defaultOptions,
 });
 
-const MainNavigator = createDrawerNavigator({
+const MainNavigator = createCompatNavigatorFactory(createDrawerNavigator)({
   UserHome: {
     screen: UserNavigator,
     navigationOptions: {
@@ -318,4 +325,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default createAppContainer(MainNavigator);
+export default MainNavigator;

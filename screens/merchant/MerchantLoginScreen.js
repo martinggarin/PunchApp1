@@ -8,7 +8,7 @@ import Dialog from 'react-native-dialog';
 import { useDispatch } from 'react-redux';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { ActivityIndicator } from 'react-native-paper';
-import firebase from 'firebase';
+import firebase from 'firebase/compat/app';
 import LoginInput from '../../components/LoginInput';
 import HeaderButton from '../../components/HeaderButton';
 import * as merchantActions from '../../store/actions/merchants';

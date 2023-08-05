@@ -1,5 +1,6 @@
 import * as Google from 'expo-google-app-auth';
-import firebase from 'firebase';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/database';
 import Customer from '../../models/Customer';
 import RewardStatus from '../../models/RewardsStatus';
 

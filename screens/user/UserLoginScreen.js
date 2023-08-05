@@ -8,12 +8,17 @@ import Dialog from 'react-native-dialog';
 import { useDispatch } from 'react-redux';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { ActivityIndicator } from 'react-native-paper';
-import firebase from 'firebase';
+
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
+
 import LoginInput from '../../components/LoginInput';
 import HeaderButton from '../../components/HeaderButton';
 import * as userActions from '../../store/actions/user';
 import Colors from '../../constants/Colors';
 import Apps from '../../firebaseApp';
+
 
 const userApp = Apps.firebaseApp.user;
 const onAuthStateChange = (callback) => firebase.auth(userApp).onAuthStateChanged((user) => {

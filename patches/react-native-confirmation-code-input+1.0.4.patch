@@ -1,0 +1,28 @@
+diff --git a/node_modules/react-native-confirmation-code-input/.DS_Store b/node_modules/react-native-confirmation-code-input/.DS_Store
+new file mode 100644
+index 0000000..dbd07c1
+Binary files /dev/null and b/node_modules/react-native-confirmation-code-input/.DS_Store differ
+diff --git a/node_modules/react-native-confirmation-code-input/components/ConfirmationCodeInput.js b/node_modules/react-native-confirmation-code-input/components/ConfirmationCodeInput.js
+index 239c85a..3eae24b 100644
+--- a/node_modules/react-native-confirmation-code-input/components/ConfirmationCodeInput.js
++++ b/node_modules/react-native-confirmation-code-input/components/ConfirmationCodeInput.js
+@@ -1,6 +1,7 @@
+ import React, {Component} from 'react';
+ import PropTypes from 'prop-types';
+-import { View, TextInput, StyleSheet, Dimensions, ViewPropTypes } from 'react-native';
++import { View, TextInput, StyleSheet, Dimensions } from 'react-native';
++import {TextInputPropTypes, ViewPropTypes} from 'deprecated-react-native-prop-types'
+ import _ from 'lodash';
+ 
+ // if ViewPropTypes is not defined fall back to View.propType (to support RN < 0.44)
+@@ -19,8 +20,8 @@ export default class ConfirmationCodeInput extends Component {
+     inactiveColor: PropTypes.string,
+     ignoreCase: PropTypes.bool,
+     autoFocus: PropTypes.bool,
+-    codeInputStyle: TextInput.propTypes.style,
+-    containerStyle: viewPropTypes.style,
++    codeInputStyle: TextInputPropTypes.style,
++    containerStyle: ViewPropTypes.style,
+     onFulfill: PropTypes.func,
+   };
+   

@@ -1,5 +1,13 @@
 // import * as Google from 'expo-google-app-auth';
-import firebase from 'firebase';
+import firebase from 'firebase/compat/app';
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut
+} from "firebase/auth";
+
 import moment from 'moment';
 import Merchant from '../../models/Merchant';
 import Deal from '../../models/Deal';
@@ -18,8 +26,12 @@ export const LOAD_ALL_MERCHANTS = 'LOAD_ALL_MERCHANTS';
 const userApp = Apps.firebaseApp.user;
 const merchantApp = Apps.firebaseApp.merchant;
 
+const userApp_auth = getAuth(userApp);
+const merchantApp_auth = getAuth(merchantApp);
+
 export const createMerchant = (email, password, inputToken) => {
   console.log('~Merchant Action: createMerchant');
+  
   return async (dispatch) => {
     // any async code you want!
     let credential = null;
@@ -46,7 +58,7 @@ export const createMerchant = (email, password, inputToken) => {
     //    throw new Error('Google sign in cancelled!');
     //  }
     // }
-    credential = await firebase.auth(merchantApp).createUserWithEmailAndPassword(email, password)
+    credential = await createUserWithEmailAndPassword(merchantApp_auth, email, password)
       .catch((error) => {
         if (error.code === 'auth/email-already-in-use') {
           accountExists = true;
@@ -56,7 +68,7 @@ export const createMerchant = (email, password, inputToken) => {
         }
       });
     if (accountExists) {
-      credential = await firebase.auth(merchantApp).signInWithEmailAndPassword(email, password)
+      credential = await signInWithEmailAndPassword(merchantApp_auth, email, password)
         .catch((error) => {
           if (error.code === 'auth/wrong-password') {
             throw new Error('Email associated with another account.');

@@ -1,0 +1,66 @@
+diff --git a/node_modules/react-native/Libraries/Components/.DS_Store b/node_modules/react-native/Libraries/Components/.DS_Store
+new file mode 100644
+index 0000000..8b0b90b
+Binary files /dev/null and b/node_modules/react-native/Libraries/Components/.DS_Store differ
+diff --git a/node_modules/react-native/Libraries/Components/TextInput/TextInput.js b/node_modules/react-native/Libraries/Components/TextInput/TextInput.js
+index 8fa1171..4ce4fcb 100644
+--- a/node_modules/react-native/Libraries/Components/TextInput/TextInput.js
++++ b/node_modules/react-native/Libraries/Components/TextInput/TextInput.js
+@@ -25,7 +25,7 @@ import setAndForwardRef from '../../Utilities/setAndForwardRef';
+ 
+ import usePressability from '../../Pressability/usePressability';
+ 
+-import type {ViewProps} from '../View/ViewPropTypes';
++import type {ViewProps} from 'deprecated-react-native-prop-types';
+ import type {
+   SyntheticEvent,
+   ScrollEvent,
+diff --git a/node_modules/react-native/ReactAndroid/src/main/jni/first-party/fbjni/.npmignore b/node_modules/react-native/ReactAndroid/src/main/jni/first-party/fbjni/.gitignore
+similarity index 100%
+rename from node_modules/react-native/ReactAndroid/src/main/jni/first-party/fbjni/.npmignore
+rename to node_modules/react-native/ReactAndroid/src/main/jni/first-party/fbjni/.gitignore
+diff --git a/node_modules/react-native/ReactCommon/hermes/inspector/tools/msggen/.npmignore b/node_modules/react-native/ReactCommon/hermes/inspector/tools/msggen/.gitignore
+similarity index 100%
+rename from node_modules/react-native/ReactCommon/hermes/inspector/tools/msggen/.npmignore
+rename to node_modules/react-native/ReactCommon/hermes/inspector/tools/msggen/.gitignore
+diff --git a/node_modules/react-native/index.js b/node_modules/react-native/index.js
+index d59ba34..8023167 100644
+--- a/node_modules/react-native/index.js
++++ b/node_modules/react-native/index.js
+@@ -435,32 +435,16 @@ module.exports = {
+   },
+   // Deprecated Prop Types
+   get ColorPropType(): $FlowFixMe {
+-    invariant(
+-      false,
+-      'ColorPropType has been removed from React Native. Migrate to ' +
+-        "ColorPropType exported from 'deprecated-react-native-prop-types'.",
+-    );
++    return require("deprecated-react-native-prop-types").ColorPropType
+   },
+   get EdgeInsetsPropType(): $FlowFixMe {
+-    invariant(
+-      false,
+-      'EdgeInsetsPropType has been removed from React Native. Migrate to ' +
+-        "EdgeInsetsPropType exported from 'deprecated-react-native-prop-types'.",
+-    );
++    return require("deprecated-react-native-prop-types").EdgeInsetsPropType
+   },
+   get PointPropType(): $FlowFixMe {
+-    invariant(
+-      false,
+-      'PointPropType has been removed from React Native. Migrate to ' +
+-        "PointPropType exported from 'deprecated-react-native-prop-types'.",
+-    );
++    return require("deprecated-react-native-prop-types").PointPropType
+   },
+   get ViewPropTypes(): $FlowFixMe {
+-    invariant(
+-      false,
+-      'ViewPropTypes has been removed from React Native. Migrate to ' +
+-        "ViewPropTypes exported from 'deprecated-react-native-prop-types'.",
+-    );
++    return require("deprecated-react-native-prop-types").ViewPropTypes
+   },
+ };
+ 
